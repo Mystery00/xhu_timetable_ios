@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:xhu_timetable_ios/home/home.dart';
+import 'home/home.dart';
 
 void main() {
   runApp(const MyApp());

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/svg.dart';
 
 class TodayHomePage extends StatefulWidget {
   const TodayHomePage({super.key});
@@ -52,19 +54,27 @@ class TodayListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: items[index].buildContent(context),
-            ),
+    return Stack(
+      children: [
+        Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: Container(
+            width: 1,
+            height: double.infinity,
+            color: Colors.grey,
+            margin: const EdgeInsets.only(left: 10, right: 10),
           ),
-        );
-      },
+        ),
+        SizedBox(
+          width: double.infinity,
+          child: ListView.builder(
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              return items[index].buildContent(context);
+            },
+          ),
+        )
+      ],
     );
   }
 }
@@ -88,20 +98,41 @@ class PoemsItem extends TodayItem {
   @override
   Widget buildContent(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+      padding: const EdgeInsets.only(top: 4, bottom: 4),
+      child: Row(
         children: [
-          Center(
-            child: Text(
-              content,
-              style: const TextStyle(fontSize: 12),
+          Container(
+            width: 9,
+            height: 9,
+            margin: const EdgeInsets.all(6),
+            decoration: const BoxDecoration(
+              color: Colors.red,
+              shape: BoxShape.circle,
             ),
           ),
-          Text(
-            "—— $author《$title》",
-            style: const TextStyle(fontSize: 12),
-          ),
+          Expanded(
+            child: Card(
+              margin: const EdgeInsets.only(right: 8),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Center(
+                      child: Text(
+                        content,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ),
+                    Text(
+                      "—— $author《$title》",
+                      style: const TextStyle(fontSize: 12),
+                      textAlign: TextAlign.end,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -132,18 +163,110 @@ class CourseItem extends TodayItem {
 
   @override
   Widget buildContent(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          courseName,
-        ),
-        Text(
-          teacher,
-        ),
-        Text(
-          location,
-        ),
-      ],
-    );
+    return Padding(
+        padding: const EdgeInsets.only(top: 4, bottom: 4),
+        child: Row(
+          children: [
+            Container(
+              width: 9,
+              height: 9,
+              margin: const EdgeInsets.all(6),
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+            ),
+            Expanded(
+              child: Card(
+                margin: const EdgeInsets.only(right: 8),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Stack(
+                    children: [
+                      Row(
+                        children: [
+                          Column(
+                            children: [
+                              SvgPicture.asset("assets/icons/ic_watermelon.svg",
+                                  height: 16,
+                                  width: 16,
+                                  colorFilter: const ColorFilter.mode(
+                                      Colors.red, BlendMode.srcIn)),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 1, bottom: 1),
+                                child: Text(
+                                  startTime,
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 1, bottom: 1),
+                                child: Text(
+                                  endTime,
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            width: 4,
+                            height: 100,
+                            color: Colors.grey,
+                            padding: const EdgeInsets.all(12.0),
+                            margin: const EdgeInsets.only(left: 8, right: 8),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(top: 1, bottom: 1),
+                                  child: Row(
+                                    textDirection: TextDirection.rtl,
+                                    children: [
+                                      Text(
+                                        "$startDayTime-$endDayTime节",
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          courseName,
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(top: 1, bottom: 1),
+                                  child: Text(
+                                    teacher,
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(top: 1, bottom: 1),
+                                  child: Text(
+                                    location,
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ));
   }
 }

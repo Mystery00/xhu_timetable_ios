@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:xhu_timetable_ios/model/today.dart';
 
 class TodayHomePage extends StatefulWidget {
   const TodayHomePage({super.key});
@@ -13,12 +13,14 @@ class _TodayHomePageState extends State<TodayHomePage> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: TodayListWidget(items: [
+      child: _TodayListWidget(items: [
         PoemsItem(
-          author: "李白",
-          title: "静夜思",
-          content: "床前明月光，疑是地上霜。",
-          fullContent: "床前明月光，疑是地上霜。举头望明月，低头思故乡。",
+          entity: TodayPoemsEntity(
+            author: "李白",
+            title: "静夜思",
+            content: "床前明月光，疑是地上霜。",
+            fullContent: "床前明月光，疑是地上霜。举头望明月，低头思故乡。",
+          ),
         ),
         CourseItem(
           courseName: "课程名称",
@@ -47,10 +49,10 @@ class _TodayHomePageState extends State<TodayHomePage> {
   }
 }
 
-class TodayListWidget extends StatelessWidget {
+class _TodayListWidget extends StatelessWidget {
   final List<TodayItem> items;
 
-  const TodayListWidget({required this.items, super.key});
+  const _TodayListWidget({required this.items, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +64,7 @@ class TodayListWidget extends StatelessWidget {
             width: 1,
             height: double.infinity,
             color: Colors.grey,
-            margin: const EdgeInsets.only(left: 10, right: 10),
+            margin: const EdgeInsets.symmetric(horizontal: 10),
           ),
         ),
         SizedBox(
@@ -84,21 +86,14 @@ abstract class TodayItem {
 }
 
 class PoemsItem extends TodayItem {
-  final String title;
-  final String author;
-  final String content;
-  final String fullContent;
+  final TodayPoemsEntity entity;
 
-  PoemsItem(
-      {required this.title,
-      required this.author,
-      required this.content,
-      required this.fullContent});
+  PoemsItem({required this.entity});
 
   @override
   Widget buildContent(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 4, bottom: 4),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
           Container(
@@ -119,14 +114,16 @@ class PoemsItem extends TodayItem {
                   children: [
                     Center(
                       child: Text(
-                        content,
+                        entity.content,
                         style: const TextStyle(fontSize: 12),
                       ),
                     ),
-                    Text(
-                      "—— $author《$title》",
-                      style: const TextStyle(fontSize: 12),
-                      textAlign: TextAlign.end,
+                    Align(
+                      alignment: AlignmentDirectional.centerEnd,
+                      child: Text(
+                        "—— ${entity.author}《${entity.title}》",
+                        style: const TextStyle(fontSize: 12),
+                      ),
                     ),
                   ],
                 ),
@@ -164,7 +161,7 @@ class CourseItem extends TodayItem {
   @override
   Widget buildContent(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.only(top: 4, bottom: 4),
+        padding: const EdgeInsets.symmetric(vertical: 4),
         child: Row(
           children: [
             Container(
@@ -194,7 +191,7 @@ class CourseItem extends TodayItem {
                                       Colors.red, BlendMode.srcIn)),
                               Padding(
                                 padding:
-                                    const EdgeInsets.only(top: 1, bottom: 1),
+                                    const EdgeInsets.symmetric(vertical: 1),
                                 child: Text(
                                   startTime,
                                   style: const TextStyle(fontSize: 12),
@@ -202,7 +199,7 @@ class CourseItem extends TodayItem {
                               ),
                               Padding(
                                 padding:
-                                    const EdgeInsets.only(top: 1, bottom: 1),
+                                    const EdgeInsets.symmetric(vertical: 1),
                                 child: Text(
                                   endTime,
                                   style: const TextStyle(fontSize: 12),
@@ -212,10 +209,10 @@ class CourseItem extends TodayItem {
                           ),
                           Container(
                             width: 4,
-                            height: 100,
+                            height: 80,
                             color: Colors.grey,
                             padding: const EdgeInsets.all(12.0),
-                            margin: const EdgeInsets.only(left: 8, right: 8),
+                            margin: const EdgeInsets.symmetric(horizontal: 8),
                           ),
                           Expanded(
                             child: Column(
@@ -223,7 +220,7 @@ class CourseItem extends TodayItem {
                               children: [
                                 Padding(
                                   padding:
-                                      const EdgeInsets.only(top: 1, bottom: 1),
+                                      const EdgeInsets.symmetric(vertical: 1),
                                   child: Row(
                                     textDirection: TextDirection.rtl,
                                     children: [
@@ -242,7 +239,7 @@ class CourseItem extends TodayItem {
                                 ),
                                 Padding(
                                   padding:
-                                      const EdgeInsets.only(top: 1, bottom: 1),
+                                      const EdgeInsets.symmetric(vertical: 1),
                                   child: Text(
                                     teacher,
                                     style: const TextStyle(fontSize: 12),
@@ -250,7 +247,7 @@ class CourseItem extends TodayItem {
                                 ),
                                 Padding(
                                   padding:
-                                      const EdgeInsets.only(top: 1, bottom: 1),
+                                      const EdgeInsets.symmetric(vertical: 1),
                                   child: Text(
                                     location,
                                     style: const TextStyle(fontSize: 12),

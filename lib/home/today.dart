@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:xhu_timetable_ios/model/today.dart';
+import 'package:xhu_timetable_ios/repository/poems.dart';
 
 class TodayHomePage extends StatefulWidget {
   const TodayHomePage({super.key});
@@ -10,18 +11,13 @@ class TodayHomePage extends StatefulWidget {
 }
 
 class _TodayHomePageState extends State<TodayHomePage> {
+  var _loading = false;
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: _TodayListWidget(items: [
-        PoemsItem(
-          entity: TodayPoemsEntity(
-            author: "李白",
-            title: "静夜思",
-            content: "床前明月光，疑是地上霜。",
-            fullContent: "床前明月光，疑是地上霜。举头望明月，低头思故乡。",
-          ),
-        ),
+        buildPoems(context),
         CourseItem(
           courseName: "课程名称",
           weekList: [1, 2, 3],
@@ -47,12 +43,34 @@ class _TodayHomePageState extends State<TodayHomePage> {
       ]),
     );
   }
+
+  Widget buildPoems(BuildContext context){
+    return FutureBuilder(future: getPoems(), builder: (context, snapshot) {
+      switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                  return new Text('Input a URL to start');
+                case ConnectionState.waiting:
+                  return new Center(child: new CircularProgressIndicator());
+                case ConnectionState.active:
+                  return new Text('');
+                case ConnectionState.done:
+                  if (snapshot.hasError) {
+                    return new Text(
+                      '${snapshot.error}',
+                      style: TextStyle(color: Colors.red),
+                    );
+                  } else {
+                    return Text(${snapshot.data.courese_name}$);
+                  }
+              }
+    });
+  }
 }
 
 class _TodayListWidget extends StatelessWidget {
   final List<TodayItem> items;
 
-  const _TodayListWidget({required this.items, super.key});
+  const _TodayListWidget({required this.items});
 
   @override
   Widget build(BuildContext context) {

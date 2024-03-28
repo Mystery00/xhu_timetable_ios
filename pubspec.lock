@@ -57,6 +57,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.6"
+  dio:
+    dependency: "direct main"
+    description:
+      name: dio
+      sha256: "50fec96118958b97c727d0d8f67255d3683f16cc1f90d9bc917b5d4fe3abeca9"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "5.4.2"
   fake_async:
     dependency: transitive
     description:
@@ -91,6 +99,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_user_agentx:
+    dependency: "direct main"
+    description:
+      name: flutter_user_agentx
+      sha256: "35c0357fec055d3e085609a88aeefcac09a345f568ed176c5ad19d3188555563"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.2.4"
   http:
     dependency: transitive
     description:

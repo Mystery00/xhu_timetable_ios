@@ -166,8 +166,7 @@ class _MenuItem extends StatelessWidget {
   final VoidCallback? onTap;
 
   const _MenuItem(
-      {super.key,
-      required this.hasNext,
+      {required this.hasNext,
       required this.icon,
       required this.title,
       this.onTap});

@@ -18,57 +18,60 @@ class _TodayHomePageState extends State<TodayHomePage> {
     return Center(
       child: _TodayListWidget(items: [
         buildPoems(context),
-        CourseItem(
-          courseName: "课程名称",
-          weekList: [1, 2, 3],
-          day: 2,
-          startDayTime: 1,
-          endDayTime: 2,
-          startTime: "08:00",
-          endTime: "09:40",
-          location: "上课教室",
-          teacher: "授课教师",
-        ),
-        CourseItem(
-          courseName: "课程名称2",
-          weekList: [1, 2, 3],
-          day: 2,
-          startDayTime: 3,
-          endDayTime: 4,
-          startTime: "10:00",
-          endTime: "11:40",
-          location: "上课教室222",
-          teacher: "授课教师22222",
-        ),
+        // CourseItem(
+        //   courseName: "课程名称",
+        //   weekList: [1, 2, 3],
+        //   day: 2,
+        //   startDayTime: 1,
+        //   endDayTime: 2,
+        //   startTime: "08:00",
+        //   endTime: "09:40",
+        //   location: "上课教室",
+        //   teacher: "授课教师",
+        // ),
+        // CourseItem(
+        //   courseName: "课程名称2",
+        //   weekList: [1, 2, 3],
+        //   day: 2,
+        //   startDayTime: 3,
+        //   endDayTime: 4,
+        //   startTime: "10:00",
+        //   endTime: "11:40",
+        //   location: "上课教室222",
+        //   teacher: "授课教师22222",
+        // ),
       ]),
     );
   }
 
-  Widget buildPoems(BuildContext context){
-    return FutureBuilder(future: getPoems(), builder: (context, snapshot) {
-      switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                  return new Text('Input a URL to start');
-                case ConnectionState.waiting:
-                  return new Center(child: new CircularProgressIndicator());
-                case ConnectionState.active:
-                  return new Text('');
-                case ConnectionState.done:
-                  if (snapshot.hasError) {
-                    return new Text(
-                      '${snapshot.error}',
-                      style: TextStyle(color: Colors.red),
-                    );
-                  } else {
-                    return Text(${snapshot.data.courese_name}$);
-                  }
+  Widget buildPoems(BuildContext context) {
+    return FutureBuilder(
+        future: getPoems(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+            case ConnectionState.waiting:
+            case ConnectionState.active:
+              return const Text('');
+            case ConnectionState.done:
+              if (snapshot.hasError) {
+                return const Text('Error');
+              } else {
+                var data = snapshot.data!;
+                TodayPoemsEntity entity = TodayPoemsEntity(
+                    title: data.origin.title,
+                    author: data.origin.author,
+                    content: data.content,
+                    fullContent: data.origin.content.join("\n"));
+                return PoemsItem(entity: entity).buildContent(context);
               }
-    });
+          }
+        });
   }
 }
 
 class _TodayListWidget extends StatelessWidget {
-  final List<TodayItem> items;
+  final List<Widget> items;
 
   const _TodayListWidget({required this.items});
 
@@ -90,7 +93,7 @@ class _TodayListWidget extends StatelessWidget {
           child: ListView.builder(
             itemCount: items.length,
             itemBuilder: (context, index) {
-              return items[index].buildContent(context);
+              return items[index];
             },
           ),
         )

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:xhu_timetable_ios/model/today.dart';
-import 'package:xhu_timetable_ios/repository/poems.dart';
+import 'package:xhu_timetable_ios/model/poems.dart';
+import 'package:xhu_timetable_ios/store/poems_store.dart';
 
 class TodayHomePage extends StatefulWidget {
   const TodayHomePage({super.key});
@@ -11,70 +11,6 @@ class TodayHomePage extends StatefulWidget {
 }
 
 class _TodayHomePageState extends State<TodayHomePage> {
-  var _loading = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: _TodayListWidget(items: [
-        buildPoems(context),
-        // CourseItem(
-        //   courseName: "课程名称",
-        //   weekList: [1, 2, 3],
-        //   day: 2,
-        //   startDayTime: 1,
-        //   endDayTime: 2,
-        //   startTime: "08:00",
-        //   endTime: "09:40",
-        //   location: "上课教室",
-        //   teacher: "授课教师",
-        // ),
-        // CourseItem(
-        //   courseName: "课程名称2",
-        //   weekList: [1, 2, 3],
-        //   day: 2,
-        //   startDayTime: 3,
-        //   endDayTime: 4,
-        //   startTime: "10:00",
-        //   endTime: "11:40",
-        //   location: "上课教室222",
-        //   teacher: "授课教师22222",
-        // ),
-      ]),
-    );
-  }
-
-  Widget buildPoems(BuildContext context) {
-    return FutureBuilder(
-        future: getPoems(),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-            case ConnectionState.waiting:
-            case ConnectionState.active:
-              return const Text('');
-            case ConnectionState.done:
-              if (snapshot.hasError) {
-                return const Text('Error');
-              } else {
-                var data = snapshot.data!;
-                TodayPoemsEntity entity = TodayPoemsEntity(
-                    title: data.origin.title,
-                    author: data.origin.author,
-                    content: data.content,
-                    fullContent: data.origin.content.join("\n"));
-                return PoemsItem(entity: entity).buildContent(context);
-              }
-          }
-        });
-  }
-}
-
-class _TodayListWidget extends StatelessWidget {
-  final List<Widget> items;
-
-  const _TodayListWidget({required this.items});
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -90,11 +26,10 @@ class _TodayListWidget extends StatelessWidget {
         ),
         SizedBox(
           width: double.infinity,
-          child: ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              return items[index];
-            },
+          child: ListView(
+            children: [
+              buildPoems(context),
+            ],
           ),
         )
       ],
@@ -102,16 +37,24 @@ class _TodayListWidget extends StatelessWidget {
   }
 }
 
-abstract class TodayItem {
-  Widget buildContent(BuildContext context);
+Widget buildPoems(BuildContext context) {
+  return FutureBuilder(
+      future: loadPoems(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done &&
+            !snapshot.hasError) {
+          var data = snapshot.data!;
+          return PoemsItem(poems: data).buildContent(context);
+        }
+        return const SizedBox();
+      });
 }
 
-class PoemsItem extends TodayItem {
-  final TodayPoemsEntity entity;
+class PoemsItem {
+  final Poems poems;
 
-  PoemsItem({required this.entity});
+  PoemsItem({required this.poems});
 
-  @override
   Widget buildContent(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -135,14 +78,14 @@ class PoemsItem extends TodayItem {
                   children: [
                     Center(
                       child: Text(
-                        entity.content,
+                        poems.content,
                         style: const TextStyle(fontSize: 12),
                       ),
                     ),
                     Align(
                       alignment: AlignmentDirectional.centerEnd,
                       child: Text(
-                        "—— ${entity.author}《${entity.title}》",
+                        "—— ${poems.author}《${poems.title}》",
                         style: const TextStyle(fontSize: 12),
                       ),
                     ),
@@ -157,7 +100,7 @@ class PoemsItem extends TodayItem {
   }
 }
 
-class CourseItem extends TodayItem {
+class CourseItem {
   final String courseName;
   final List<int> weekList;
   final int day;
@@ -179,7 +122,6 @@ class CourseItem extends TodayItem {
       required this.location,
       required this.teacher});
 
-  @override
   Widget buildContent(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.symmetric(vertical: 4),

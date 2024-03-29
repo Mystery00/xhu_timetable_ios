@@ -81,6 +81,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.2"
+  fk_user_agent:
+    dependency: "direct main"
+    description:
+      name: fk_user_agent
+      sha256: fd6c94e120786985a292d12f61422a581f4e851148d5940af38b819357b8ad0d
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.1.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -107,14 +115,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_user_agentx:
-    dependency: "direct main"
-    description:
-      name: flutter_user_agentx
-      sha256: "35c0357fec055d3e085609a88aeefcac09a345f568ed176c5ad19d3188555563"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.2.4"
   http:
     dependency: transitive
     description:
@@ -187,6 +187,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.11.0"
+  mmkv:
+    dependency: "direct main"
+    description:
+      name: mmkv
+      sha256: a60b3a2433a2be772a1f32a10b75b3a00b125ece1a783f61b6b85b03ffc3304c
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.3.4"
   path:
     dependency: transitive
     description:

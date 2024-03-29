@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import "package:mmkv/mmkv.dart";
 import 'home/home.dart';
+import 'package:fk_user_agent/fk_user_agent.dart';
+import 'package:path_provider/path_provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  String dir = (await getApplicationDocumentsDirectory()).path;
+  await MMKV.initialize(groupDir: "$dir/mmkv");
+  await FkUserAgent.init();
+
   runApp(const MyApp());
 }
 

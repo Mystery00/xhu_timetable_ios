@@ -152,6 +152,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  git_hooks:
+    dependency: "direct dev"
+    description:
+      name: git_hooks
+      sha256: "2d3d6fc1a7bf3430988f0a62ca376b6e26a3ebe187c4935bd6c8b346ba954e60"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.1"
   http:
     dependency: transitive
     description:
@@ -336,6 +344,22 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.8"
+  process_run:
+    dependency: "direct dev"
+    description:
+      name: process_run
+      sha256: "8d9c6198b98fbbfb511edd42e7364e24d85c163e47398919871b952dc86a423e"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.14.2"
+  pub_semver:
+    dependency: transitive
+    description:
+      name: pub_semver
+      sha256: "40d3ab1bbd474c4c2328c91e3a7df8c6dd629b79ece4c4bd04bee496a224fb0c"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.1.4"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -373,6 +397,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.2.0"
+  synchronized:
+    dependency: transitive
+    description:
+      name: synchronized
+      sha256: "539ef412b170d65ecdafd780f924e5be3f60032a1128df156adad6c5b373d558"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.1.0+1"
   term_glyph:
     dependency: transitive
     description:
@@ -477,6 +509,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "6.5.0"
+  yaml:
+    dependency: transitive
+    description:
+      name: yaml
+      sha256: "75769501ea3489fca56601ff33454fe45507ea3bfb014161abc3b43ae25989d5"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.1.2"
 sdks:
   dart: ">=3.3.2 <4.0.0"
   flutter: ">=3.19.0"

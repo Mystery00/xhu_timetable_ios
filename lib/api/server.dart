@@ -21,22 +21,27 @@ Dio getServerClient() {
         uri = uri.substring(0, uri.indexOf("?"));
       }
       var contentType = options.contentType;
-      var body = jsonEncode(options.data);
+      var body = "";
+      if (options.data != null) {
+        body = jsonEncode(options.data);
+      }
       var signTime = DateTime.now().millisecondsSinceEpoch;
 
       var map = <String, String>{};
-      map['method'] = options.method;
-      map['url'] = uri;
       map['body'] = body;
-      map['content-type'] = contentType ?? 'empty';
-      map['content-length'] = options.headers['Content-Length'] ?? '0';
-      map['signTime'] = signTime.toString();
-      map['clientVersionName'] = getVersion();
       map['clientVersionCode'] = getBuildNumber();
+      map['clientVersionName'] = getVersion();
+      map['content-length'] = body.length.toString();
+      map['content-type'] = contentType ?? 'empty';
+      map['method'] = options.method;
+      map['signTime'] = signTime.toString();
+      map['url'] = uri;
 
       var signKey = options.headers['sessionToken'] ?? signTime.toString();
-      var salt = md5.convert(utf8.encode(signKey)).toString();
-      var sign = sha256.convert(utf8.encode("$map:$salt")).toString();
+      var salt = md5.convert(utf8.encode(signKey)).toString().toUpperCase();
+      var v = "$map:$salt";
+      print(v);
+      var sign = sha256.convert(utf8.encode("$map:$salt")).toString().toUpperCase();
 
       options.headers['sign'] = sign;
       options.headers['signTime'] = signTime;

@@ -3,12 +3,12 @@ import 'package:process_run/process_run.dart';
 
 void main(List<String> arguments) {
   Map<Git, UserBackFun> params = {
-    Git.preCommit: preCommit,
+    Git.prePush: prePush,
   };
   GitHooks.call(arguments, params);
 }
 
-Future<bool> preCommit() async {
+Future<bool> prePush() async {
   try {
     final shell = Shell();
     var result = await shell.run('sh scripts/set_version.sh');

@@ -6,7 +6,7 @@ void main(List<String> arguments) {
   // ignore: omit_local_variable_types
   Map<Git, UserBackFun> params = {
     Git.commitMsg: commitMsg,
-    Git.preCommit: preCommit
+    Git.postCommit: postCommit
   };
   GitHooks.call(arguments, params);
 }
@@ -15,7 +15,7 @@ Future<bool> commitMsg() async {
   return true;
 }
 
-Future<bool> preCommit() async {
+Future<bool> postCommit() async {
   try {
     final shell = Shell();
     var result = await shell.run('sh scripts/set_version.sh');

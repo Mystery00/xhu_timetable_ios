@@ -1,7 +1,7 @@
 name: xhu_timetable_ios
 description: "查课查成绩，就用西瓜课表"
 publish_to: 'none'
-version: 1.0.0+18
+version: 1.0.0+19
 
 environment:
   sdk: '>=3.3.2 <4.0.0'
@@ -89,7 +89,7 @@ flutter:
 name: xhu_timetable_ios
 description: "查课查成绩，就用西瓜课表"
 publish_to: 'none'
-version: 1.0.0+17
+version: 1.0.0+18
 
 environment:
   sdk: '>=3.3.2 <4.0.0'

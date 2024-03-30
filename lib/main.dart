@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import "package:mmkv/mmkv.dart";
 import 'package:xhu_timetable_ios/store/app.dart';
 import 'package:xhu_timetable_ios/ui/login.dart';
-import 'package:xhu_timetable_ios/ui/splash.dart';
+import 'package:xhu_timetable_ios/ui/routes.dart';
+import 'package:xhu_timetable_ios/ui/start.dart';
 import 'ui/home/home.dart';
 import 'package:fk_user_agent/fk_user_agent.dart';
 import 'package:path_provider/path_provider.dart';
@@ -32,11 +34,11 @@ class MyApp extends StatelessWidget {
       ),
       //注册路由表
       routes: {
-        "/splash": (context) => const SplashScreen(),
-        "/login": (context) => const LoginRoute(),
-        "/main": (context) => const MainRoute(),
+        routeStart: (context) => const StartScreen(),
+        routeLogin: (context) => const LoginRoute(),
+        routeMain: (context) => const MainRoute(),
       },
-      home: const SplashScreen(),
+      builder: FToastBuilder(),
     );
   }
 }

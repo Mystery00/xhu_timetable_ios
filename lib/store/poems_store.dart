@@ -2,8 +2,13 @@ import "package:mmkv/mmkv.dart";
 import "package:xhu_timetable_ios/model/poems.dart";
 import "package:xhu_timetable_ios/api/poems.dart";
 
+MMKV? _instance;
 Future<MMKV> _getPoemsStore() async {
-  return MMKV("PoemsStore");
+  if (_instance != null) {
+    return _instance!;
+  }
+  _instance = MMKV("PoemsStore");
+  return _instance!;
 }
 
 Future<bool> isDisablePoems() async {

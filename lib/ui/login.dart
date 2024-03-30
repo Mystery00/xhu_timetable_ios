@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xhu_timetable_ios/ui/routes.dart';
 
 class LoginRoute extends StatefulWidget {
   const LoginRoute({super.key});
@@ -99,12 +100,12 @@ class LoginRouteState extends State<LoginRoute> {
       return;
     }
     if (_pwdController.text.isEmpty) {
-      setState(() {
+      setState(() { 
         errorText = "密码不能为空";
       });
       return;
     }
     //doLogin
-    Navigator.pushNamed(context, "/main");
+    Navigator.pushReplacementNamed(context, routeMain);
   }
 }

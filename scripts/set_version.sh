@@ -6,4 +6,3 @@ eval $c
 rm -f pubspec.yaml
 mv temp.yaml pubspec.yaml
 git add pubspec.yaml
-git commit -m "Update version code"

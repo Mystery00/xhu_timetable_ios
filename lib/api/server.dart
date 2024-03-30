@@ -38,10 +38,14 @@ Dio getServerClient() {
       map['url'] = uri;
 
       var signKey = options.headers['sessionToken'] ?? signTime.toString();
-      var salt = md5.convert(utf8.encode(signKey)).toString().toUpperCase();
-      var v = "$map:$salt";
-      print(v);
-      var sign = sha256.convert(utf8.encode("$map:$salt")).toString().toUpperCase();
+      var salt = md5
+          .convert(utf8.encode("$signKey:XhuTimeTable"))
+          .toString()
+          .toUpperCase();
+      var sign = sha256
+          .convert(utf8.encode("${_mapToString(map)}:$salt"))
+          .toString()
+          .toUpperCase();
 
       options.headers['sign'] = sign;
       options.headers['signTime'] = signTime;
@@ -53,4 +57,21 @@ Dio getServerClient() {
     },
   ));
   return dio;
+}
+
+String _mapToString(Map<String, String> m) {
+  var result = StringBuffer();
+  result.write('{');
+  bool first = true;
+  m.forEach((k, v) {
+    if (!first) {
+      result.write(', ');
+    }
+    first = false;
+    result.write(k);
+    result.write('=');
+    result.write(v);
+  });
+  result.write('}');
+  return result.toString();
 }

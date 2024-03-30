@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import "package:mmkv/mmkv.dart";
-import 'home/home.dart';
+import 'package:xhu_timetable_ios/ui/login.dart';
+import 'ui/home/home.dart';
 import 'package:fk_user_agent/fk_user_agent.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -25,7 +26,12 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      //注册路由表
+      routes: {
+        "login": (context) => const LoginRoute(),
+        "main":(context) => const MainRoute(),
+      },
+      home: const LoginRoute(),
     );
   }
 }

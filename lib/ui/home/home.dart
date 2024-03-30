@@ -4,14 +4,14 @@ import 'today.dart';
 import 'week.dart';
 import 'account.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class MainRoute extends StatefulWidget {
+  const MainRoute({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<MainRoute> createState() => _MainRouteState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _MainRouteState extends State<MainRoute> {
   var pages = [
     const TodayHomePage(),
     const WeekHomePage(),

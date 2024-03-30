@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import "package:mmkv/mmkv.dart";
+import 'package:xhu_timetable_ios/store/app.dart';
 import 'package:xhu_timetable_ios/ui/login.dart';
+import 'package:xhu_timetable_ios/ui/splash.dart';
 import 'ui/home/home.dart';
 import 'package:fk_user_agent/fk_user_agent.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   String dir = (await getApplicationDocumentsDirectory()).path;
   await MMKV.initialize(groupDir: "$dir/mmkv");
   await FkUserAgent.init();
+  await initApp();
 
   runApp(const MyApp());
 }
@@ -28,10 +32,11 @@ class MyApp extends StatelessWidget {
       ),
       //注册路由表
       routes: {
-        "login": (context) => const LoginRoute(),
-        "main":(context) => const MainRoute(),
+        "/splash": (context) => const SplashScreen(),
+        "/login": (context) => const LoginRoute(),
+        "/main": (context) => const MainRoute(),
       },
-      home: const LoginRoute(),
+      home: const SplashScreen(),
     );
   }
 }

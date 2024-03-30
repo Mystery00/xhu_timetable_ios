@@ -34,6 +34,7 @@ class LoginRouteState extends State<LoginRoute> {
                     labelText: "学号",
                     hintText: "请输入学号",
                     prefixIcon: Icon(Icons.account_circle),
+                    border: OutlineInputBorder(),
                   ),
                   controller: _unameController,
                   autofocus: true,
@@ -47,6 +48,7 @@ class LoginRouteState extends State<LoginRoute> {
                     labelText: "密码",
                     hintText: "请输入密码",
                     prefixIcon: Icon(Icons.lock),
+                    border: OutlineInputBorder(),
                   ),
                   controller: _pwdController,
                   keyboardType: TextInputType.visiblePassword,
@@ -71,6 +73,10 @@ class LoginRouteState extends State<LoginRoute> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () => {_doLogin()},
+                    style: TextButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    ),
                     child: const Text(
                       "登 录",
                       style: TextStyle(fontSize: 16),

@@ -5,7 +5,7 @@ import 'package:xhu_timetable_ios/store/app.dart';
 import 'package:xhu_timetable_ios/ui/login.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
 import 'package:xhu_timetable_ios/ui/start.dart';
-import 'ui/home/home.dart';
+import 'ui/main/main.dart';
 import 'package:fk_user_agent/fk_user_agent.dart';
 import 'package:path_provider/path_provider.dart';
 

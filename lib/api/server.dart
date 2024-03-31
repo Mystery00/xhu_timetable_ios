@@ -11,6 +11,9 @@ Dio getServerClient() {
     ..baseUrl = 'https://xgkb.api.mystery0.vip'
     ..connectTimeout = const Duration(seconds: 20)
     ..receiveTimeout = const Duration(seconds: 20)
+    ..validateStatus = (status) {
+      return status != null && status >= 200 && status < 300;
+    }
     ..headers = {
       HttpHeaders.userAgentHeader: FkUserAgent.userAgent!,
     };
@@ -55,6 +58,17 @@ Dio getServerClient() {
 
       return handler.next(options);
     },
+    onError: (error, handler) {
+      if (error.response == null) {
+        return handler.next(error);
+      }
+      var resp = error.response!;
+      if (resp.statusCode == 401) {
+        throw ServerNeedLoginException();
+      }
+      var msg = resp.data['message'] ?? "未知错误";
+      throw ServerError(msg);
+    },
   ));
   return dio;
 }
@@ -74,4 +88,17 @@ String _mapToString(Map<String, String> m) {
   });
   result.write('}');
   return result.toString();
+}
+
+class ServerNeedLoginException implements Exception {}
+
+class ServerError {
+  final String message;
+
+  ServerError(this.message);
+
+  @override
+  String toString() {
+    return message;
+  }
 }

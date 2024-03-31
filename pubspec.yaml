@@ -1,7 +1,7 @@
 name: xhu_timetable_ios
 description: "查课查成绩，就用西瓜课表"
 publish_to: 'none'
-version: 1.0.0+24
+version: 1.0.0+25
 
 environment:
   sdk: '>=3.3.2 <4.0.0'
@@ -24,6 +24,9 @@ dependencies:
   mmkv: ^1.3.4
   crypto: ^3.0.3
   fluttertoast: ^8.2.4
+  pointycastle: ^3.7.4
+  basic_utils: ^5.7.0
+  url_launcher: ^6.2.5
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -34,6 +37,7 @@ dev_dependencies:
     sdk: flutter
   git_hooks: ^1.0.0
   process_run: ^0.14.2
+  flutter_launcher_icons: ^0.13.1
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -41,6 +45,10 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^3.0.0
+
+flutter_icons:
+  ios: true
+  image_path: "assets/icons/icon.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -54,8 +62,11 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/login_header.png
-    - assets/icons/ic_watermelon.svg
+    - assets/images/
+    - assets/icons/
+    - assets/icons/main/
+    - assets/icons/profile/
+    - assets/icons/profile/icon/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

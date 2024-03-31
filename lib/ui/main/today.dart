@@ -26,10 +26,11 @@ class _TodayHomePageState extends State<TodayHomePage> {
         ),
         SizedBox(
           width: double.infinity,
-          child: ListView(
-            children: [
-              buildPoems(context),
-            ],
+          child: ListView.builder(
+            itemCount: 1,
+            itemBuilder: (context, index) {
+              return _buildPoems(context);
+            },
           ),
         )
       ],
@@ -37,67 +38,61 @@ class _TodayHomePageState extends State<TodayHomePage> {
   }
 }
 
-Widget buildPoems(BuildContext context) {
+Widget _buildPoems(BuildContext context) {
   return FutureBuilder(
       future: loadPoems(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done &&
             !snapshot.hasError) {
           var data = snapshot.data!;
-          return PoemsItem(poems: data).buildContent(context);
+          return _buildPoemsContent(context, data);
         }
         return const SizedBox();
       });
 }
 
-class PoemsItem {
-  final Poems poems;
-
-  PoemsItem({required this.poems});
-
-  Widget buildContent(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          Container(
-            width: 9,
-            height: 9,
-            margin: const EdgeInsets.all(6),
-            decoration: const BoxDecoration(
-              color: Colors.red,
-              shape: BoxShape.circle,
-            ),
+Widget _buildPoemsContent(BuildContext context, Poems poems) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Row(
+      children: [
+        Container(
+          width: 9,
+          height: 9,
+          margin: const EdgeInsets.all(6),
+          decoration: const BoxDecoration(
+            color: Colors.red,
+            shape: BoxShape.circle,
           ),
-          Expanded(
-            child: Card(
-              margin: const EdgeInsets.only(right: 8),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Center(
-                      child: Text(
-                        poems.content,
-                        style: const TextStyle(fontSize: 12),
-                      ),
+        ),
+        Expanded(
+          child: Card(
+            margin: const EdgeInsets.only(right: 8),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Center(
+                    child: Text(
+                      poems.content,
+                      style: const TextStyle(fontSize: 12),
                     ),
-                    Align(
-                      alignment: AlignmentDirectional.centerEnd,
-                      child: Text(
-                        "—— ${poems.author}《${poems.title}》",
-                        style: const TextStyle(fontSize: 12),
-                      ),
+                  ),
+                  Align(
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: Text(
+                      "—— ${poems.author}《${poems.title}》",
+                      style: const TextStyle(fontSize: 12),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          )
-        ],
-      ),
-    );
-  }
+          ),
+        )
+      ],
+    ),
+  );
 }
 
 class CourseItem {

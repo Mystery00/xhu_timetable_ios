@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:mmkv/mmkv.dart';
-import 'package:xhu_timetable_ios/model/user_info.dart';
+import 'package:xhu_timetable_ios/model/user.dart';
 import 'package:xhu_timetable_ios/store/config_store.dart';
 
 MMKV? _instance;
@@ -24,8 +24,7 @@ const _mainUserKey = "mainUser";
 const _loggedUserListKey = "loggedUserList";
 
 Future<bool> isLogin() async {
-  var store = await _getUserStore();
-  return store.decodeBool("isLogin", defaultValue: false);
+  return await getMainUser() != null;
 }
 
 Future<void> setMainUser(User user) async => setMainUserById(user.studentId);
@@ -51,9 +50,16 @@ Future<String> mainUserId() async {
 Future<User?> getMainUser() async {
   var id = await getMainUserId();
   if (id == null) {
-    return null;
+    //主用户不存在，返回第一个登录的用户
+    var list = await loggedUserList();
+    if (list.isEmpty) {
+      return null;
+    }
+    var m = list.first;
+    await setMainUser(m);
+    return m;
   }
-  return getUserByStudentId(id);
+  return await getUserByStudentId(id);
 }
 
 Future<User> mainUser() async {
@@ -87,14 +93,14 @@ Future<List<User>> loggedUserList() async {
   if (s == null || s.isEmpty || s == "[]") {
     return [];
   }
-  List<String> userMapKeyList = jsonDecode(s);
+  List<String> userMapKeyList = List<String>.from(jsonDecode(s));
   return Future.wait(userMapKeyList.map((e) => userByStudentId(e)));
 }
 
 Future<void> login(User user) async {
   var store = await _getUserStore();
-  var userMapKey = user._userMapKey();
-  var json = jsonEncode(user);
+  var userMapKey = _userMapKey(user.studentId);
+  var json = jsonEncode(user.toJson());
   store.encodeString(userMapKey, json);
   List<String> userMapKeyList = [];
   var s = store.decodeString(_loggedUserListKey);
@@ -133,36 +139,9 @@ Future<bool> logout(String studentId) async {
 
 Future<void> updateUser(User user) async {
   var store = await _getUserStore();
-  var userMapKey = user._userMapKey();
+  var userMapKey = _userMapKey(user.studentId);
   var json = jsonEncode(user);
   store.encodeString(userMapKey, json);
-}
-
-class User {
-  final String studentId;
-  final String password;
-  final String token;
-  final UserInfo userInfo;
-  final String? profileImage;
-
-  User(
-      {required this.studentId,
-      required this.password,
-      required this.token,
-      required this.userInfo,
-      required this.profileImage});
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      studentId: json['studentId'],
-      password: json['password'],
-      token: json['token'],
-      userInfo: UserInfo.fromJson(json['userInfo']),
-      profileImage: json['profileImage'],
-    );
-  }
-
-  String _userMapKey() => "user_$studentId";
 }
 
 String _userMapKey(String studentId) => "user_$studentId";

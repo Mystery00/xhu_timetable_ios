@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:xhu_timetable_ios/repository/login.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
+import 'package:xhu_timetable_ios/ui/toast.dart';
 
 class LoginRoute extends StatefulWidget {
   const LoginRoute({super.key});
@@ -15,8 +18,14 @@ class LoginRouteState extends State<LoginRoute> {
   String errorText = "";
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Column(
         children: [
           Image.asset(
@@ -40,6 +49,7 @@ class LoginRouteState extends State<LoginRoute> {
                   controller: _unameController,
                   autofocus: true,
                   keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(
                   height: 48,
@@ -54,6 +64,7 @@ class LoginRouteState extends State<LoginRoute> {
                   controller: _pwdController,
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: true,
+                  textInputAction: TextInputAction.done,
                 ),
                 if (loginLabel.isNotEmpty)
                   Padding(
@@ -92,7 +103,7 @@ class LoginRouteState extends State<LoginRoute> {
     );
   }
 
-  void _doLogin() {
+  Future<void> _doLogin() async {
     if (_unameController.text.isEmpty) {
       setState(() {
         errorText = "学号不能为空";
@@ -100,12 +111,17 @@ class LoginRouteState extends State<LoginRoute> {
       return;
     }
     if (_pwdController.text.isEmpty) {
-      setState(() { 
+      setState(() {
         errorText = "密码不能为空";
       });
       return;
     }
-    //doLogin
-    Navigator.pushReplacementNamed(context, routeMain);
+    try {
+      await doLogin(_unameController.text, _pwdController.text);
+      showToast("登录成功，欢迎使用西瓜课表");
+      Navigator.pushReplacementNamed(context, routeMain);
+    } catch (e) {
+      showToast(e.toString());
+    }
   }
 }

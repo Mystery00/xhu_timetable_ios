@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'today.dart';
 import 'week.dart';
-import 'account.dart';
+import 'profile.dart';
 
 class MainRoute extends StatefulWidget {
   const MainRoute({super.key});
@@ -34,17 +35,29 @@ class _MainRouteState extends State<MainRoute> {
             currentIndex = index;
           });
         },
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.today),
+            icon: SvgPicture.asset(
+              "assets/icons/main/today.svg",
+              height: 24,
+              width: 24,
+            ),
             label: "今日",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
+            icon: SvgPicture.asset(
+              "assets/icons/main/week.svg",
+              height: 24,
+              width: 24,
+            ),
             label: "本周",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
+            icon: SvgPicture.asset(
+              "assets/icons/main/profile.svg",
+              height: 24,
+              width: 24,
+            ),
             label: "我的",
           ),
         ],

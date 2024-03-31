@@ -21,9 +21,9 @@ class UserInfo {
   factory UserInfo.fromJson(Map<String, dynamic> json) {
     var genderEnum = json['gender'];
     var gender = "未知";
-    if (genderEnum == "MALE") {
+    if (genderEnum == "MALE" || genderEnum == "男") {
       gender = "男";
-    } else if (genderEnum == "FEMALE") {
+    } else if (genderEnum == "FEMALE" || genderEnum == "女") {
       gender = "女";
     }
     return UserInfo(
@@ -36,5 +36,18 @@ class UserInfo {
       className: json['className'],
       majorDirection: json['majorDirection'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'studentNo': studentNo,
+      'name': name,
+      'gender': gender,
+      'xhuGrade': xhuGrade,
+      'college': college,
+      'majorName': majorName,
+      'className': className,
+      'majorDirection': majorDirection,
+    };
   }
 }

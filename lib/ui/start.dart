@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xhu_timetable_ios/repository/start.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
 import 'package:xhu_timetable_ios/ui/toast.dart';
@@ -12,41 +11,29 @@ class StartScreen extends StatefulWidget {
 }
 
 class StartScreenState extends State<StartScreen> {
-  late FToast fToast;
-
   @override
   void initState() {
     super.initState();
-    fToast = FToast();
-    fToast.init(context);
+    _doInint();
+  }
+
+  Future<void> _doInint() async {
+    var readyState = await init();
+    if (readyState.errorMessage != null) {
+      showToast(readyState.errorMessage!);
+    }
+    if (readyState.isLogin) {
+      Navigator.pushReplacementNamed(context, routeMain);
+    } else {
+      Navigator.pushReplacementNamed(context, routeLogin);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
         body: Center(
-      child: FutureBuilder(
-        future: init(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return Text("data error, ${snapshot.error}");
-            }
-            var state = snapshot.data as ReadyState;
-            if (state.errorMessage != null) {
-              showToast(fToast, state.errorMessage!);
-            }
-            if (state.isLogin) {
-              Navigator.pushReplacementNamed(context, routeMain);
-            } else {
-              Navigator.pushReplacementNamed(context, routeLogin);
-            }
-            return Text(snapshot.data.toString());
-          } else {
-            return const Text("Splash Screen");
-          }
-        },
-      ),
+      child: Text("Splash Screen"),
     ));
   }
 }

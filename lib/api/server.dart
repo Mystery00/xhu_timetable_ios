@@ -52,7 +52,7 @@ Dio getServerClient() {
 
       options.headers['sign'] = sign;
       options.headers['signTime'] = signTime;
-      options.headers['deviceId'] = "ios-test";
+      options.headers['deviceId'] = getDeviceId();
       options.headers['clientVersionName'] = getVersion();
       options.headers['clientVersionCode'] = getBuildNumber();
 

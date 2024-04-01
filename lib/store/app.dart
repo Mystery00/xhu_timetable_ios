@@ -1,9 +1,11 @@
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 String _appName = "";
 String _packageName = "";
 String _version = "";
 String _buildNumber = "";
+String _deviceId = "";
 
 Future<void> initApp() async {
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -11,6 +13,9 @@ Future<void> initApp() async {
   _packageName = packageInfo.packageName;
   _version = packageInfo.version;
   _buildNumber = packageInfo.buildNumber;
+  var deviceInfo = DeviceInfoPlugin();
+  var iosInfo = await deviceInfo.iosInfo;
+  _deviceId = "ios-${iosInfo.identifierForVendor ?? "unknown"}";
 }
 
 String getAppName() {
@@ -27,4 +32,8 @@ String getVersion() {
 
 String getBuildNumber() {
   return _buildNumber;
+}
+
+String getDeviceId() {
+  return _deviceId;
 }

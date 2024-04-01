@@ -106,7 +106,7 @@ Future<void> login(User user) async {
   List<String> userMapKeyList = [];
   var s = store.decodeString(_loggedUserListKey);
   if (s != null && s.isNotEmpty && s != "[]") {
-    userMapKeyList = jsonDecode(s);
+    userMapKeyList = List<String>.from(jsonDecode(s));
   }
   if (!userMapKeyList.contains(user.studentId)) {
     userMapKeyList.add(user.studentId);
@@ -122,7 +122,7 @@ Future<bool> logout(String studentId) async {
   List<String> userMapKeyList = [];
   var s = store.decodeString(_loggedUserListKey);
   if (s != null && s.isNotEmpty && s != "[]") {
-    userMapKeyList = jsonDecode(s);
+    userMapKeyList = List<String>.from(jsonDecode(s));
   }
   userMapKeyList.remove(studentId);
   store.encodeString(_loggedUserListKey, jsonEncode(userMapKeyList));

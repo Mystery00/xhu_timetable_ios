@@ -11,8 +11,8 @@ Future<ClientInitResponse> apiClientInit() async {
   var map = <String, dynamic>{};
   map['versionSys'] = "iOS ${iosInfo.systemVersion}";
   map['deviceFactory'] = iosInfo.model;
-  map['deviceModel'] = iosInfo.name;
-  map['deviceRom'] = iosInfo.systemName;
+  map['deviceModel'] = iosInfo.utsname.machine;
+  map['deviceRom'] = iosInfo.isPhysicalDevice ? "Physical" : "Simulator";
   map['checkBetaVersion'] = false;
   map['alwaysShowVersion'] = false;
 

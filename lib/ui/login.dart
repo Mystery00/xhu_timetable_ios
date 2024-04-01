@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xhu_timetable_ios/repository/login.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
 import 'package:xhu_timetable_ios/ui/toast.dart';
@@ -84,7 +83,11 @@ class LoginRouteState extends State<LoginRoute> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () => {_doLogin()},
+                    onPressed: () => {
+                      _doLogin().then((value) => value
+                          ? Navigator.pushReplacementNamed(context, routeMain)
+                          : null)
+                    },
                     style: TextButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -103,25 +106,26 @@ class LoginRouteState extends State<LoginRoute> {
     );
   }
 
-  Future<void> _doLogin() async {
+  Future<bool> _doLogin() async {
     if (_unameController.text.isEmpty) {
       setState(() {
         errorText = "学号不能为空";
       });
-      return;
+      return false;
     }
     if (_pwdController.text.isEmpty) {
       setState(() {
         errorText = "密码不能为空";
       });
-      return;
+      return false;
     }
     try {
       await doLogin(_unameController.text, _pwdController.text);
       showToast("登录成功，欢迎使用西瓜课表");
-      Navigator.pushReplacementNamed(context, routeMain);
+      return true;
     } catch (e) {
       showToast(e.toString());
     }
+    return false;
   }
 }

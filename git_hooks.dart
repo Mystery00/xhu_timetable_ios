@@ -12,6 +12,7 @@ Future<bool> preCommit() async {
   try {
     final shell = Shell();
     var result = await shell.run('sh scripts/set_version.sh');
+    // ignore: avoid_print
     print('$result');
   } catch (e) {
     return false;

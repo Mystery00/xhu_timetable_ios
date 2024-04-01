@@ -14,18 +14,18 @@ class StartScreenState extends State<StartScreen> {
   @override
   void initState() {
     super.initState();
-    _doInint();
+    _doInint().then((value) => Navigator.pushReplacementNamed(context, value));
   }
 
-  Future<void> _doInint() async {
+  Future<String> _doInint() async {
     var readyState = await init();
     if (readyState.errorMessage != null) {
       showToast(readyState.errorMessage!);
     }
     if (readyState.isLogin) {
-      Navigator.pushReplacementNamed(context, routeMain);
+      return routeMain;
     } else {
-      Navigator.pushReplacementNamed(context, routeLogin);
+      return routeLogin;
     }
   }
 

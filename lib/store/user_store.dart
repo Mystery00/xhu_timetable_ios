@@ -15,6 +15,7 @@ Future<MMKV> _getUserStore() async {
     secret = Random(DateTime.now().millisecondsSinceEpoch)
         .nextInt(100000000)
         .toString();
+    await setUserStoreSecret(secret);
   }
   _instance = MMKV("UserStore", cryptKey: secret);
   return _instance!;

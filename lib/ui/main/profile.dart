@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xhu_timetable_ios/model/menu.dart';
-import 'package:xhu_timetable_ios/model/user.dart';
 import 'package:xhu_timetable_ios/model/user_info.dart';
 import 'package:xhu_timetable_ios/repository/profile.dart';
 import 'package:xhu_timetable_ios/store/menu_store.dart';
@@ -40,7 +39,7 @@ class _AccountInfo extends StatefulWidget {
 
 class _AccountInfoState extends State<_AccountInfo> {
   var expand = true;
-  UserInfo? userInfo = null;
+  UserInfo? userInfo;
 
   @override
   void initState() {

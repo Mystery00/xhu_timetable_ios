@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:logger/logger.dart';
 import 'package:mmkv/mmkv.dart';
 import 'package:xhu_timetable_ios/api/server.dart';
 import 'package:xhu_timetable_ios/model/user.dart';
@@ -101,6 +102,7 @@ Future<List<User>> loggedUserList() async {
 }
 
 Future<void> login(User user) async {
+  Logger().i("login: ${user.studentId}, name: ${user.userInfo.name}");
   var store = await _getUserStore();
   var userMapKey = _userMapKey(user.studentId);
   var json = jsonEncode(user.toJson());
@@ -117,6 +119,7 @@ Future<void> login(User user) async {
 }
 
 Future<bool> logout(String studentId) async {
+  Logger().i("logout: $studentId");
   var store = await _getUserStore();
   var mainUserId = await getMainUserId();
   var userMapKey = _userMapKey(studentId);

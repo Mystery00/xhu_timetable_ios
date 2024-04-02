@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:fk_user_agent/fk_user_agent.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 Dio getPoemsClient() {
   final dio = Dio();
@@ -11,5 +12,12 @@ Dio getPoemsClient() {
     ..headers = {
       HttpHeaders.userAgentHeader: FkUserAgent.userAgent!,
     };
+  dio.interceptors.add(PrettyDioLogger(
+    requestHeader: false,
+    requestBody: true,
+    responseHeader: false,
+    error: true,
+    compact: true,
+  ));
   return dio;
 }

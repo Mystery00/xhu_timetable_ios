@@ -75,5 +75,7 @@ Future<String> _getTokenOrRequest() async {
   if (response.data['status'] != "success") {
     throw Exception("Get token failed, status: ${response.data['status']}");
   }
-  return response.data['data'];
+  token = response.data['data'];
+  await setToken(token);
+  return token;
 }

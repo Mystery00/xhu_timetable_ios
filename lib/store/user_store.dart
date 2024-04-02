@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:mmkv/mmkv.dart';
+import 'package:xhu_timetable_ios/api/server.dart';
 import 'package:xhu_timetable_ios/model/user.dart';
+import 'package:xhu_timetable_ios/repository/login.dart';
 import 'package:xhu_timetable_ios/store/config_store.dart';
 
 MMKV? _instance;
@@ -146,3 +148,25 @@ Future<void> updateUser(User user) async {
 }
 
 String _userMapKey(String studentId) => "user_$studentId";
+
+extension UserExt on User {
+  Future<T> withAutoLoginOnce<T>(
+      Future<T> Function(String sessionToken) action) async {
+    try {
+      return await action(token);
+    } catch (e) {
+      if (e is! ServerNeedLoginException) {
+        rethrow;
+      }
+      var newUser = await userByStudentId(studentId);
+      String sessionToken;
+      if (token != newUser.token) {
+        sessionToken = newUser.token;
+      } else {
+        var u = await doLogin(studentId, password);
+        sessionToken = u.token;
+      }
+      return await action(sessionToken);
+    }
+  }
+}

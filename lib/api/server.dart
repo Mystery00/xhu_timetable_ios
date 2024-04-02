@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:crypto/crypto.dart';
 import 'package:fk_user_agent/fk_user_agent.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:xhu_timetable_ios/store/app.dart';
 
 Dio getServerClient() {
@@ -17,6 +18,13 @@ Dio getServerClient() {
     ..headers = {
       HttpHeaders.userAgentHeader: FkUserAgent.userAgent!,
     };
+  dio.interceptors.add(PrettyDioLogger(
+    requestHeader: false,
+    requestBody: true,
+    responseHeader: false,
+    error: true,
+    compact: true,
+  ));
   dio.interceptors.add(InterceptorsWrapper(
     onRequest: (options, handler) {
       var uri = options.path;

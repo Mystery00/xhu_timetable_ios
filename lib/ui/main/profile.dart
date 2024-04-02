@@ -1,3 +1,4 @@
+import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -5,7 +6,8 @@ import 'package:xhu_timetable_ios/model/menu.dart';
 import 'package:xhu_timetable_ios/model/user_info.dart';
 import 'package:xhu_timetable_ios/repository/profile.dart';
 import 'package:xhu_timetable_ios/store/menu_store.dart';
-import 'package:xhu_timetable_ios/ui/url.dart';
+import 'package:xhu_timetable_ios/ui/icons.dart';
+import 'package:xhu_timetable_ios/url.dart';
 
 class AccountHomePage extends StatefulWidget {
   const AccountHomePage({super.key});
@@ -17,14 +19,10 @@ class AccountHomePage extends StatefulWidget {
 class _AccountHomePageState extends State<AccountHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       children: [
-        const _AccountInfo(),
-        Divider(
-          thickness: 6,
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.36),
-        ),
-        const Expanded(child: _MenuList()),
+        _AccountInfo(),
+        Expanded(child: _MenuList()),
       ],
     );
   }
@@ -53,99 +51,46 @@ class _AccountInfoState extends State<_AccountInfo> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> userMoreInfoList = [];
     if (userInfo == null) {
-      return _build("账号未登录", "", null);
+      return _build("账号未登录", userMoreInfoList);
     }
+    userMoreInfoList.add(userInfo!.studentNo);
+    userMoreInfoList.add("${userInfo!.xhuGrade}级 ${userInfo!.className}");
+    userMoreInfoList.add(userInfo!.college);
     return _build(
-      "${userInfo!.name}(${userInfo!.studentNo})",
-      userInfo!.className,
-      userInfo,
+      userInfo!.name,
+      userMoreInfoList,
     );
   }
 
-  Widget _build(String title, String subtitle, UserInfo? userInfo) {
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 90,
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Image.network(
-                      "https://github.com/Mystery00/XhuTimetable/raw/master/app/src/main/res/drawable/img_boy1.webp",
-                      width: 60,
-                      height: 60,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: const TextStyle(fontSize: 17),
-                      ),
-                      if (subtitle.isNotEmpty) Text(subtitle),
-                    ],
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(expand ? Icons.expand_more : Icons.expand_less),
-                  onPressed: () {
-                    if (userInfo == null) {
-                      setState(() {
-                        expand = false;
-                      });
-                    } else {
-                      setState(() {
-                        expand = !expand;
-                      });
-                    }
-                  },
-                ),
-              ],
-            ),
+  Widget _build(String title, List<String> userMoreInfoList) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: BigUserCard(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        userName: title,
+        userMoreInfo: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: userMoreInfoList
+                .map((e) => Text(e,
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary)))
+                .toList()),
+        userProfilePic: const AssetImage("assets/icons/profile/img_boy4.webp"),
+        cardActionWidget: SettingsItem(
+          icons: Icons.edit,
+          iconStyle: IconStyle(
+            withBackground: true,
+            borderRadius: 50,
+            iconsColor: Colors.white,
+            backgroundColor: Colors.yellow[900],
           ),
-          if (expand && userInfo != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 48),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "性别：${userInfo.gender}",
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                  Text(
-                    "年级：${userInfo.xhuGrade}",
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                  if (userInfo.majorName.isNotEmpty)
-                    Text(
-                      "专业：${userInfo.majorName}",
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  if (userInfo.college.isNotEmpty)
-                    Text(
-                      "学院：${userInfo.college}",
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  if (userInfo.majorDirection.isNotEmpty)
-                    Text(
-                      "方向：${userInfo.majorDirection}",
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                ],
-              ),
-            )
-        ],
+          title: "编辑账号",
+          onTap: () {
+            print("ok");
+          },
+        ),
       ),
     );
   }
@@ -174,109 +119,50 @@ class _MenuListState extends State<_MenuList> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
+    return ListView.builder(
       itemCount: _list.length,
       itemBuilder: (context, index) {
-        return _buildMenuList(_list[index]);
+        var list = _list[index];
+        return SettingsGroup(
+          iconItemSize: 24,
+            items: list
+                .map(
+                  (menu) => SettingsItem(
+                    icons: _iconDataByMenuKey(menu.key),
+                    iconStyle: IconStyle(
+                      withBackground: true,
+                    ),
+                    title: menu.title,
+                    onTap: _onTapByMenuKey(menu),
+                  ),
+                )
+                .toList());
       },
-      separatorBuilder: (context, index) {
-        return Divider(
-          thickness: 6,
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.36),
-        );
-      },
     );
   }
 
-  Widget _buildMenuList(List<Menu> list) {
-    var result = <Widget>[];
-    for (var i = 0; i < list.length; i++) {
-      var menu = list[i];
-      result.add(_MenuItem(
-        hasNext: i < list.length - 1,
-        menu: menu,
-      ));
-    }
-    return Column(
-      children: result,
-    );
-  }
-}
-
-class _MenuItem extends StatelessWidget {
-  final Menu menu;
-  final bool hasNext;
-
-  const _MenuItem({required this.menu, required this.hasNext});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        InkWell(
-          onTap: _onTapByMenuKey(menu),
-          child: Container(
-            height: 48,
-            alignment: Alignment.center,
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: SvgPicture.asset(
-                    _assetPathByMenuKey(menu.key),
-                    height: 24,
-                    width: 24,
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Text(menu.title),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Icon(
-                    Icons.arrow_forward_ios,
-                    size: 12,
-                    color: Theme.of(context).colorScheme.outline,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        if (hasNext)
-          Divider(
-            height: 1,
-            color: Theme.of(context).colorScheme.outline.withOpacity(0.12),
-          ),
-      ],
-    );
-  }
-
-  String _assetPathByMenuKey(String menuKey) {
+  IconData _iconDataByMenuKey(String menuKey) {
     switch (menuKey) {
       case "query_exam":
-        return "assets/icons/profile/icon/exam.svg";
+        return IconsProfile.exam;
       case "query_score":
-        return "assets/icons/profile/icon/score.svg";
+        return IconsProfile.score;
       case "query_free_room":
-        return "assets/icons/profile/icon/classroom.svg";
+        return IconsProfile.classroom;
       case "account_manage":
-        return "assets/icons/profile/icon/account_settings.svg";
+        return IconsProfile.accountSettings;
       case "settings":
-        return "assets/icons/profile/icon/settings.svg";
+        return IconsProfile.settings;
       case "notice":
-        return "assets/icons/profile/icon/notice.svg";
+        return IconsProfile.notice;
       case "share":
-        return "assets/icons/profile/icon/share.svg";
+        return IconsProfile.share;
       case "join_group":
-        return "assets/icons/profile/icon/join_group.svg";
+        return IconsProfile.joinGroup;
       case "server_detect":
-        return "assets/icons/profile/icon/server_detect.svg";
+        return IconsProfile.serverDetect;
       default:
-        return "assets/icons/profile/icon/unknown.svg";
+        return IconsProfile.unknown;
     }
   }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xhu_timetable_ios/repository/login.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
-import 'package:xhu_timetable_ios/ui/toast.dart';
+import 'package:xhu_timetable_ios/toast.dart';
 
 class LoginRoute extends StatefulWidget {
   const LoginRoute({super.key});

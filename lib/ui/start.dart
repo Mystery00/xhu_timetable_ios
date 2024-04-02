@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xhu_timetable_ios/repository/start.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
-import 'package:xhu_timetable_ios/ui/toast.dart';
+import 'package:xhu_timetable_ios/toast.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});

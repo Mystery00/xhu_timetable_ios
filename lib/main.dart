@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import "package:mmkv/mmkv.dart";
 import 'package:xhu_timetable_ios/store/app.dart';
+import 'package:xhu_timetable_ios/ui/account_settings.dart';
 import 'package:xhu_timetable_ios/ui/login.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
 import 'package:xhu_timetable_ios/ui/start.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         routeStart: (context) => const StartScreen(),
         routeLogin: (context) => const LoginRoute(),
         routeMain: (context) => const MainRoute(),
+        routeAccountSettings: (context) => const AccountSettingsRoute(),
       },
       builder: FToastBuilder(),
     );

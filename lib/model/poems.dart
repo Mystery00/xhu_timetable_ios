@@ -15,6 +15,7 @@ class Poems {
       required this.translate});
 
   factory Poems.fromJson(Map<String, dynamic> json) {
+    var translate = json['data']['origin']['translate'];
     return Poems(
       content: json['data']['content'],
       title: json['data']['origin']['title'],
@@ -23,9 +24,9 @@ class Poems {
       fullContent: (json['data']['origin']['content'] as List<dynamic>)
           .map((e) => e.toString())
           .toList(),
-      translate: (json['data']['origin']['translate'] as List<dynamic>)
-          .map((e) => e.toString())
-          .toList(),
+      translate: translate == null
+          ? null
+          : (translate as List<dynamic>).map((e) => e.toString()).toList(),
     );
   }
 }

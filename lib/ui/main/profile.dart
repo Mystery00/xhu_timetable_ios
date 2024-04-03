@@ -1,12 +1,12 @@
 import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xhu_timetable_ios/model/menu.dart';
 import 'package:xhu_timetable_ios/model/user_info.dart';
 import 'package:xhu_timetable_ios/repository/profile.dart';
 import 'package:xhu_timetable_ios/store/menu_store.dart';
 import 'package:xhu_timetable_ios/ui/icons.dart';
+import 'package:xhu_timetable_ios/ui/routes.dart';
 import 'package:xhu_timetable_ios/url.dart';
 
 class AccountHomePage extends StatefulWidget {
@@ -88,7 +88,7 @@ class _AccountInfoState extends State<_AccountInfo> {
           ),
           title: "编辑账号",
           onTap: () {
-            print("ok");
+            Navigator.pushNamed(context, routeAccountSettings);
           },
         ),
       ),

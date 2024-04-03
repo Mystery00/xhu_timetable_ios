@@ -112,22 +112,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.6"
-  cupertino_range_slider_improved:
-    dependency: transitive
-    description:
-      name: cupertino_range_slider_improved
-      sha256: "1843b97902a9add4532d650e22bbe0eb3a2faffbccb059f375ec3611aec27683"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.0.1"
-  cupertino_setting_control:
-    dependency: "direct main"
-    description:
-      name: cupertino_setting_control
-      sha256: "956493a0ebfa4f80b7470f58ca64dd34a8e785fa79051d5c841d82e7d09bff69"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.1.0"
   device_info_plus:
     dependency: "direct main"
     description:

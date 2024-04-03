@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:logger/logger.dart';
 import 'package:xhu_timetable_ios/model/poems.dart';
 import 'package:xhu_timetable_ios/store/poems_store.dart';
 

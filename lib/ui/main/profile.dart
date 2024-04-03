@@ -5,8 +5,8 @@ import 'package:xhu_timetable_ios/model/menu.dart';
 import 'package:xhu_timetable_ios/model/user_info.dart';
 import 'package:xhu_timetable_ios/repository/profile.dart';
 import 'package:xhu_timetable_ios/store/menu_store.dart';
-import 'package:xhu_timetable_ios/ui/theme/colors.dart';
 import 'package:xhu_timetable_ios/ui/theme/icons.dart';
+import 'package:xhu_timetable_ios/ui/theme/colors.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
 import 'package:xhu_timetable_ios/ui/theme/profile.dart';
 import 'package:xhu_timetable_ios/url.dart';
@@ -130,28 +130,25 @@ class _MenuListState extends State<_MenuList> {
       itemCount: _list.length,
       itemBuilder: (context, index) {
         var list = _list[index];
-        return Container(
+        return SettingsGroup(
           margin: const EdgeInsets.all(8),
-          child: SettingsGroup(
-              margin: EdgeInsets.zero,
-              iconItemSize: 18,
-              dividerColor:
-                  Theme.of(context).colorScheme.outline.withOpacity(0.24),
-              items: list
-                  .map(
-                    (menu) => SettingsItem(
-                      icons: _iconDataByMenuKey(menu.key),
-                      iconStyle: IconStyle(
-                        withBackground: true,
-                        backgroundColor: ProfileColor.safeGet(menu.sort),
-                      ),
-                      titleStyle: const TextStyle(
-                          fontSize: 13, fontWeight: FontWeight.bold),
-                      title: menu.title,
-                      onTap: _onTapByMenuKey(menu),
-                    ),
-                  )
-                  .toList()),
+          iconItemSize: 18,
+          dividerColor: Theme.of(context).colorScheme.outline.withOpacity(0.24),
+          items: list
+              .map(
+                (menu) => SettingsItem(
+                  icons: _iconDataByMenuKey(menu.key),
+                  iconStyle: IconStyle(
+                    withBackground: true,
+                    backgroundColor: ProfileColor.safeGet(menu.sort),
+                  ),
+                  titleStyle: const TextStyle(
+                      fontSize: 13, fontWeight: FontWeight.bold),
+                  title: menu.title,
+                  onTap: _onTapByMenuKey(menu),
+                ),
+              )
+              .toList(),
         );
       },
     );

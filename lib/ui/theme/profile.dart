@@ -15,7 +15,7 @@ const _profileImageList = [
 ];
 
 ImageProvider defaultProfileImageByStudentId(String studentId) {
-    var md5Index = md5.convert(utf8.encode(studentId)).toString().substring(0, 2);
-  int index = int.parse(md5Index) % _profileImageList.length;
+  var md5Index = md5.convert(utf8.encode(studentId)).toString().substring(0, 2);
+  int index = int.parse(md5Index, radix: 16) % _profileImageList.length;
   return _profileImageList[index];
 }

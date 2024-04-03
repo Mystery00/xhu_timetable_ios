@@ -41,7 +41,6 @@ class _AccountInfo extends StatefulWidget {
 }
 
 class _AccountInfoState extends State<_AccountInfo> {
-  var expand = true;
   UserInfo? userInfo;
 
   @override
@@ -58,7 +57,7 @@ class _AccountInfoState extends State<_AccountInfo> {
   Widget build(BuildContext context) {
     List<String> userMoreInfoList = [];
     if (userInfo == null) {
-      return _build("账号未登录", "", userMoreInfoList);
+      return _build("账号未登录", "1", userMoreInfoList);
     }
     userMoreInfoList.add(userInfo!.studentNo);
     userMoreInfoList.add("${userInfo!.xhuGrade}级 ${userInfo!.className}");

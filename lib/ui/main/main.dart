@@ -1,5 +1,8 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:xhu_timetable_ios/ui/theme/icons.dart';
 
 import 'today.dart';
 import 'week.dart';
@@ -35,29 +38,17 @@ class _MainRouteState extends State<MainRoute> {
             currentIndex = index;
           });
         },
-        items: [
+        items: const [
           BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              "assets/icons/main/today.svg",
-              height: 24,
-              width: 24,
-            ),
+            icon: Icon(IconsProfile.navigationToday),
             label: "今日",
           ),
           BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              "assets/icons/main/week.svg",
-              height: 24,
-              width: 24,
-            ),
+            icon: Icon(IconsProfile.navigationWeek),
             label: "本周",
           ),
           BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              "assets/icons/main/profile.svg",
-              height: 24,
-              width: 24,
-            ),
+            icon: Icon(IconsProfile.navigationProfile),
             label: "我的",
           ),
         ],

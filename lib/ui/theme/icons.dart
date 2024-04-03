@@ -3,6 +3,13 @@ import 'package:flutter/widgets.dart';
 class IconsProfile {
   static const _fontFamily = 'IconFont';
 
+  static const IconData navigationToday =
+      IconData(0xe615, fontFamily: _fontFamily);
+  static const IconData navigationWeek =
+      IconData(0xe621, fontFamily: _fontFamily);
+  static const IconData navigationProfile =
+      IconData(0xe62e, fontFamily: _fontFamily);
+
   static const IconData accountSettings =
       IconData(0xe60f, fontFamily: _fontFamily);
   static const IconData classroom = IconData(0xe623, fontFamily: _fontFamily);

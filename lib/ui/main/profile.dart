@@ -5,8 +5,10 @@ import 'package:xhu_timetable_ios/model/menu.dart';
 import 'package:xhu_timetable_ios/model/user_info.dart';
 import 'package:xhu_timetable_ios/repository/profile.dart';
 import 'package:xhu_timetable_ios/store/menu_store.dart';
-import 'package:xhu_timetable_ios/ui/icons.dart';
+import 'package:xhu_timetable_ios/ui/theme/colors.dart';
+import 'package:xhu_timetable_ios/ui/theme/icons.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
+import 'package:xhu_timetable_ios/ui/theme/profile.dart';
 import 'package:xhu_timetable_ios/url.dart';
 
 class AccountHomePage extends StatefulWidget {
@@ -19,11 +21,14 @@ class AccountHomePage extends StatefulWidget {
 class _AccountHomePageState extends State<AccountHomePage> {
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      children: [
-        _AccountInfo(),
-        Expanded(child: _MenuList()),
-      ],
+    return Container(
+      color: Theme.of(context).colorScheme.surfaceVariant,
+      child: const Column(
+        children: [
+          _AccountInfo(),
+          Expanded(child: _MenuList()),
+        ],
+      ),
     );
   }
 }
@@ -53,23 +58,25 @@ class _AccountInfoState extends State<_AccountInfo> {
   Widget build(BuildContext context) {
     List<String> userMoreInfoList = [];
     if (userInfo == null) {
-      return _build("账号未登录", userMoreInfoList);
+      return _build("账号未登录", "", userMoreInfoList);
     }
     userMoreInfoList.add(userInfo!.studentNo);
     userMoreInfoList.add("${userInfo!.xhuGrade}级 ${userInfo!.className}");
     userMoreInfoList.add(userInfo!.college);
     return _build(
       userInfo!.name,
+      userInfo!.studentNo,
       userMoreInfoList,
     );
   }
 
-  Widget _build(String title, List<String> userMoreInfoList) {
+  Widget _build(String title, String studentId, List<String> userMoreInfoList) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(8),
       child: BigUserCard(
         backgroundColor: Theme.of(context).colorScheme.primary,
         userName: title,
+        userNameColor: Theme.of(context).colorScheme.onPrimary,
         userMoreInfo: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: userMoreInfoList
@@ -77,14 +84,14 @@ class _AccountInfoState extends State<_AccountInfo> {
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.onPrimary)))
                 .toList()),
-        userProfilePic: const AssetImage("assets/icons/profile/img_boy4.webp"),
+        userProfilePic: defaultProfileImageByStudentId(studentId),
         cardActionWidget: SettingsItem(
           icons: Icons.edit,
           iconStyle: IconStyle(
             withBackground: true,
             borderRadius: 50,
             iconsColor: Colors.white,
-            backgroundColor: Colors.yellow[900],
+            backgroundColor: ProfileColor.hash(title),
           ),
           title: "编辑账号",
           onTap: () {
@@ -123,20 +130,29 @@ class _MenuListState extends State<_MenuList> {
       itemCount: _list.length,
       itemBuilder: (context, index) {
         var list = _list[index];
-        return SettingsGroup(
-          iconItemSize: 24,
-            items: list
-                .map(
-                  (menu) => SettingsItem(
-                    icons: _iconDataByMenuKey(menu.key),
-                    iconStyle: IconStyle(
-                      withBackground: true,
+        return Container(
+          margin: const EdgeInsets.all(8),
+          child: SettingsGroup(
+              margin: EdgeInsets.zero,
+              iconItemSize: 18,
+              dividerColor:
+                  Theme.of(context).colorScheme.outline.withOpacity(0.24),
+              items: list
+                  .map(
+                    (menu) => SettingsItem(
+                      icons: _iconDataByMenuKey(menu.key),
+                      iconStyle: IconStyle(
+                        withBackground: true,
+                        backgroundColor: ProfileColor.safeGet(menu.sort),
+                      ),
+                      titleStyle: const TextStyle(
+                          fontSize: 13, fontWeight: FontWeight.bold),
+                      title: menu.title,
+                      onTap: _onTapByMenuKey(menu),
                     ),
-                    title: menu.title,
-                    onTap: _onTapByMenuKey(menu),
-                  ),
-                )
-                .toList());
+                  )
+                  .toList()),
+        );
       },
     );
   }

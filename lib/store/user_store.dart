@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 import 'package:mmkv/mmkv.dart';
 import 'package:xhu_timetable_ios/api/server.dart';
@@ -31,7 +32,8 @@ Future<bool> isLogin() async {
   return await getMainUser() != null;
 }
 
-Future<void> setMainUser(User user) async => setMainUserById(user.studentId);
+Future<void> setMainUser(User user) async =>
+    await setMainUserById(user.studentId);
 
 Future<void> setMainUserById(String studentId) async {
   var store = await _getUserStore();
@@ -158,7 +160,7 @@ extension UserExt on User {
     try {
       return await action(token);
     } catch (e) {
-      if (e is! ServerNeedLoginException) {
+      if (e is! DioException || e.error is! ServerNeedLoginException) {
         rethrow;
       }
       var newUser = await userByStudentId(studentId);

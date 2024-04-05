@@ -5,6 +5,7 @@ import 'package:xhu_timetable_ios/model/menu.dart';
 import 'package:xhu_timetable_ios/model/user_info.dart';
 import 'package:xhu_timetable_ios/repository/profile.dart';
 import 'package:xhu_timetable_ios/store/menu_store.dart';
+import 'package:xhu_timetable_ios/toast.dart';
 import 'package:xhu_timetable_ios/ui/theme/icons.dart';
 import 'package:xhu_timetable_ios/ui/theme/colors.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
@@ -181,19 +182,17 @@ class _MenuListState extends State<_MenuList> {
   VoidCallback? _onTapByMenuKey(Menu menu) {
     switch (menu.key) {
       case "query_exam":
-        return null;
+        return () => showToast("暂未实现");
       case "query_score":
-        return null;
+        return () => showToast("暂未实现");
       case "query_free_room":
-        return null;
-      case "account_manage":
-        return null;
+        return () => showToast("暂未实现");
       case "settings":
-        return null;
+        return () => showToast("暂未实现");
       case "notice":
-        return null;
+        return () => showToast("暂未实现");
       case "share":
-        return null;
+        return () => showToast("暂未实现");
       case "join_group":
         return () => loadInBrowser(menu.link);
       case "server_detect":
@@ -203,17 +202,9 @@ class _MenuListState extends State<_MenuList> {
           return () => loadInBrowser(menu.link);
         }
         if (menu.hint.isNotEmpty) {
-          return () => Fluttertoast.showToast(
-                msg: menu.hint,
-                toastLength: Toast.LENGTH_LONG,
-                gravity: ToastGravity.BOTTOM,
-              );
+          return () => showToast(menu.hint);
         } else {
-          return () => Fluttertoast.showToast(
-                msg: "当前版本暂不支持该功能，请更新到最新版本",
-                toastLength: Toast.LENGTH_LONG,
-                gravity: ToastGravity.BOTTOM,
-              );
+          return () => showToast("当前版本暂不支持该功能，请更新到最新版本");
         }
     }
   }

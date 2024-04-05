@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:logger/logger.dart';
 import 'package:xhu_timetable_ios/model/poems.dart';
+import 'package:xhu_timetable_ios/repository/main.dart';
+import 'package:xhu_timetable_ios/repository/xhu.dart';
 import 'package:xhu_timetable_ios/store/poems_store.dart';
+import 'package:xhu_timetable_ios/ui/theme/colors.dart';
 
 class TodayHomePage extends StatefulWidget {
   const TodayHomePage({super.key});
@@ -11,6 +15,28 @@ class TodayHomePage extends StatefulWidget {
 }
 
 class _TodayHomePageState extends State<TodayHomePage> {
+  var todayCourseSheetList = <TodayCourseSheet>[];
+
+  @override
+  void initState() {
+    super.initState();
+    try {
+      _init().then((value) {
+        setState(() {
+          todayCourseSheetList = value;
+        });
+      });
+    } catch (e) {
+      Logger().e(e);
+    }
+  }
+
+  Future<List<TodayCourseSheet>> _init() async {
+    var currentWeek = await XhuRepo.calculateWeek();
+    var view = await getMainPageData(true, false);
+    return await getTodayCourseSheetList(currentWeek, view.todayViewList);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -27,9 +53,13 @@ class _TodayHomePageState extends State<TodayHomePage> {
         SizedBox(
           width: double.infinity,
           child: ListView.builder(
-            itemCount: 1,
+            itemCount: todayCourseSheetList.length + 1,
             itemBuilder: (context, index) {
-              return _buildPoems(context);
+              if (index == 0) {
+                return const _PoemsItem();
+              }
+              return _buildTodayCourseContent(
+                  context, todayCourseSheetList[index - 1]);
             },
           ),
         )
@@ -38,20 +68,80 @@ class _TodayHomePageState extends State<TodayHomePage> {
   }
 }
 
-Widget _buildPoems(BuildContext context) {
-  return FutureBuilder(
-      future: loadPoems(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done &&
-            !snapshot.hasError) {
-          var data = snapshot.data!;
-          return _buildPoemsContent(context, data);
-        }
-        return const SizedBox();
-      });
+class _PoemsItem extends StatefulWidget {
+  const _PoemsItem();
+
+  @override
+  State<StatefulWidget> createState() => _PoemsState();
 }
 
-Widget _buildPoemsContent(BuildContext context, Poems poems) {
+class _PoemsState extends State<_PoemsItem> {
+  Poems? poems;
+
+  @override
+  void initState() {
+    super.initState();
+    try {
+      loadPoems().then((value) {
+        setState(() {
+          poems = value;
+        });
+      });
+    } catch (e) {
+      Logger().e(e);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (poems == null) {
+      return const SizedBox();
+    }
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Container(
+            width: 9,
+            height: 9,
+            margin: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: ColorPool.hash(poems!.content),
+              shape: BoxShape.circle,
+            ),
+          ),
+          Expanded(
+            child: Card(
+              margin: const EdgeInsets.only(right: 8),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Center(
+                      child: Text(
+                        poems!.content,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ),
+                    Align(
+                      alignment: AlignmentDirectional.centerEnd,
+                      child: Text(
+                        "—— ${poems!.author}《${poems!.title}》",
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+Widget _buildTodayCourseContent(BuildContext context, TodayCourseSheet course) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 4),
     child: Row(
@@ -60,98 +150,81 @@ Widget _buildPoemsContent(BuildContext context, Poems poems) {
           width: 9,
           height: 9,
           margin: const EdgeInsets.all(6),
-          decoration: const BoxDecoration(
-            color: Colors.red,
+          decoration: BoxDecoration(
+            color: course.color,
             shape: BoxShape.circle,
           ),
         ),
         Expanded(
           child: Card(
             margin: const EdgeInsets.only(right: 8),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Center(
-                    child: Text(
-                      poems.content,
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                  ),
-                  Align(
-                    alignment: AlignmentDirectional.centerEnd,
-                    child: Text(
-                      "—— ${poems.author}《${poems.title}》",
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        )
-      ],
-    ),
-  );
-}
-
-class CourseItem {
-  final String courseName;
-  final List<int> weekList;
-  final int day;
-  final int startDayTime;
-  final int endDayTime;
-  final String startTime;
-  final String endTime;
-  final String location;
-  final String teacher;
-
-  CourseItem(
-      {required this.courseName,
-      required this.weekList,
-      required this.day,
-      required this.startDayTime,
-      required this.endDayTime,
-      required this.startTime,
-      required this.endTime,
-      required this.location,
-      required this.teacher});
-
-  Widget buildContent(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: Row(
-          children: [
-            Container(
-              width: 9,
-              height: 9,
-              margin: const EdgeInsets.all(6),
-              decoration: const BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
-              ),
-            ),
-            Expanded(
-              child: Card(
-                margin: const EdgeInsets.only(right: 8),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Stack(
-                    children: [
-                      Row(
-                        children: [
-                          Column(
+            child: Stack(
+              children: [
+                Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Column(
+                          children: [
+                            SvgPicture.asset("assets/icons/ic_watermelon.svg",
+                                height: 16,
+                                width: 16,
+                                colorFilter: ColorFilter.mode(
+                                    course.color, BlendMode.srcIn)),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 1),
+                              child: Text(
+                                course.startTime.formatTimeNoSecond(),
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 1),
+                              child: Text(
+                                course.endTime.formatTimeNoSecond(),
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          constraints: const BoxConstraints(minHeight: 64),
+                          decoration: BoxDecoration(
+                            color: course.color,
+                            borderRadius: BorderRadius.circular(36),
+                          ),
+                          width: 4,
+                          padding: const EdgeInsets.all(12),
+                          margin: const EdgeInsets.symmetric(horizontal: 8),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SvgPicture.asset("assets/icons/ic_watermelon.svg",
-                                  height: 16,
-                                  width: 16,
-                                  colorFilter: const ColorFilter.mode(
-                                      Colors.red, BlendMode.srcIn)),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 1),
+                                child: Row(
+                                  textDirection: TextDirection.rtl,
+                                  children: [
+                                    Text(
+                                      course.timeString,
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                    Expanded(
+                                        child: Text(
+                                      course.courseName,
+                                      style: const TextStyle(fontSize: 16),
+                                    ))
+                                  ],
+                                ),
+                              ),
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 1),
                                 child: Text(
-                                  startTime,
+                                  course.teacherName,
                                   style: const TextStyle(fontSize: 12),
                                 ),
                               ),
@@ -159,69 +232,41 @@ class CourseItem {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 1),
                                 child: Text(
-                                  endTime,
+                                  course.location,
                                   style: const TextStyle(fontSize: 12),
                                 ),
                               ),
                             ],
                           ),
-                          Container(
-                            width: 4,
-                            height: 80,
-                            color: Colors.grey,
-                            padding: const EdgeInsets.all(12.0),
-                            margin: const EdgeInsets.symmetric(horizontal: 8),
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 1),
-                                  child: Row(
-                                    textDirection: TextDirection.rtl,
-                                    children: [
-                                      Text(
-                                        "$startDayTime-$endDayTime节",
-                                        style: const TextStyle(fontSize: 14),
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          courseName,
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 1),
-                                  child: Text(
-                                    teacher,
-                                    style: const TextStyle(fontSize: 12),
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 1),
-                                  child: Text(
-                                    location,
-                                    style: const TextStyle(fontSize: 12),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                        ),
+                      ],
+                    )),
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(4),
+                        bottomRight: Radius.circular(12),
                       ),
-                    ],
+                    ),
+                    child: Text(
+                      course.courseStatus,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                        fontSize: 12,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ));
-  }
+          ),
+        ),
+      ],
+    ),
+  );
 }

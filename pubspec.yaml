@@ -1,7 +1,7 @@
 name: xhu_timetable_ios
 description: "查课查成绩，就用西瓜课表"
 publish_to: 'none'
-version: 1.0.0+35
+version: 1.0.0+36
 
 environment:
   sdk: '>=3.3.2 <4.0.0'
@@ -17,12 +17,10 @@ dependencies:
     sdk: flutter
   logger: ^2.2.0
   babstrap_settings_screen:
-    path: ../babstrap_settings_screen
-    # git:
-    #   url: https://github.com/Mystery00/babstrap_settings_screen.git
+    git:
+      url: https://github.com/Mystery00/babstrap_settings_screen.git
   device_info_plus: ^10.0.1
   package_info_plus: ^6.0.0
-  flutter_svg: ^2.0.10+1
   dio: ^5.4.2
   pretty_dio_logger: ^1.3.1
   fk_user_agent: ^2.1.0
@@ -70,7 +68,6 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-    - assets/icons/main/
     - assets/icons/profile/
   fonts:
     - family: IconFont

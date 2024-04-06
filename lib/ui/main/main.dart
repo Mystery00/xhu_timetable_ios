@@ -1,7 +1,4 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:xhu_timetable_ios/ui/theme/icons.dart';
 
 import 'today.dart';
@@ -33,6 +30,8 @@ class _MainRouteState extends State<MainRoute> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
         type: BottomNavigationBarType.fixed,
+        useLegacyColorScheme: false,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
         onTap: (index) {
           setState(() {
             currentIndex = index;

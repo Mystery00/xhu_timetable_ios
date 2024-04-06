@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:logger/logger.dart';
 import 'package:xhu_timetable_ios/model/poems.dart';
 import 'package:xhu_timetable_ios/repository/main.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
 import 'package:xhu_timetable_ios/store/poems_store.dart';
 import 'package:xhu_timetable_ios/ui/theme/colors.dart';
+import 'package:xhu_timetable_ios/ui/theme/icons.dart';
 
 class TodayHomePage extends StatefulWidget {
   const TodayHomePage({super.key});
@@ -167,11 +167,11 @@ Widget _buildTodayCourseContent(BuildContext context, TodayCourseSheet course) {
                       children: [
                         Column(
                           children: [
-                            SvgPicture.asset("assets/icons/ic_watermelon.svg",
-                                height: 16,
-                                width: 16,
-                                colorFilter: ColorFilter.mode(
-                                    course.color, BlendMode.srcIn)),
+                            Icon(
+                              IconsProfile.watermelon,
+                              color: course.color,
+                              size: 16,
+                            ),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 1),
                               child: Text(

@@ -1,6 +1,5 @@
 import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xhu_timetable_ios/model/menu.dart';
 import 'package:xhu_timetable_ios/model/user_info.dart';
 import 'package:xhu_timetable_ios/repository/profile.dart';
@@ -86,7 +85,7 @@ class _AccountInfoState extends State<_AccountInfo> {
                 .toList()),
         userProfilePic: defaultProfileImageByStudentId(studentId),
         cardActionWidget: SettingsItem(
-          icons: Icons.edit,
+          icons: IconsProfile.accountSettings,
           iconStyle: IconStyle(
             withBackground: true,
             borderRadius: 50,

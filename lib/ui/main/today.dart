@@ -1,42 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:xhu_timetable_ios/model/poems.dart';
 import 'package:xhu_timetable_ios/repository/main.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
-import 'package:xhu_timetable_ios/store/poems_store.dart';
 import 'package:xhu_timetable_ios/ui/theme/colors.dart';
 import 'package:xhu_timetable_ios/ui/theme/icons.dart';
 
 class TodayHomePage extends StatefulWidget {
-  const TodayHomePage({super.key});
+  final Poems? poems;
+  final List<TodayCourseSheet> todayCourseSheetList;
+
+  const TodayHomePage(
+      {super.key, this.poems, required this.todayCourseSheetList});
 
   @override
-  State<TodayHomePage> createState() => _TodayHomePageState();
+  State<StatefulWidget> createState() => _TodayHomePageState();
 }
 
 class _TodayHomePageState extends State<TodayHomePage> {
-  var todayCourseSheetList = <TodayCourseSheet>[];
-
-  @override
-  void initState() {
-    super.initState();
-    try {
-      _init().then((value) {
-        setState(() {
-          todayCourseSheetList = value;
-        });
-      });
-    } catch (e) {
-      Logger().e(e);
-    }
-  }
-
-  Future<List<TodayCourseSheet>> _init() async {
-    var currentWeek = await XhuRepo.calculateWeek();
-    var view = await getMainPageData(true, false);
-    return await getTodayCourseSheetList(currentWeek, view.todayViewList);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -53,13 +33,15 @@ class _TodayHomePageState extends State<TodayHomePage> {
         SizedBox(
           width: double.infinity,
           child: ListView.builder(
-            itemCount: todayCourseSheetList.length + 1,
+            itemCount: widget.todayCourseSheetList.length + 1,
             itemBuilder: (context, index) {
               if (index == 0) {
-                return const _PoemsItem();
+                return _PoemsItem(
+                  poems: widget.poems,
+                );
               }
               return _buildTodayCourseContent(
-                  context, todayCourseSheetList[index - 1]);
+                  context, widget.todayCourseSheetList[index - 1]);
             },
           ),
         )
@@ -69,32 +51,18 @@ class _TodayHomePageState extends State<TodayHomePage> {
 }
 
 class _PoemsItem extends StatefulWidget {
-  const _PoemsItem();
+  final Poems? poems;
+
+  const _PoemsItem({this.poems});
 
   @override
-  State<StatefulWidget> createState() => _PoemsState();
+  State<StatefulWidget> createState() => _PoemsItemState();
 }
 
-class _PoemsState extends State<_PoemsItem> {
-  Poems? poems;
-
-  @override
-  void initState() {
-    super.initState();
-    try {
-      loadPoems().then((value) {
-        setState(() {
-          poems = value;
-        });
-      });
-    } catch (e) {
-      Logger().e(e);
-    }
-  }
-
+class _PoemsItemState extends State<_PoemsItem> {
   @override
   Widget build(BuildContext context) {
-    if (poems == null) {
+    if (widget.poems == null) {
       return const SizedBox();
     }
     return Padding(
@@ -106,7 +74,7 @@ class _PoemsState extends State<_PoemsItem> {
             height: 9,
             margin: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: ColorPool.hash(poems!.content),
+              color: ColorPool.hash(widget.poems!.content),
               shape: BoxShape.circle,
             ),
           ),
@@ -119,14 +87,14 @@ class _PoemsState extends State<_PoemsItem> {
                   children: [
                     Center(
                       child: Text(
-                        poems!.content,
+                        widget.poems!.content,
                         style: const TextStyle(fontSize: 12),
                       ),
                     ),
                     Align(
                       alignment: AlignmentDirectional.centerEnd,
                       child: Text(
-                        "—— ${poems!.author}《${poems!.title}》",
+                        "—— ${widget.poems!.author}《${widget.poems!.title}》",
                         style: const TextStyle(fontSize: 12),
                       ),
                     ),

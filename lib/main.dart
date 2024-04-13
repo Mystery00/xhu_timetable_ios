@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import "package:mmkv/mmkv.dart";
 import 'package:xhu_timetable_ios/store/app.dart';
+import 'package:xhu_timetable_ios/store/db.dart';
 import 'package:xhu_timetable_ios/ui/account_settings.dart';
 import 'package:xhu_timetable_ios/ui/login.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
@@ -15,6 +16,7 @@ void main() async {
 
   String dir = (await getApplicationDocumentsDirectory()).path;
   await MMKV.initialize(groupDir: "$dir/mmkv");
+  await initDatabase();
   await FkUserAgent.init();
   await initApp();
 

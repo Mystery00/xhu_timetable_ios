@@ -18,13 +18,15 @@ Dio getServerClient() {
     ..headers = {
       HttpHeaders.userAgentHeader: FkUserAgent.userAgent!,
     };
-  dio.interceptors.add(PrettyDioLogger(
-    requestHeader: false,
-    requestBody: true,
-    responseHeader: false,
-    error: true,
-    compact: true,
-  ));
+  if (isDebug()) {
+    dio.interceptors.add(PrettyDioLogger(
+      requestHeader: false,
+      requestBody: true,
+      responseHeader: false,
+      error: true,
+      compact: true,
+    ));
+  }
   dio.interceptors.add(InterceptorsWrapper(
     onRequest: (options, handler) {
       var uri = options.path;

@@ -1,6 +1,8 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+bool _isDebug = false;
+
 String _appName = "";
 String _packageName = "";
 String _version = "";
@@ -16,6 +18,14 @@ Future<void> initApp() async {
   var deviceInfo = DeviceInfoPlugin();
   var iosInfo = await deviceInfo.iosInfo;
   _deviceId = "ios-${iosInfo.identifierForVendor ?? "unknown"}";
+  if (!iosInfo.isPhysicalDevice) {
+  // if (iosInfo.isPhysicalDevice) {
+    _isDebug = true;
+  }
+}
+
+bool isDebug() {
+  return _isDebug;
 }
 
 String getAppName() {

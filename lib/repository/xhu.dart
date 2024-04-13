@@ -43,6 +43,11 @@ extension DateTimeExt on DateTime {
         ));
   }
 
+  static DateTime localDate(String dateStr) {
+    var date = dateStr.split("-");
+    return DateTime(int.parse(date[0]), int.parse(date[1]), int.parse(date[2])).atStartOfDay();
+  }
+
   DateTime atStartOfDay() => DateTime(year, month, day);
 
   DateTime atDate(DateTime date) {
@@ -72,4 +77,7 @@ extension DateTimeExt on DateTime {
 
   String formatTimeNoSecond() =>
       "${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}";
+
+  String formatDate() =>
+      "$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}";
 }

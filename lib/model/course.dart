@@ -56,6 +56,34 @@ class Course {
   }
 }
 
+class PracticalCourse {
+  final String courseName;
+  final String weekStr;
+  final List<int> weekList;
+  final String teacher;
+  final String campus;
+  final double credit;
+
+  PracticalCourse(
+      {required this.courseName,
+      required this.weekStr,
+      required this.weekList,
+      required this.teacher,
+      required this.campus,
+      required this.credit});
+
+  factory PracticalCourse.fromJson(Map<String, dynamic> json) {
+    return PracticalCourse(
+      courseName: json['courseName'],
+      weekStr: json['weekStr'],
+      weekList: json['weekList'].cast<int>(),
+      teacher: json['teacher'],
+      campus: json['campus'],
+      credit: json['credit'],
+    );
+  }
+}
+
 class ExperimentCourse {
   final String courseName;
   final String experimentProjectName;

@@ -1,6 +1,9 @@
+import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:logger/logger.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:xhu_timetable_ios/model/poems.dart';
 import 'package:xhu_timetable_ios/repository/main.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
@@ -198,29 +201,41 @@ class _MainRouteState extends State<MainRoute> {
             ),
         ],
       ),
-      body: pages[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed,
-        useLegacyColorScheme: false,
-        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(IconsProfile.navigationToday),
-            label: "今日",
+      body: Stack(
+        children: [
+          Image.asset(
+            "assets/images/main_bg.png",
+            width: double.infinity,
+            height: double.infinity,
+            fit: BoxFit.cover,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(IconsProfile.navigationWeek),
-            label: "本周",
+          pages[_currentIndex],
+        ],
+      ),
+      bottomNavigationBar: FlashyTabBar(
+        selectedIndex: _currentIndex,
+        onItemSelected: (value) => setState(() => _currentIndex = value),
+        animationCurve: Curves.fastLinearToSlowEaseIn,
+        animationDuration: const Duration(milliseconds: 360),
+        iconSize: 24,
+        shadows: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 8,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(IconsProfile.navigationProfile),
-            label: "我的",
+        ],
+        items: [
+          FlashyTabBarItem(
+            icon: const Icon(IconsProfile.navigationToday),
+            title: const Text("今日"),
+          ),
+          FlashyTabBarItem(
+            icon: const Icon(IconsProfile.navigationWeek),
+            title: const Text("本周"),
+          ),
+          FlashyTabBarItem(
+            icon: const Icon(IconsProfile.navigationProfile),
+            title: const Text("我的"),
           ),
         ],
       ),

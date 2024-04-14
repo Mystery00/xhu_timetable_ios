@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:xhu_timetable_ios/repository/main.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
 
@@ -47,7 +48,8 @@ class _WeekHomePageState extends State<WeekHomePage> {
             ],
           ),
         ),
-        SingleChildScrollView(
+        Expanded(
+            child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           controller: _controller,
           child: Column(
@@ -69,30 +71,134 @@ class _WeekHomePageState extends State<WeekHomePage> {
                   for (var i = 0; i < 7; i++)
                     Expanded(
                       flex: 10,
-                      child: SingleChildScrollView(
-                        child: SizedBox(
-                          height: itemHeight * 11.toDouble(),
-                          child: Column(
-                            children: [
-                              for (var sheet in widget.weekCourseSheetList[i])
-                                _buildWeekItem(
-                                    sheet.color,
-                                    sheet.step,
-                                    sheet.showTitle,
-                                    sheet.textColor,
-                                    sheet.course.length > 1, () {
-                                  //TODO: 点击事件
-                                }),
-                            ],
-                          ),
-                        ),
+                      child: Column(
+                        children: [
+                          for (var sheet in widget.weekCourseSheetList[i])
+                            _buildWeekItem(
+                                sheet.color,
+                                sheet.step,
+                                sheet.showTitle,
+                                sheet.textColor,
+                                sheet.course.length > 1, () {
+                              showMaterialModalBottomSheet(
+                                  context: context,
+                                  shape: ShapeBorder.lerp(
+                                      const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(16),
+                                              topRight: Radius.circular(16))),
+                                      const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(16),
+                                              topRight: Radius.circular(16))),
+                                      0),
+                                  builder: (context) {
+                                    return SingleChildScrollView(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16),
+                                        child: Column(
+                                          children: [
+                                            for (var course in sheet.course)
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  color: course.backgroundColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                ),
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 4),
+                                                padding:
+                                                    const EdgeInsets.all(4),
+                                                width: double.infinity,
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      course.courseName,
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                    Text(
+                                                      course.teacher,
+                                                      style: const TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                    Text(
+                                                      course.location,
+                                                      style: const TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                    Text(
+                                                      course.weekStr,
+                                                      style: const TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                    Text(
+                                                      course.courseTime,
+                                                      style: const TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                    if (course
+                                                        .extraData.isNotEmpty)
+                                                      for (var element
+                                                          in course.extraData)
+                                                        Text(element,
+                                                            style:
+                                                                const TextStyle(
+                                                                    color: Colors
+                                                                        .white)),
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        color: course
+                                                            .backgroundColor,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8),
+                                                      ),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              4),
+                                                      child: Text(
+                                                        course.accountTitle,
+                                                        style: TextStyle(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .colorScheme
+                                                              .onPrimaryContainer,
+                                                          fontSize: 12,
+                                                          backgroundColor: Theme
+                                                                  .of(context)
+                                                              .colorScheme
+                                                              .primaryContainer,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  });
+                            }),
+                        ],
                       ),
                     ),
                 ],
               )
             ],
           ),
-        ),
+        )),
       ],
     );
   }
@@ -111,22 +217,44 @@ class _WeekHomePageState extends State<WeekHomePage> {
     bool showMore,
     VoidCallback onClick,
   ) {
-    return Stack(
-      children: [
-        Container(
-          height: (itemHeight * itemStep).toDouble(),
-          margin: const EdgeInsets.all(1),
-          color: backgroundColor.withOpacity(0.8),
-          child: Text(
-            title,
-            style: TextStyle(
-              color: textColor,
-              fontSize: 10,
+    return SizedBox(
+      height: (itemHeight * itemStep).toDouble(),
+      child: InkWell(
+        onTap: showMore ? onClick : null,
+        child: Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: Container(
+                height: double.infinity,
+                margin: const EdgeInsets.all(1),
+                color: backgroundColor.withOpacity(0.8),
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: textColor,
+                    fontSize: 10,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ),
-            textAlign: TextAlign.center,
-          ),
+            if (showMore)
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: Container(
+                  width: 6,
+                  height: 6,
+                  decoration: const BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+          ],
         ),
-      ],
+      ),
     );
   }
 

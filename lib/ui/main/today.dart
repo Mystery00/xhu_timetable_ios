@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:xhu_timetable_ios/model/poems.dart';
 import 'package:xhu_timetable_ios/repository/main.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
@@ -26,7 +27,7 @@ class _TodayHomePageState extends State<TodayHomePage> {
           child: Container(
             width: 1,
             height: double.infinity,
-            color: Colors.grey,
+            color: Colors.white,
             margin: const EdgeInsets.symmetric(horizontal: 10),
           ),
         ),
@@ -79,26 +80,90 @@ class _PoemsItemState extends State<_PoemsItem> {
             ),
           ),
           Expanded(
-            child: Card(
-              margin: const EdgeInsets.only(right: 8),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Center(
-                      child: Text(
-                        widget.poems!.content,
-                        style: const TextStyle(fontSize: 12),
+            child: InkWell(
+              onTap: () {
+                showMaterialModalBottomSheet(
+                    context: context,
+                    shape: ShapeBorder.lerp(
+                        const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(16),
+                                topRight: Radius.circular(16))),
+                        const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(16),
+                                topRight: Radius.circular(16))),
+                        0),
+                    builder: (context) {
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                            top: 8, bottom: 32, left: 32, right: 32),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Center(
+                              child: Text(
+                                "《${widget.poems!.title}》",
+                                style: const TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Center(
+                              child: Text(
+                                "[${widget.poems!.dynasty}] ${widget.poems!.author}",
+                                style: const TextStyle(fontSize: 12),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Center(
+                              child: Text(
+                                widget.poems!.fullContent.join("\n"),
+                                style: const TextStyle(fontSize: 12),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            if (widget.poems!.translate != null &&
+                                widget.poems!.translate!.isNotEmpty)
+                              const SizedBox(height: 6),
+                            if (widget.poems!.translate != null &&
+                                widget.poems!.translate!.isNotEmpty)
+                              SizedBox(
+                                width: double.infinity,
+                                child: Text(
+                                  "诗词大意：${widget.poems!.translate!.join("")}",
+                                  style: const TextStyle(fontSize: 11),
+                                ),
+                              ),
+                            const SizedBox(height: 24),
+                          ],
+                        ),
+                      );
+                    });
+              },
+              child: Card(
+                margin: const EdgeInsets.only(right: 8),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Center(
+                        child: Text(
+                          widget.poems!.content,
+                          style: const TextStyle(fontSize: 12),
+                        ),
                       ),
-                    ),
-                    Align(
-                      alignment: AlignmentDirectional.centerEnd,
-                      child: Text(
-                        "—— ${widget.poems!.author}《${widget.poems!.title}》",
-                        style: const TextStyle(fontSize: 12),
+                      Align(
+                        alignment: AlignmentDirectional.centerEnd,
+                        child: Text(
+                          "—— ${widget.poems!.author}《${widget.poems!.title}》",
+                          style: const TextStyle(fontSize: 12),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

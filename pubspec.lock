@@ -170,6 +170,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.0"
+  flashy_tab_bar2:
+    dependency: "direct main"
+    description:
+      name: flashy_tab_bar2
+      sha256: "4c2a8cb2b3f96e84a6baf4fd6e20801fbdf7ebc027d8d8d9d13a0ab8907f7bec"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.10"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -345,6 +353,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.3.4"
+  modal_bottom_sheet:
+    dependency: "direct main"
+    description:
+      name: modal_bottom_sheet
+      sha256: eac66ef8cb0461bf069a38c5eb0fa728cee525a531a8304bd3f7b2185407c67e
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.0"
   package_info_plus:
     dependency: "direct main"
     description:

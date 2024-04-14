@@ -1,7 +1,7 @@
 name: xhu_timetable_ios
 description: "查课查成绩，就用西瓜课表"
 publish_to: 'none'
-version: 1.0.0+39
+version: 1.0.0+40
 
 environment:
   sdk: '>=3.3.2 <4.0.0'
@@ -34,6 +34,8 @@ dependencies:
   sqflite: ^2.3.3
   path: ^1.9.0
   flutter_spinkit: ^5.2.1
+  flashy_tab_bar2: ^0.0.10
+  modal_bottom_sheet: ^3.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

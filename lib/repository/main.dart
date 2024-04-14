@@ -8,7 +8,7 @@ import 'package:xhu_timetable_ios/repository/xhu.dart';
 import 'package:xhu_timetable_ios/ui/theme/colors.dart';
 
 AggregationRepo _aggregationRepo = AggregationRepo();
-Future<AggregationView> getMainPageData(
+Future<(AggregationView, String)> getMainPageData(
   bool forceLoadFromCloud,
   bool forceLoadFromLocal,
 ) async {
@@ -17,9 +17,9 @@ Future<AggregationView> getMainPageData(
   var view = await _aggregationRepo.fetchAggregationMainPage(forceLoadFromCloud,
       forceLoadFromLocal, showCustomCourse, showCustomThing);
   if (view.loadWarning?.isNotEmpty ?? false) {
-    print(view.loadWarning);
+    return (view, view.loadWarning!);
   }
-  return view;
+  return (view, "");
 }
 
 Future<List<TodayCourseSheet>> getTodayCourseSheetList(

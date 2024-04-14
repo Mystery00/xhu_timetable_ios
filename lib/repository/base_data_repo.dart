@@ -30,4 +30,5 @@ class BaseDataRepo {
   }
 }
 
+// ignore: constant_identifier_names
 const String HINT_NETWORK = "网络无法使用，请检查网络连接！";

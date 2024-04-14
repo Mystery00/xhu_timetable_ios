@@ -66,7 +66,10 @@ class _MainRouteState extends State<MainRoute> {
       });
       var (currentWeek, loadFromCloud) =
           await _loadCourseConfig(changeWeekOnly);
-      var data = await getMainPageData(false, true);
+      var (data, loadWarning) = await getMainPageData(false, true);
+      if (loadWarning.isNotEmpty) {
+        showToast(loadWarning);
+      }
       var todayCourseList =
           await getTodayCourseSheetList(currentWeek, data.todayViewList);
       setState(() {
@@ -74,7 +77,10 @@ class _MainRouteState extends State<MainRoute> {
       });
       if (loadFromCloud) {
         //需要从云端加载数据
-        var cloudData = await getMainPageData(true, false);
+        var (cloudData, loadWarning) = await getMainPageData(true, false);
+        if (loadWarning.isNotEmpty) {
+          showToast(loadWarning);
+        }
         var todayCourseList =
             await getTodayCourseSheetList(currentWeek, cloudData.todayViewList);
         setState(() {
@@ -101,7 +107,10 @@ class _MainRouteState extends State<MainRoute> {
       });
       var (currentWeek, _) = await _loadCourseConfig(false);
       //从云端加载数据
-      var cloudData = await getMainPageData(true, false);
+      var (cloudData, loadWarning) = await getMainPageData(true, false);
+      if (loadWarning.isNotEmpty) {
+        showToast(loadWarning);
+      }
       var todayCourseList =
           await getTodayCourseSheetList(currentWeek, cloudData.todayViewList);
       setState(() {

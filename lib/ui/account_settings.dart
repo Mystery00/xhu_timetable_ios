@@ -1,6 +1,7 @@
 import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:xhu_timetable_ios/repository/user.dart';
+import 'package:xhu_timetable_ios/toast.dart';
 import 'package:xhu_timetable_ios/ui/theme/profile.dart';
 
 class AccountSettingsRoute extends StatefulWidget {
@@ -68,7 +69,7 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
                       trailing: Switch(
                           value: false,
                           onChanged: (value) {
-                            print(value);
+                            showToast("暂未实现");
                           }),
                     ),
                   ]),
@@ -200,7 +201,7 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
                                                     (states) => Colors.red),
                                           ),
                                           onPressed: () {
-                                            print("delete");
+                                            showToast("暂未实现");
                                           },
                                           child: const Text(
                                             "退出登录",

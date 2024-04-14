@@ -1,9 +1,7 @@
 import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:logger/logger.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:xhu_timetable_ios/model/poems.dart';
 import 'package:xhu_timetable_ios/repository/main.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
@@ -26,6 +24,7 @@ class MainRoute extends StatefulWidget {
 
 class _MainRouteState extends State<MainRoute> {
   var _loading = false;
+  var todayWeek = 1;
   var _week = 1;
   Poems? poems;
   DateTime _dateStart = DateTime.now().atStartOfDay();
@@ -61,6 +60,7 @@ class _MainRouteState extends State<MainRoute> {
     var termStartDate = await getTermStartDate();
     var currentWeek = await XhuRepo.calculateWeek();
     setState(() {
+      todayWeek = currentWeek;
       _week = currentWeek;
     });
     var dateStart = termStartDate.add(Duration(days: 7 * (currentWeek - 1)));
@@ -177,9 +177,28 @@ class _MainRouteState extends State<MainRoute> {
       ),
       const AccountHomePage(),
     ];
+    var title = "西瓜课表";
+    switch (_currentIndex) {
+      case 0:
+        title = "第$todayWeek周 ${DateTime.now().getDayOfWeek()}";
+        break;
+      case 1:
+        title = "第$_week周";
+        break;
+      case 2:
+        title = "个人中心";
+        break;
+    }
     return Scaffold(
       appBar: AppBar(
-        title: const Text("西瓜课表"),
+        title: InkWell(
+          onTap: () {
+            if (_currentIndex == 1) {
+              _calculateWeek();
+            }
+          },
+          child: Text(title),
+        ),
         actions: [
           if (_loading)
             SizedBox(
@@ -189,8 +208,8 @@ class _MainRouteState extends State<MainRoute> {
                 color: Theme.of(context).colorScheme.primary,
                 size: 16,
               ),
-            )
-          else
+            ),
+          if (!_loading && _currentIndex == 1)
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () async {

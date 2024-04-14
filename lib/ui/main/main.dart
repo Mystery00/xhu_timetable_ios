@@ -5,6 +5,7 @@ import 'package:xhu_timetable_ios/model/poems.dart';
 import 'package:xhu_timetable_ios/repository/main.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
 import 'package:xhu_timetable_ios/store/cache_store.dart';
+import 'package:xhu_timetable_ios/store/config_store.dart';
 import 'package:xhu_timetable_ios/store/poems_store.dart';
 import 'package:xhu_timetable_ios/toast.dart';
 import 'package:xhu_timetable_ios/ui/theme/icons.dart';
@@ -24,7 +25,9 @@ class _MainRouteState extends State<MainRoute> {
   var _loading = false;
   var _week = 1;
   Poems? poems;
+  DateTime _dateStart = DateTime.now().atStartOfDay();
   var todayCourseSheetList = <TodayCourseSheet>[];
+  var weekCourseSheetList = <List<WeekCourseSheet>>[];
 
   var _currentIndex = 0;
 
@@ -52,9 +55,14 @@ class _MainRouteState extends State<MainRoute> {
   }
 
   Future<void> _calculateWeek() async {
+    var termStartDate = await getTermStartDate();
     var currentWeek = await XhuRepo.calculateWeek();
     setState(() {
       _week = currentWeek;
+    });
+    var dateStart = termStartDate.add(Duration(days: 7 * (currentWeek - 1)));
+    setState(() {
+      _dateStart = dateStart;
     });
   }
 
@@ -75,6 +83,11 @@ class _MainRouteState extends State<MainRoute> {
       setState(() {
         todayCourseSheetList.addAll(todayCourseList);
       });
+      var weekCourseList = await getWeekCourseSheetList(
+          currentWeek, currentWeek, data.weekViewList, changeWeekOnly);
+      setState(() {
+        weekCourseSheetList = weekCourseList;
+      });
       if (loadFromCloud) {
         //需要从云端加载数据
         var (cloudData, loadWarning) = await getMainPageData(true, false);
@@ -85,6 +98,11 @@ class _MainRouteState extends State<MainRoute> {
             await getTodayCourseSheetList(currentWeek, cloudData.todayViewList);
         setState(() {
           todayCourseSheetList.addAll(todayCourseList);
+        });
+        var weekCourseList = await getWeekCourseSheetList(
+            currentWeek, currentWeek, cloudData.weekViewList, changeWeekOnly);
+        setState(() {
+          weekCourseSheetList = weekCourseList;
         });
       }
       setState(() {
@@ -113,8 +131,11 @@ class _MainRouteState extends State<MainRoute> {
       }
       var todayCourseList =
           await getTodayCourseSheetList(currentWeek, cloudData.todayViewList);
+      var weekCourseList = await getWeekCourseSheetList(
+          currentWeek, currentWeek, cloudData.weekViewList, false);
       setState(() {
         todayCourseSheetList = todayCourseList;
+        weekCourseSheetList = weekCourseList;
         _loading = false;
       });
       showToast("数据同步成功");
@@ -147,7 +168,10 @@ class _MainRouteState extends State<MainRoute> {
         poems: poems,
         todayCourseSheetList: todayCourseSheetList,
       ),
-      WeekHomePage(),
+      WeekHomePage(
+        weekDateStart: _dateStart,
+        weekCourseSheetList: weekCourseSheetList,
+      ),
       const AccountHomePage(),
     ];
     return Scaffold(

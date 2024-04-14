@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:mmkv/mmkv.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
 
@@ -97,6 +99,27 @@ Future<void> setCustomNowTerm(Customisable<int> value) async {
   }
   var key = value.mapKey("nowTerm");
   store.encodeInt(key, value.data);
+}
+
+Future<List<(DateTime, DateTime)>> getCourseTime() async {
+  var store = await _getConfigStore();
+  var value = store.decodeString("courseTime");
+  if (value == null) {
+    return List.empty();
+  }
+  Map<String, dynamic> m = json.decode(value);
+  List<(DateTime, DateTime)> list = [];
+  for (var key in m.keys) {
+    var value = m[key];
+    list.add(
+        (DateTimeExt.localTimeNoSeconds(key), DateTimeExt.localTimeNoSeconds(value.toString())));
+  }
+  return list;
+}
+
+Future<void> setCourseTime(Map<String, String> value) async {
+  var store = await _getConfigStore();
+  store.encodeString("courseTime", json.encode(value));
 }
 
 String _mapKey(String key) => "$key-custom";

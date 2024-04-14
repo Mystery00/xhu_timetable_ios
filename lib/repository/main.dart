@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:xhu_timetable_ios/model/transfer/aggregation_view.dart';
 import 'package:xhu_timetable_ios/model/transfer/today_course_view.dart';
+import 'package:xhu_timetable_ios/model/transfer/week_course_view.dart';
 import 'package:xhu_timetable_ios/repository/aggregation.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
 import 'package:xhu_timetable_ios/ui/theme/colors.dart';
@@ -113,6 +114,134 @@ Future<List<TodayCourseSheet>> getTodayCourseSheetList(
       ..calc(now));
   }
   return todayCourseSheetList;
+}
+
+Future<List<List<WeekCourseSheet>>> getWeekCourseSheetList(
+  int currentWeek,
+  int showWeek,
+  List<WeekCourseView> courseList,
+  bool changeWeekOnly,
+) async {
+  //设置是否本周以及课程颜色
+  for (var element in courseList) {
+    element.thisWeek = element.weekList.contains(showWeek);
+    element.backgroundColor = ColorPool.hash(element.courseName);
+    element.generateKey();
+  }
+  //组建表格数据
+  List<List<WeekCourseSheet>> expandTableCourse = List.generate(
+      7,
+      (day) => List.generate(
+          11, (index) => WeekCourseSheet.empty(1, index + 1, day + 1)));
+  //平铺课程
+  for (var course in courseList) {
+    var day = course.dayIndex - 1;
+    for (var i = course.startDayTime; i <= course.endDayTime; i++) {
+      expandTableCourse[day][i - 1].course.add(course);
+    }
+  }
+  //过滤非本周课程
+  for (var array in expandTableCourse) {
+    for (var sheet in array) {
+      sheet.course.removeWhere((element) => !element.thisWeek);
+    }
+  }
+  //使用key判断格子内容是否相同，相同则合并
+  var tableCourse = List.generate(7, (day) {
+    var dayArray = expandTableCourse[day];
+    var first = dayArray.first;
+    var result = <WeekCourseSheet>[];
+    var last = first;
+    var lastList = first.course;
+    lastList.sort((a, b) => a.key.compareTo(b.key));
+    var lastKey = lastList.map((e) => e.key).join();
+    for (var index = 0; index < dayArray.length; index++) {
+      if (index == 0) {
+        continue;
+      }
+      var courseSheet = dayArray[index];
+
+      var thisList = courseSheet.course;
+      thisList.sort((a, b) => a.key.compareTo(b.key));
+      var thisKey = thisList.map((e) => e.key).join();
+      if (lastKey == thisKey) {
+        last.step++;
+      } else {
+        result.add(last);
+        last = courseSheet;
+        lastKey = thisKey;
+      }
+    }
+    if (result.lastOrNull != last) {
+      result.add(last);
+    }
+    return result;
+  });
+  //处理显示的信息
+  for (var array in tableCourse) {
+    for (var sheet in array) {
+      if (sheet.course.isNotEmpty) {
+        sheet.course.sort((a, b) {
+          if (a.thisWeek != b.thisWeek) {
+            if (a.thisWeek && !b.thisWeek) {
+              return -1;
+            }
+            if (!a.thisWeek && b.thisWeek) {
+              return 1;
+            }
+            return 0;
+          }
+          return a.weekList.first.compareTo(b.weekList.first);
+        });
+      }
+      var show = sheet.course.first;
+      sheet.course.sort((a, b) => a.weekList.first.compareTo(b.weekList.first));
+      if (show.thisWeek) {
+        sheet.showTitle = "${show.courseName}\n@${show.location}";
+        sheet.color = ColorPool.hash(show.courseName);
+        sheet.textColor = Colors.white;
+      } else {
+        sheet.showTitle = "[非本周]\n${show.courseName}\n@${show.location}";
+        sheet.color = Colors.transparent;
+        sheet.textColor = Colors.grey;
+      }
+    }
+  }
+  return tableCourse;
+}
+
+class WeekCourseSheet {
+  String showTitle;
+  int step;
+  final int startIndex;
+  final int day;
+  List<WeekCourseView> course;
+  Color color;
+  Color textColor;
+
+  WeekCourseSheet({
+    required this.showTitle,
+    required this.step,
+    required this.startIndex,
+    required this.day,
+    required this.course,
+    required this.color,
+    required this.textColor,
+  });
+
+  factory WeekCourseSheet.empty(int step, int startIndex, int day) {
+    return WeekCourseSheet(
+      showTitle: "",
+      step: step,
+      startIndex: startIndex,
+      day: day,
+      course: [],
+      color: Colors.transparent,
+      textColor: Colors.transparent,
+    );
+  }
+
+  bool isEmpty() => course.isEmpty;
 }
 
 class TodayCourseSheet {

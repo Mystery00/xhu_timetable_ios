@@ -43,9 +43,19 @@ extension DateTimeExt on DateTime {
         ));
   }
 
+  static DateTime localTimeNoSeconds(String timeStr) {
+    var time = timeStr.split(":");
+    return DateTime.now().atStartOfDay().add(Duration(
+          hours: int.parse(time[0]),
+          minutes: int.parse(time[1]),
+          seconds: 0,
+        ));
+  }
+
   static DateTime localDate(String dateStr) {
     var date = dateStr.split("-");
-    return DateTime(int.parse(date[0]), int.parse(date[1]), int.parse(date[2])).atStartOfDay();
+    return DateTime(int.parse(date[0]), int.parse(date[1]), int.parse(date[2]))
+        .atStartOfDay();
   }
 
   DateTime atStartOfDay() => DateTime(year, month, day);
@@ -80,4 +90,9 @@ extension DateTimeExt on DateTime {
 
   String formatDate() =>
       "$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}";
+
+  bool isToday() {
+    var now = DateTime.now();
+    return year == now.year && month == now.month && day == now.day;
+  }
 }

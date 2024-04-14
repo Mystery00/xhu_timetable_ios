@@ -20,3 +20,9 @@ Future<ClientInitResponse> apiClientInit() async {
       await dio.post("/api/rest/external/common/client/init", data: map);
   return ClientInitResponse.fromJson(response.data);
 }
+
+Future<Map<String, String>> apiCourseTime() async {
+  Dio dio = getServerClient();
+  var response = await dio.get("/api/rest/external/common/courseTime");
+  return Map<String, String>.from(response.data);
+}

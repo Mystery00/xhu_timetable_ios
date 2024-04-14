@@ -1,6 +1,7 @@
 import 'package:xhu_timetable_ios/api/rest/aggregation.dart';
 import 'package:xhu_timetable_ios/model/transfer/aggregation_view.dart';
 import 'package:xhu_timetable_ios/model/transfer/today_course_view.dart';
+import 'package:xhu_timetable_ios/model/transfer/week_course_view.dart';
 import 'package:xhu_timetable_ios/repository/aggregation_local.dart';
 import 'package:xhu_timetable_ios/repository/base_data_repo.dart';
 import 'package:xhu_timetable_ios/store/cache_store.dart';
@@ -20,6 +21,7 @@ class AggregationRepo extends BaseDataRepo {
     var userList = await requestUserList();
 
     List<TodayCourseView> todayViewList = [];
+    List<WeekCourseView> weekViewList = [];
 
     var (loadFromCloud, loadWarning) =
         checkLoadFromCloud(forceLoadFromCloud, forceLoadFromLocal);
@@ -36,6 +38,14 @@ class AggregationRepo extends BaseDataRepo {
                 ));
         for (var course in response.courseList) {
           todayViewList.add(TodayCourseView.valueOfCourse(course, user));
+          weekViewList
+              .add(WeekCourseView.valueOfCourse(course, user.studentId));
+        }
+        for (var experimentCourse in response.experimentCourseList) {
+          todayViewList.add(
+              TodayCourseView.valueOfExperimentCourse(experimentCourse, user));
+          weekViewList.add(WeekCourseView.valueOfExperimentCourse(
+              experimentCourse, user.studentId));
         }
         AggregationLocalRepo.saveAggregationMainPageResponse(
             nowYear, nowTerm, user, response);
@@ -43,14 +53,26 @@ class AggregationRepo extends BaseDataRepo {
       setLastSyncCourse(DateTime.now());
     } else {
       for (var user in userList) {
-        var response = await AggregationLocalRepo.fetchAggregationMainPage(nowYear, nowTerm, user);
+        var response = await AggregationLocalRepo.fetchAggregationMainPage(
+            nowYear, nowTerm, user);
         for (var course in response.courseList) {
           todayViewList.add(TodayCourseView.valueOfCourse(course, user));
+          weekViewList
+              .add(WeekCourseView.valueOfCourse(course, user.userInfo.name));
+        }
+        for (var experimentCourse in response.experimentCourseList) {
+          todayViewList.add(
+              TodayCourseView.valueOfExperimentCourse(experimentCourse, user));
+          weekViewList.add(WeekCourseView.valueOfExperimentCourse(
+              experimentCourse, user.userInfo.name));
         }
       }
     }
     return AggregationView(
-        todayViewList: todayViewList, loadWarning: loadWarning);
+      todayViewList: todayViewList,
+      weekViewList: weekViewList,
+      loadWarning: loadWarning,
+    );
   }
 
   (bool, String) checkLoadFromCloud(

@@ -18,6 +18,8 @@ Future<ReadyState> init() async {
         Customisable.serverDetect(response.xhuStartTime.nowTerm));
     List<Menu> menuList = await apiGetMenuList();
     await updateMenuList(menuList);
+    Map<String, String> courseTime = await apiCourseTime();
+    await setCourseTime(courseTime);
     return ReadyState(isLogin: isUserLogin, errorMessage: null);
   } catch (e) {
     return ReadyState(isLogin: isUserLogin, errorMessage: e.toString());

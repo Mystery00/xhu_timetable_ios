@@ -84,7 +84,7 @@ class _MainRouteState extends State<MainRoute> {
       var todayCourseList =
           await getTodayCourseSheetList(currentWeek, data.todayViewList);
       setState(() {
-        todayCourseSheetList.addAll(todayCourseList);
+        todayCourseSheetList = todayCourseList;
       });
       var weekCourseList = await getWeekCourseSheetList(
           currentWeek, currentWeek, data.weekViewList, changeWeekOnly);
@@ -100,7 +100,7 @@ class _MainRouteState extends State<MainRoute> {
         var todayCourseList =
             await getTodayCourseSheetList(currentWeek, cloudData.todayViewList);
         setState(() {
-          todayCourseSheetList.addAll(todayCourseList);
+          todayCourseSheetList = todayCourseList;
         });
         var weekCourseList = await getWeekCourseSheetList(
             currentWeek, currentWeek, cloudData.weekViewList, changeWeekOnly);

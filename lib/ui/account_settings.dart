@@ -1,6 +1,7 @@
 import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:xhu_timetable_ios/repository/user.dart';
+import 'package:xhu_timetable_ios/store/user_store.dart';
 import 'package:xhu_timetable_ios/toast.dart';
 import 'package:xhu_timetable_ios/ui/theme/profile.dart';
 
@@ -18,11 +19,20 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
   @override
   void initState() {
     super.initState();
+    refresh();
+  }
+
+  void refresh() {
     loadLoggedUserList().then((value) {
       setState(() {
         list = value;
       });
     });
+  }
+
+  void _logout(String studentId) async {
+    await logout(studentId);
+    refresh();
   }
 
   @override
@@ -201,7 +211,7 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
                                                     (states) => Colors.red),
                                           ),
                                           onPressed: () {
-                                            showToast("暂未实现");
+                                            _logout(u.studentId);
                                           },
                                           child: const Text(
                                             "退出登录",

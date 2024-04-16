@@ -27,6 +27,9 @@ Future<List<TodayCourseSheet>> getTodayCourseSheetList(
   int currentWeek,
   List<TodayCourseView> courseList,
 ) async {
+  if (courseList.isEmpty) {
+    return [];
+  }
   var today = DateTime.now().atStartOfDay();
   DateTime showDate;
   int weekDay;
@@ -122,6 +125,9 @@ Future<List<List<WeekCourseSheet>>> getWeekCourseSheetList(
   List<WeekCourseView> courseList,
   bool changeWeekOnly,
 ) async {
+  if (courseList.isEmpty) {
+    return List.generate(7, (index) => []);
+  }
   //设置是否本周以及课程颜色
   for (var element in courseList) {
     element.thisWeek = element.weekList.contains(showWeek);

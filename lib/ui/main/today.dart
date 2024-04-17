@@ -126,6 +126,7 @@ void _showPoemsDetail(BuildContext context, Poems poems) {
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(16), topRight: Radius.circular(16))),
           0),
+      duration: const Duration(milliseconds: 200),
       builder: (context) {
         return Padding(
           padding:

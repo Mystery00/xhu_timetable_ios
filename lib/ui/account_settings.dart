@@ -119,7 +119,13 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
                   ]),
               Column(
                 children: list
-                    .map((u) => Card(
+                    .map(
+                      (u) => InkWell(
+                        onTap: () async {
+                          await setMainUserById(u.studentId);
+                          refresh();
+                        },
+                        child: Card(
                           margin: const EdgeInsets.all(8),
                           child: Stack(
                             children: [
@@ -239,7 +245,9 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
                               ),
                             ],
                           ),
-                        ))
+                        ),
+                      ),
+                    )
                     .toList(),
               ),
             ],

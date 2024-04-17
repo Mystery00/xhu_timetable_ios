@@ -194,6 +194,8 @@ Future<List<List<WeekCourseSheet>>> getWeekCourseSheetList(
           }
           return a.weekList.first.compareTo(b.weekList.first);
         });
+      } else {
+        continue;
       }
       var show = sheet.course.first;
       sheet.course.sort((a, b) => a.weekList.first.compareTo(b.weekList.first));

@@ -163,6 +163,8 @@ class _MenuListState extends State<_MenuList> {
         return IconsProfile.classroom;
       case "account_manage":
         return IconsProfile.accountSettings;
+      case "class_setting":
+        return IconsProfile.classSettings;
       case "settings":
         return IconsProfile.settings;
       case "notice":
@@ -185,6 +187,8 @@ class _MenuListState extends State<_MenuList> {
       case "query_score":
         return () => showToast("暂未实现");
       case "query_free_room":
+        return () => showToast("暂未实现");
+      case "class_setting":
         return () => showToast("暂未实现");
       case "settings":
         return () => showToast("暂未实现");

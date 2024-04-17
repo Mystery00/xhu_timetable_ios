@@ -31,8 +31,14 @@ class _MainRouteState extends State<MainRoute> {
   Poems? poems;
   DateTime _dateStart = DateTime.now().atStartOfDay();
   var todayCourseSheetList = <TodayCourseSheet>[];
-  var weekCourseSheetList = <List<WeekCourseSheet>>[];
-  var weekViewList = <WeekView>[];
+  List<List<WeekCourseSheet>> weekCourseSheetList = List.generate(7, (_) => []);
+  List<WeekView> weekViewList = List.generate(
+    20,
+    (index) => WeekView(
+        weekNum: index + 1,
+        thisWeek: false,
+        array: List.generate(5, (_) => List.generate(5, (_) => false))),
+  );
 
   var _currentIndex = 0;
 
@@ -168,9 +174,12 @@ class _MainRouteState extends State<MainRoute> {
           await getTodayCourseSheetList(currentWeek, cloudData.todayViewList);
       var weekCourseList = await getWeekCourseSheetList(
           currentWeek, currentWeek, cloudData.weekViewList, false);
+      var weekList =
+          await _calculateWeekView(cloudData.weekViewList, currentWeek);
       setState(() {
         todayCourseSheetList = todayCourseList;
         weekCourseSheetList = weekCourseList;
+        weekViewList = weekList;
         _loading = false;
       });
       showToast("数据同步成功");
@@ -234,7 +243,7 @@ class _MainRouteState extends State<MainRoute> {
         actions: [
           if (_currentIndex == 1)
             IconButton(
-              icon: const Icon(IconsProfile.navigationToday),
+              icon: const Icon(IconsProfile.showWeekView),
               onPressed: () {
                 _showWeekChooser(context, _week, weekViewList, (week) async {
                   await _changeWeek(week);

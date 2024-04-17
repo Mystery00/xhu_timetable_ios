@@ -127,7 +127,7 @@ Future<List<List<WeekCourseSheet>>> getWeekCourseSheetList(
   bool changeWeekOnly,
 ) async {
   if (courseList.isEmpty) {
-    return List.generate(7, (index) => []);
+    return List.generate(7, (_) => []);
   }
   //设置是否本周以及课程颜色
   for (var element in courseList) {

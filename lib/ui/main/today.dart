@@ -82,66 +82,7 @@ class _PoemsItemState extends State<_PoemsItem> {
           Expanded(
             child: InkWell(
               onTap: () {
-                showMaterialModalBottomSheet(
-                    context: context,
-                    shape: ShapeBorder.lerp(
-                        const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(16),
-                                topRight: Radius.circular(16))),
-                        const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(16),
-                                topRight: Radius.circular(16))),
-                        0),
-                    builder: (context) {
-                      return Padding(
-                        padding: const EdgeInsets.only(
-                            top: 8, bottom: 32, left: 32, right: 32),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Center(
-                              child: Text(
-                                "《${widget.poems!.title}》",
-                                style: const TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Center(
-                              child: Text(
-                                "[${widget.poems!.dynasty}] ${widget.poems!.author}",
-                                style: const TextStyle(fontSize: 12),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Center(
-                              child: Text(
-                                widget.poems!.fullContent.join("\n"),
-                                style: const TextStyle(fontSize: 12),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            if (widget.poems!.translate != null &&
-                                widget.poems!.translate!.isNotEmpty)
-                              const SizedBox(height: 6),
-                            if (widget.poems!.translate != null &&
-                                widget.poems!.translate!.isNotEmpty)
-                              SizedBox(
-                                width: double.infinity,
-                                child: Text(
-                                  "诗词大意：${widget.poems!.translate!.join("")}",
-                                  style: const TextStyle(fontSize: 11),
-                                ),
-                              ),
-                            const SizedBox(height: 24),
-                          ],
-                        ),
-                      );
-                    });
+                _showPoemsDetail(context, widget.poems!);
               },
               child: Card(
                 margin: const EdgeInsets.only(right: 8),
@@ -172,6 +113,65 @@ class _PoemsItemState extends State<_PoemsItem> {
       ),
     );
   }
+}
+
+void _showPoemsDetail(BuildContext context, Poems poems) {
+  showMaterialModalBottomSheet(
+      context: context,
+      shape: ShapeBorder.lerp(
+          const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16), topRight: Radius.circular(16))),
+          const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16), topRight: Radius.circular(16))),
+          0),
+      builder: (context) {
+        return Padding(
+          padding:
+              const EdgeInsets.only(top: 8, bottom: 32, left: 32, right: 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Text(
+                  "《${poems.title}》",
+                  style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Center(
+                child: Text(
+                  "[${poems.dynasty}] ${poems.author}",
+                  style: const TextStyle(fontSize: 12),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Center(
+                child: Text(
+                  poems!.fullContent.join("\n"),
+                  style: const TextStyle(fontSize: 12),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              if (poems.translate != null && poems.translate!.isNotEmpty)
+                const SizedBox(height: 6),
+              if (poems.translate != null && poems.translate!.isNotEmpty)
+                SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    "诗词大意：${poems.translate!.join("")}",
+                    style: const TextStyle(fontSize: 11),
+                  ),
+                ),
+              const SizedBox(height: 24),
+            ],
+          ),
+        );
+      });
 }
 
 Widget _buildTodayCourseContent(BuildContext context, TodayCourseSheet course) {

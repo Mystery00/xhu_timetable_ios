@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:logger/logger.dart';
 import 'package:xhu_timetable_ios/model/poems.dart';
+import 'package:xhu_timetable_ios/model/transfer/week_course_view.dart';
 import 'package:xhu_timetable_ios/repository/main.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
 import 'package:xhu_timetable_ios/store/cache_store.dart';
@@ -30,6 +31,7 @@ class _MainRouteState extends State<MainRoute> {
   DateTime _dateStart = DateTime.now().atStartOfDay();
   var todayCourseSheetList = <TodayCourseSheet>[];
   var weekCourseSheetList = <List<WeekCourseSheet>>[];
+  var weekViewList = <WeekView>[];
 
   var _currentIndex = 0;
 
@@ -69,6 +71,27 @@ class _MainRouteState extends State<MainRoute> {
     });
   }
 
+  Future<void> _changeWeek(int week) async {
+    var termStartDate = await getTermStartDate();
+    var currentWeek = await XhuRepo.calculateWeek();
+    setState(() {
+      _week = week;
+    });
+    var (data, loadWarning) = await getMainPageData(false, true);
+    if (loadWarning.isNotEmpty) {
+      showToast(loadWarning);
+    }
+    var weekCourseList = await getWeekCourseSheetList(
+        currentWeek, week, data.weekViewList, true);
+    setState(() {
+      weekCourseSheetList = weekCourseList;
+    });
+    var dateStart = termStartDate.add(Duration(days: 7 * (week - 1)));
+    setState(() {
+      _dateStart = dateStart;
+    });
+  }
+
   // 初始化时候加载数据的方法
   Future<void> _loadLocalDataToState(bool changeWeekOnly) async {
     try {
@@ -91,6 +114,10 @@ class _MainRouteState extends State<MainRoute> {
       setState(() {
         weekCourseSheetList = weekCourseList;
       });
+      var weekList = await _calculateWeekView(data.weekViewList, currentWeek);
+      setState(() {
+        weekViewList = weekList;
+      });
       if (loadFromCloud) {
         //需要从云端加载数据
         var (cloudData, loadWarning) = await getMainPageData(true, false);
@@ -106,6 +133,10 @@ class _MainRouteState extends State<MainRoute> {
             currentWeek, currentWeek, cloudData.weekViewList, changeWeekOnly);
         setState(() {
           weekCourseSheetList = weekCourseList;
+        });
+        var weekList = await _calculateWeekView(data.weekViewList, currentWeek);
+        setState(() {
+          weekViewList = weekList;
         });
       }
       setState(() {
@@ -200,6 +231,15 @@ class _MainRouteState extends State<MainRoute> {
           child: Text(title),
         ),
         actions: [
+          if (_currentIndex == 1)
+            IconButton(
+              icon: const Icon(IconsProfile.navigationToday),
+              onPressed: () {
+                _showWeekChooser(context, _week, weekViewList, (week) async {
+                  await _changeWeek(week);
+                });
+              },
+            ),
           if (_loading)
             SizedBox(
               height: 48,
@@ -260,4 +300,141 @@ class _MainRouteState extends State<MainRoute> {
       ),
     );
   }
+}
+
+void _showWeekChooser(BuildContext context, int showWeek,
+    List<WeekView> weekViewList, Function(int) onWeekChange) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return SimpleDialog(
+        children: [
+          for (var i = 0; i < 5; i++)
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                children: [
+                  for (var j = 0; j < 4; j++)
+                    Expanded(
+                      child: InkWell(
+                        onTap: () {
+                          onWeekChange(weekViewList[i * 4 + j].weekNum);
+                          Navigator.of(context).pop();
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: i * 4 + j == showWeek - 1
+                                ? Border.all(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    width: 1,
+                                  )
+                                : null,
+                            color: weekViewList[i * 4 + j].thisWeek
+                                ? Theme.of(context)
+                                    .colorScheme
+                                    .secondaryContainer
+                                : null,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.all(4),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Center(
+                                child: CustomPaint(
+                                  size: const Size(36, 36),
+                                  painter: WeekPointPainer(
+                                      array: weekViewList[i * 4 + j].array),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              Text(
+                                "第${weekViewList[i * 4 + j].weekNum}周",
+                                style: const TextStyle(fontSize: 10),
+                                maxLines: 1,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+        ],
+      );
+    },
+  );
+}
+
+class WeekPointPainer extends CustomPainter {
+  final List<List<bool>> array;
+
+  WeekPointPainer({super.repaint, required this.array});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    var paint1 = Paint()
+      ..color = const Color(0xFF3FCAB8)
+      ..strokeWidth = 1
+      ..style = PaintingStyle.fill;
+    var paint2 = Paint()
+      ..color = const Color(0xFFCFDBDB)
+      ..strokeWidth = 1
+      ..style = PaintingStyle.fill;
+    var width = size.width / 5;
+    var height = size.height / 5;
+    for (var i = 0; i < 5; i++) {
+      for (var j = 0; j < 5; j++) {
+        canvas.drawCircle(
+            Offset(width * i + width / 2, height * j + height / 2),
+            2.5,
+            array[i][j] ? paint1 : paint2);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
+  }
+}
+
+Future<List<WeekView>> _calculateWeekView(
+    List<WeekCourseView> courseList, int currentWeek) async {
+  List<WeekView> result = List.generate(
+    20,
+    (index) => WeekView(
+        weekNum: index + 1,
+        thisWeek: index + 1 == currentWeek,
+        array: List.generate(5, (_) => List.generate(5, (_) => false))),
+  );
+  for (var course in courseList) {
+    if (course.dayIndex > 5 || course.startDayTime > 10) {
+      continue;
+    }
+    for (var w in course.weekList) {
+      for (var index = course.startDayTime;
+          index <= course.endDayTime && index <= 10;
+          index++) {
+        result[w - 1].array[course.dayIndex - 1][(index - 1) ~/ 2] = true;
+      }
+    }
+  }
+  return result;
+}
+
+class WeekView {
+  final int weekNum;
+  final bool thisWeek;
+  final List<List<bool>> array;
+
+  WeekView({
+    required this.weekNum,
+    required this.thisWeek,
+    required this.array,
+  });
 }

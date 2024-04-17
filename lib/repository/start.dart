@@ -1,6 +1,7 @@
 import 'package:xhu_timetable_ios/api/rest/common.dart';
 import 'package:xhu_timetable_ios/api/rest/menu.dart';
 import 'package:xhu_timetable_ios/model/menu.dart';
+import 'package:xhu_timetable_ios/store/cache_store.dart';
 import 'package:xhu_timetable_ios/store/config_store.dart';
 import 'package:xhu_timetable_ios/store/menu_store.dart';
 import 'package:xhu_timetable_ios/store/user_store.dart';

@@ -6,6 +6,7 @@ import 'package:xhu_timetable_ios/model/transfer/today_course_view.dart';
 import 'package:xhu_timetable_ios/model/transfer/week_course_view.dart';
 import 'package:xhu_timetable_ios/repository/aggregation.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
+import 'package:xhu_timetable_ios/store/config_store.dart';
 import 'package:xhu_timetable_ios/ui/theme/colors.dart';
 
 AggregationRepo _aggregationRepo = AggregationRepo();
@@ -146,12 +147,6 @@ Future<List<List<WeekCourseSheet>>> getWeekCourseSheetList(
       expandTableCourse[day][i - 1].course.add(course);
     }
   }
-  //过滤非本周课程
-  for (var array in expandTableCourse) {
-    for (var sheet in array) {
-      sheet.course.removeWhere((element) => !element.thisWeek);
-    }
-  }
   //使用key判断格子内容是否相同，相同则合并
   var tableCourse = List.generate(7, (day) {
     var dayArray = expandTableCourse[day];
@@ -208,8 +203,17 @@ Future<List<List<WeekCourseSheet>>> getWeekCourseSheetList(
         sheet.textColor = Colors.white;
       } else {
         sheet.showTitle = "[非本周]\n${show.courseName}\n@${show.location}";
-        sheet.color = Colors.transparent;
+        sheet.color = const Color(0xFFe5e5e5);
         sheet.textColor = Colors.grey;
+      }
+    }
+  }
+  //过滤非本周课程
+  var showNotThisWeek = await getShowNotThisWeek();
+  if (!showNotThisWeek) {
+    for (var array in tableCourse) {
+      for (var sheet in array) {
+        sheet.course.removeWhere((element) => !element.thisWeek);
       }
     }
   }

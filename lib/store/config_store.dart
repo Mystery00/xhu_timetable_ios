@@ -12,15 +12,30 @@ Future<MMKV> _getConfigStore() async {
   return _instance!;
 }
 
-Future<String> getUserStoreSecret() async {
+Future<String> _getString(String key, String defaultValue) async {
   var store = await _getConfigStore();
-  return store.decodeString("userStoreSecret") ?? "";
+  return store.decodeString(key) ?? defaultValue;
 }
 
-Future<void> setUserStoreSecret(String secret) async {
+Future<void> _setString(String key, String value) async {
   var store = await _getConfigStore();
-  store.encodeString('userStoreSecret', secret);
+  store.encodeString(key, value);
 }
+
+Future<bool> _getBool(String key, {bool defaultValue = false}) async {
+  var store = await _getConfigStore();
+  return store.decodeBool(key, defaultValue: defaultValue);
+}
+
+Future<void> _setBool(String key, bool value) async {
+  var store = await _getConfigStore();
+  store.encodeBool(key, value);
+}
+
+Future<String> getUserStoreSecret() => _getString('userStoreSecret', '');
+
+Future<void> setUserStoreSecret(String secret) =>
+    _setString('userStoreSecret', secret);
 
 Future<DateTime> getTermStartDate() =>
     getCustomTermStartDate().then((value) => value.data);
@@ -101,26 +116,11 @@ Future<void> setCustomNowTerm(Customisable<int> value) async {
   store.encodeInt(key, value.data);
 }
 
-Future<List<(DateTime, DateTime)>> getCourseTime() async {
-  var store = await _getConfigStore();
-  var value = store.decodeString("courseTime");
-  if (value == null) {
-    return List.empty();
-  }
-  Map<String, dynamic> m = json.decode(value);
-  List<(DateTime, DateTime)> list = [];
-  for (var key in m.keys) {
-    var value = m[key];
-    list.add(
-        (DateTimeExt.localTimeNoSeconds(key), DateTimeExt.localTimeNoSeconds(value.toString())));
-  }
-  return list;
-}
+Future<bool> getShowNotThisWeek() =>
+    _getBool("showNotThisWeek", defaultValue: true);
 
-Future<void> setCourseTime(Map<String, String> value) async {
-  var store = await _getConfigStore();
-  store.encodeString("courseTime", json.encode(value));
-}
+Future<void> setShowNotThisWeek(bool value) =>
+    _setBool("showNotThisWeek", value);
 
 String _mapKey(String key) => "$key-custom";
 

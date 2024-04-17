@@ -80,7 +80,7 @@ class WeekCourseView {
       extraData.add("实验分组：${experimentCourse.experimentGroupName}");
     }
     return WeekCourseView(
-      courseName: experimentCourse.courseName,
+      courseName: experimentCourse.experimentProjectName,
       weekStr: experimentCourse.weekStr,
       weekList: experimentCourse.weekList,
       dayIndex: experimentCourse.dayIndex,

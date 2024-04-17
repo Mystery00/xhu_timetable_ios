@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:xhu_timetable_ios/repository/user.dart';
 import 'package:xhu_timetable_ios/store/user_store.dart';
 import 'package:xhu_timetable_ios/toast.dart';
+import 'package:xhu_timetable_ios/ui/routes.dart';
 import 'package:xhu_timetable_ios/ui/theme/profile.dart';
 
 class AccountSettingsRoute extends StatefulWidget {
@@ -51,6 +52,16 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton.extended(
+          onPressed: () async {
+            var loginOther =
+                await Navigator.pushNamed(context, routeLogin, arguments: true);
+            bool loginOtherAccount = loginOther as bool;
+            if (loginOtherAccount) {
+              refresh();
+            }
+          },
+          label: const Text("登录其他账号")),
       body: Container(
           color: Theme.of(context).colorScheme.surfaceVariant,
           child: ListView(

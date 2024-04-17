@@ -1,5 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:xhu_timetable_ios/api/server.dart';
 import 'package:xhu_timetable_ios/repository/login.dart';
+import 'package:xhu_timetable_ios/store/user_store.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
 import 'package:xhu_timetable_ios/toast.dart';
 
@@ -14,15 +18,36 @@ class LoginRouteState extends State<LoginRoute> {
   final TextEditingController _unameController = TextEditingController();
   final TextEditingController _pwdController = TextEditingController();
   String loginLabel = "密码填写说明";
-  String errorText = "";
 
   @override
   void initState() {
     super.initState();
   }
 
+  void showLoading() {
+    showDialog(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        title: const Text("登录中"),
+        content: SizedBox(
+          height: 64,
+          child: SpinKitSquareCircle(
+            color: Theme.of(context).colorScheme.primary,
+            size: 32,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void dismissLoading() {
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
+    bool fromSettings =
+        ModalRoute.of(context)!.settings.arguments as bool? ?? false;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Column(
@@ -70,7 +95,7 @@ class LoginRouteState extends State<LoginRoute> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                     child: Text(
-                      errorText,
+                      loginLabel,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.outline,
                         fontSize: 12,
@@ -84,9 +109,15 @@ class LoginRouteState extends State<LoginRoute> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () => {
-                      _doLogin().then((value) => value
-                          ? Navigator.pushReplacementNamed(context, routeMain)
-                          : null)
+                      _doLogin().then((loginSuccess) {
+                        if (loginSuccess) {
+                          if (fromSettings) {
+                            Navigator.pop(context, true);
+                          } else {
+                            Navigator.pushReplacementNamed(context, routeMain);
+                          }
+                        }
+                      })
                     },
                     style: TextButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -98,6 +129,23 @@ class LoginRouteState extends State<LoginRoute> {
                     ),
                   ),
                 ),
+                if (fromSettings)
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      style: TextButton.styleFrom(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.primaryContainer,
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
+                      child: const Text(
+                        "返回账号管理",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -108,15 +156,17 @@ class LoginRouteState extends State<LoginRoute> {
 
   Future<bool> _doLogin() async {
     if (_unameController.text.isEmpty) {
-      setState(() {
-        errorText = "学号不能为空";
-      });
+      showToast("学号不能为空");
       return false;
     }
     if (_pwdController.text.isEmpty) {
-      setState(() {
-        errorText = "密码不能为空";
-      });
+      showToast("密码不能为空");
+      return false;
+    }
+    showLoading();
+    if (await getUserByStudentId(_unameController.text) != null) {
+      showToast("该用户已登录！");
+      dismissLoading();
       return false;
     }
     try {
@@ -124,7 +174,9 @@ class LoginRouteState extends State<LoginRoute> {
       showToast("登录成功，欢迎使用西瓜课表");
       return true;
     } catch (e) {
-      showToast(e.toString());
+      showToast(handleException(e));
+    } finally {
+      dismissLoading();
     }
     return false;
   }

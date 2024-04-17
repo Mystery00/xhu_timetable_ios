@@ -2,6 +2,7 @@ import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:logger/logger.dart';
+import 'package:xhu_timetable_ios/api/server.dart';
 import 'package:xhu_timetable_ios/model/poems.dart';
 import 'package:xhu_timetable_ios/model/transfer/week_course_view.dart';
 import 'package:xhu_timetable_ios/repository/main.dart';
@@ -147,7 +148,7 @@ class _MainRouteState extends State<MainRoute> {
       setState(() {
         _loading = false;
       });
-      showToast("数据加载失败, $e");
+      showToast("数据加载失败, ${handleException(e)}");
     }
   }
 
@@ -319,7 +320,7 @@ void _showWeekChooser(BuildContext context, int showWeek,
                       child: InkWell(
                         onTap: () {
                           onWeekChange(weekViewList[i * 4 + j].weekNum);
-                          Navigator.of(context).pop();
+                          Navigator.pop(context);
                         },
                         child: Container(
                           decoration: BoxDecoration(

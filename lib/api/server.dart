@@ -76,11 +76,25 @@ Dio getServerClient() {
       if (resp.statusCode == 401) {
         throw ServerNeedLoginException();
       }
-      var msg = resp.data['message'] ?? "未知错误";
-      throw ServerError(msg);
+      int code = resp.data['code'] ?? -1;
+      String msg = resp.data['message'] ?? "未知错误";
+      throw ServerError(code: code, message: msg);
     },
   ));
   return dio;
+}
+
+String handleException(Object e) {
+  if (e is ServerError) {
+    return e.message;
+  }
+  if (e is DioException) {
+    if (e.error is ServerError){
+      return (e.error as ServerError).message;
+    }
+    return e.error.toString();
+  }
+  return e.toString();
 }
 
 String _mapToString(Map<String, String> m) {
@@ -103,12 +117,8 @@ String _mapToString(Map<String, String> m) {
 class ServerNeedLoginException implements Exception {}
 
 class ServerError {
+  final int code;
   final String message;
 
-  ServerError(this.message);
-
-  @override
-  String toString() {
-    return message;
-  }
+  ServerError({required this.code, required this.message});
 }

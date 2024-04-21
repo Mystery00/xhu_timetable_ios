@@ -189,7 +189,7 @@ class _MenuListState extends State<_MenuList> {
       case "query_free_room":
         return () => showToast("暂未实现");
       case "class_setting":
-        return () => showToast("暂未实现");
+        return () => Navigator.pushNamed(context, routeClassSettings);
       case "settings":
         return () => showToast("暂未实现");
       case "notice":

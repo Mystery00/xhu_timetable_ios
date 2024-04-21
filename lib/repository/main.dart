@@ -65,6 +65,7 @@ Future<List<TodayCourseSheet>> getTodayCourseSheetList(
       showListGroupByStudentId[element.user.studentId] = [element];
     }
   }
+  var showStatus = await getShowStatus();
   showListGroupByStudentId.forEach((key, list) {
     var last = list.first;
     var lastKey = last.key;
@@ -105,7 +106,7 @@ Future<List<TodayCourseSheet>> getTodayCourseSheetList(
     for (var i = element.startDayTime; i <= element.endDayTime; i++) {
       timeSet.add(i);
     }
-    todayCourseSheetList.add(TodayCourseSheet(
+    var sheet = TodayCourseSheet(
         courseName: element.courseName,
         teacherName: element.teacher,
         timeSet: timeSet,
@@ -114,8 +115,11 @@ Future<List<TodayCourseSheet>> getTodayCourseSheetList(
         timeString: element.courseDayTime,
         location: element.location,
         color: element.backgroundColor,
-        showDate: showDate)
-      ..calc(now));
+        showDate: showDate);
+    if (showStatus) {
+      sheet.calc(now);
+    }
+    todayCourseSheetList.add(sheet);
   }
   return todayCourseSheetList;
 }
@@ -124,7 +128,6 @@ Future<List<List<WeekCourseSheet>>> getWeekCourseSheetList(
   int currentWeek,
   int showWeek,
   List<WeekCourseView> courseList,
-  bool changeWeekOnly,
 ) async {
   if (courseList.isEmpty) {
     return List.generate(7, (_) => []);
@@ -134,6 +137,11 @@ Future<List<List<WeekCourseSheet>>> getWeekCourseSheetList(
     element.thisWeek = element.weekList.contains(showWeek);
     element.backgroundColor = ColorPool.hash(element.courseName);
     element.generateKey();
+  }
+  //过滤非本周课程
+  var showNotThisWeek = await getShowNotThisWeek();
+  if (!showNotThisWeek) {
+    courseList.removeWhere((element) => !element.thisWeek);
   }
   //组建表格数据
   List<List<WeekCourseSheet>> expandTableCourse = List.generate(
@@ -207,15 +215,6 @@ Future<List<List<WeekCourseSheet>>> getWeekCourseSheetList(
         sheet.showTitle = "[非本周]\n${show.courseName}\n@${show.location}";
         sheet.color = const Color(0xFFe5e5e5);
         sheet.textColor = Colors.grey;
-      }
-    }
-  }
-  //过滤非本周课程
-  var showNotThisWeek = await getShowNotThisWeek();
-  if (!showNotThisWeek) {
-    for (var array in tableCourse) {
-      for (var sheet in array) {
-        sheet.course.removeWhere((element) => !element.thisWeek);
       }
     }
   }

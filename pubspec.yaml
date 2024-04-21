@@ -1,7 +1,7 @@
 name: xhu_timetable_ios
 description: "查课查成绩，就用西瓜课表"
 publish_to: 'none'
-version: 1.0.0+49
+version: 1.0.0+50
 
 environment:
   sdk: '>=3.3.2 <4.0.0'
@@ -17,6 +17,7 @@ dependencies:
     sdk: flutter
   logger: ^2.2.0
   babstrap_settings_screen:
+    # path: ../babstrap_settings_screen
     git:
       url: https://github.com/Mystery00/babstrap_settings_screen.git
   device_info_plus: ^10.0.1
@@ -37,6 +38,7 @@ dependencies:
   flashy_tab_bar2: ^0.0.10
   modal_bottom_sheet: ^3.0.0
   flutter_svg_provider: ^1.0.7
+  event_bus: ^2.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

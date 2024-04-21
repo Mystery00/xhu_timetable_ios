@@ -9,3 +9,7 @@ Future<User?> getMainUserWithCache() async {
   _mainUser = await getMainUser();
   return _mainUser;
 }
+
+Future<void> clearMainUserCache() async {
+  _mainUser = null;
+}

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:mmkv/mmkv.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
 
@@ -121,6 +119,10 @@ Future<bool> getShowNotThisWeek() =>
 
 Future<void> setShowNotThisWeek(bool value) =>
     _setBool("showNotThisWeek", value);
+
+Future<bool> getShowStatus() => _getBool("showStatus", defaultValue: true);
+
+Future<void> setShowStatus(bool value) => _setBool("showStatus", value);
 
 String _mapKey(String key) => "$key-custom";
 

@@ -153,7 +153,7 @@ void _showPoemsDetail(BuildContext context, Poems poems) {
               const SizedBox(height: 6),
               Center(
                 child: Text(
-                  poems!.fullContent.join("\n"),
+                  poems.fullContent.join("\n"),
                   style: const TextStyle(fontSize: 12),
                   textAlign: TextAlign.center,
                 ),
@@ -275,27 +275,29 @@ Widget _buildTodayCourseContent(BuildContext context, TodayCourseSheet course) {
                         ),
                       ],
                     )),
-                Positioned(
-                  right: 0,
-                  bottom: 0,
-                  child: Container(
-                    padding: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(4),
-                        bottomRight: Radius.circular(12),
+                if (course.courseStatus.isNotEmpty)
+                  Positioned(
+                    right: 0,
+                    bottom: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          bottomRight: Radius.circular(12),
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      course.courseStatus,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
-                        fontSize: 12,
+                      child: Text(
+                        course.courseStatus,
+                        style: TextStyle(
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
+                          fontSize: 12,
+                        ),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
           ),

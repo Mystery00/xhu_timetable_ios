@@ -1,5 +1,8 @@
 import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
+import 'package:xhu_timetable_ios/event/bus.dart';
+import 'package:xhu_timetable_ios/event/ui.dart';
 import 'package:xhu_timetable_ios/repository/user.dart';
 import 'package:xhu_timetable_ios/store/user_store.dart';
 import 'package:xhu_timetable_ios/toast.dart';
@@ -14,6 +17,8 @@ class AccountSettingsRoute extends StatefulWidget {
 }
 
 class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
+  EventBus eventBus = getEventBus();
+
   var editMode = false;
   List<LoggedUserItem> list = [];
 
@@ -32,7 +37,10 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
   }
 
   void _logout(String studentId) async {
-    await logout(studentId);
+    var result = await logout(studentId);
+    if (result) {
+      eventBus.fire(UIChangeEvent.mainUserLogout());
+    }
     refresh();
   }
 
@@ -123,6 +131,7 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
                       (u) => InkWell(
                         onTap: () async {
                           await setMainUserById(u.studentId);
+                          eventBus.fire(UIChangeEvent.changeMainUser());
                           refresh();
                         },
                         child: Card(

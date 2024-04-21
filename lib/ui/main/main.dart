@@ -1,16 +1,22 @@
+import 'package:event_bus/event_bus.dart';
 import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:logger/logger.dart';
 import 'package:xhu_timetable_ios/api/server.dart';
+import 'package:xhu_timetable_ios/event/bus.dart';
+import 'package:xhu_timetable_ios/event/ui.dart';
 import 'package:xhu_timetable_ios/model/poems.dart';
 import 'package:xhu_timetable_ios/model/transfer/week_course_view.dart';
 import 'package:xhu_timetable_ios/repository/main.dart';
+import 'package:xhu_timetable_ios/repository/profile.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
 import 'package:xhu_timetable_ios/store/cache_store.dart';
 import 'package:xhu_timetable_ios/store/config_store.dart';
 import 'package:xhu_timetable_ios/store/poems_store.dart';
+import 'package:xhu_timetable_ios/store/user_store.dart';
 import 'package:xhu_timetable_ios/toast.dart';
+import 'package:xhu_timetable_ios/ui/routes.dart';
 import 'package:xhu_timetable_ios/ui/theme/icons.dart';
 
 import 'today.dart';
@@ -25,6 +31,8 @@ class MainRoute extends StatefulWidget {
 }
 
 class _MainRouteState extends State<MainRoute> {
+  EventBus eventBus = getEventBus();
+
   var _loading = false;
   var todayWeek = 1;
   var _week = 1;
@@ -46,12 +54,34 @@ class _MainRouteState extends State<MainRoute> {
   void initState() {
     super.initState();
     _init();
+    eventBus.on<UIChangeEvent>().listen((event) async {
+      if (event.isChangeMainUser()) {
+        await _checkMainUser();
+        await _refreshCloudDataToState();
+      } else if (event.isMainUserLogout()) {
+        await _checkMainUser();
+      } else if (event.isChangeCurrentYearAndTerm()) {
+        await _refreshCloudDataToState();
+      } else if (event.isChangeTermStartDate() ||
+          event.isShowNotThisWeek() ||
+          event.isShowStatus()) {
+        await _loadLocalDataToState(true);
+      }
+    });
   }
 
   Future<void> _init() async {
     await _showPoems();
     await _calculateWeek();
     await _loadLocalDataToState(false);
+  }
+
+  Future<void> _checkMainUser() async {
+    var mainUser = await getMainUser();
+    if (mainUser == null) {
+      await clearMainUserCache();
+      Navigator.pushReplacementNamed(context, routeLogin);
+    }
   }
 
   Future<void> _showPoems() async {
@@ -89,7 +119,7 @@ class _MainRouteState extends State<MainRoute> {
       showToast(loadWarning);
     }
     var weekCourseList = await getWeekCourseSheetList(
-        currentWeek, week, data.weekViewList, true);
+        currentWeek, week, data.weekViewList);
     setState(() {
       weekCourseSheetList = weekCourseList;
     });
@@ -105,8 +135,7 @@ class _MainRouteState extends State<MainRoute> {
       setState(() {
         _loading = true;
       });
-      var (currentWeek, loadFromCloud) =
-          await _loadCourseConfig(changeWeekOnly);
+      var (currentWeek, loadFromCloud) = await _loadCourseConfig(false);
       var (data, loadWarning) = await getMainPageData(false, true);
       if (loadWarning.isNotEmpty) {
         showToast(loadWarning);
@@ -117,14 +146,16 @@ class _MainRouteState extends State<MainRoute> {
         todayCourseSheetList = todayCourseList;
       });
       var weekCourseList = await getWeekCourseSheetList(
-          currentWeek, currentWeek, data.weekViewList, changeWeekOnly);
+          currentWeek, currentWeek, data.weekViewList);
       setState(() {
         weekCourseSheetList = weekCourseList;
       });
-      var weekList = await _calculateWeekView(data.weekViewList, currentWeek);
-      setState(() {
-        weekViewList = weekList;
-      });
+      if (!changeWeekOnly) {
+        var weekList = await _calculateWeekView(data.weekViewList, currentWeek);
+        setState(() {
+          weekViewList = weekList;
+        });
+      }
       if (loadFromCloud) {
         //需要从云端加载数据
         var (cloudData, loadWarning) = await getMainPageData(true, false);
@@ -137,14 +168,17 @@ class _MainRouteState extends State<MainRoute> {
           todayCourseSheetList = todayCourseList;
         });
         var weekCourseList = await getWeekCourseSheetList(
-            currentWeek, currentWeek, cloudData.weekViewList, changeWeekOnly);
+            currentWeek, currentWeek, cloudData.weekViewList);
         setState(() {
           weekCourseSheetList = weekCourseList;
         });
-        var weekList = await _calculateWeekView(data.weekViewList, currentWeek);
-        setState(() {
-          weekViewList = weekList;
-        });
+        if (!changeWeekOnly) {
+          var weekList =
+              await _calculateWeekView(data.weekViewList, currentWeek);
+          setState(() {
+            weekViewList = weekList;
+          });
+        }
       }
       setState(() {
         _loading = false;
@@ -173,7 +207,7 @@ class _MainRouteState extends State<MainRoute> {
       var todayCourseList =
           await getTodayCourseSheetList(currentWeek, cloudData.todayViewList);
       var weekCourseList = await getWeekCourseSheetList(
-          currentWeek, currentWeek, cloudData.weekViewList, false);
+          currentWeek, currentWeek, cloudData.weekViewList);
       var weekList =
           await _calculateWeekView(cloudData.weekViewList, currentWeek);
       setState(() {

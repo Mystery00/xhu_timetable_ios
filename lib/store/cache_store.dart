@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:mmkv/mmkv.dart';
+import 'package:xhu_timetable_ios/model/team_member.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
 
 MMKV? _instance;
@@ -55,3 +56,15 @@ Future<List<(DateTime, DateTime)>> getCourseTime() async {
 
 Future<void> setCourseTime(Map<String, String> value) =>
     _setString("courseTime", json.encode(value));
+
+Future<List<TeamMember>> getTeamMemberList() async {
+  var value = await _getStringN('teamMemberList');
+  if (value == null) {
+    return List.empty();
+  }
+  List<dynamic> list = json.decode(value);
+  return List<TeamMember>.from(list.map((x) => TeamMember.fromJson(x)));
+}
+
+Future<void> setTeamMemberList(List<TeamMember> value) =>
+    _setString("teamMemberList", json.encode(value));

@@ -191,7 +191,7 @@ class _MenuListState extends State<_MenuList> {
       case "class_setting":
         return () => Navigator.pushNamed(context, routeClassSettings);
       case "settings":
-        return () => showToast("暂未实现");
+        return () => Navigator.pushNamed(context, routeSettings);
       case "notice":
         return () => showToast("暂未实现");
       case "share":

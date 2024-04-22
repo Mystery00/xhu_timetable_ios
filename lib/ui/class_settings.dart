@@ -1,4 +1,3 @@
-import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -8,6 +7,7 @@ import 'package:xhu_timetable_ios/repository/xhu.dart';
 import 'package:xhu_timetable_ios/store/config_store.dart';
 import 'package:xhu_timetable_ios/store/user_store.dart';
 import 'package:xhu_timetable_ios/toast.dart';
+import 'package:xhu_timetable_ios/ui/theme/settings.dart';
 
 class ClassSettingsRoute extends StatefulWidget {
   const ClassSettingsRoute({super.key});
@@ -84,104 +84,71 @@ class _ClassSettingsRouteState extends State<ClassSettingsRoute> {
         color: Theme.of(context).colorScheme.surfaceVariant,
         child: ListView(
           children: [
-            SettingsGroup(
-                margin: const EdgeInsets.all(8),
-                iconItemSize: 24,
-                settingsGroupTitle: "显示设置",
-                settingsGroupTitleStyle: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-                items: [
-                  SettingsItem(
-                    iconImage:
-                        const Svg("assets/icons/svg/ic_show_not_this_week.svg"),
-                    title: "显示非本周课程",
-                    titleStyle: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface),
-                    trailing: Switch(
-                        value: _showNotThisWeek,
-                        onChanged: (value) {
-                          setShowNotThisWeek(value).then((_) {
-                            setState(() {
-                              _showNotThisWeek = value;
-                            });
-                            eventBus.fire(UIChangeEvent.showNotThisWeek());
+            context.buildSettingsGroup(
+              title: "显示设置",
+              items: [
+                context.buildSettingsItem(
+                  iconImage:
+                      const Svg("assets/icons/svg/ic_show_not_this_week.svg"),
+                  title: "显示非本周课程",
+                  trailing: Switch(
+                      value: _showNotThisWeek,
+                      onChanged: (value) {
+                        setShowNotThisWeek(value).then((_) {
+                          setState(() {
+                            _showNotThisWeek = value;
                           });
-                        }),
-                  ),
-                  SettingsItem(
-                    iconImage: const Svg("assets/icons/svg/ic_show_status.svg"),
-                    title: "显示今日课程状态",
-                    titleStyle: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface),
-                    trailing: Switch(
-                        value: _showStatus,
-                        onChanged: (value) {
-                          setShowStatus(value).then((_) {
-                            setState(() {
-                              _showStatus = value;
-                            });
-                            eventBus.fire(UIChangeEvent.showStatus());
-                          });
-                        }),
-                  ),
-                ]),
-            SettingsGroup(
-                margin: const EdgeInsets.all(8),
-                iconItemSize: 24,
-                settingsGroupTitle: "时间设置",
-                settingsGroupTitleStyle: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+                          eventBus.fire(UIChangeEvent.showNotThisWeek());
+                        });
+                      }),
                 ),
-                items: [
-                  SettingsItem(
-                    iconImage:
-                        const Svg("assets/icons/svg/ic_now_year_term.svg"),
-                    title: "更改当前学期",
-                    titleStyle: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface),
-                    subtitle:
-                        "当前学期：${_customNowYear.data}年 第${_customNowTerm.data}学期${!_customNowYear.custom && !_customNowTerm.custom ? "\n【根据当前时间自动计算所得】" : ""}",
-                    subtitleStyle: TextStyle(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withAlpha(170)),
-                    onTap: () => showCustomNowYearTermDialog(),
-                  ),
-                  SettingsItem(
-                    iconImage:
-                        const Svg("assets/icons/svg/ic_term_start_date.svg"),
-                    title: "更改开学时间",
-                    titleStyle: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface),
-                    subtitle:
-                        "当前开学时间：${_customTermStartDate.data.formatDate()}${!_customTermStartDate.custom ? "\n【从云端获取】" : ""}",
-                    subtitleStyle: TextStyle(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withAlpha(170)),
-                    onTap: () => showCustomTermStartDateDialog(),
-                  ),
-                  SettingsItem(
-                    iconImage: const Svg(
-                        "assets/icons/svg/ic_set_term_start_date_server.svg"),
-                    title: "设置开学时间为自动获取",
-                    titleStyle: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface),
-                    onTap: () async {
-                      await setCustomTermStartDate(Customisable.clearCustom(
-                          DateTime.fromMillisecondsSinceEpoch(0)));
-                      showToast("设置成功");
-                      _init();
-                    },
-                  ),
-                ]),
+                context.buildSettingsItem(
+                  iconImage: const Svg("assets/icons/svg/ic_show_status.svg"),
+                  title: "显示今日课程状态",
+                  trailing: Switch(
+                      value: _showStatus,
+                      onChanged: (value) {
+                        setShowStatus(value).then((_) {
+                          setState(() {
+                            _showStatus = value;
+                          });
+                          eventBus.fire(UIChangeEvent.showStatus());
+                        });
+                      }),
+                ),
+              ],
+            ),
+            context.buildSettingsGroup(
+              title: "时间设置",
+              items: [
+                context.buildSettingsItem(
+                  iconImage: const Svg("assets/icons/svg/ic_now_year_term.svg"),
+                  title: "更改当前学期",
+                  subtitle:
+                      "当前学期：${_customNowYear.data}年 第${_customNowTerm.data}学期${!_customNowYear.custom && !_customNowTerm.custom ? "\n【根据当前时间自动计算所得】" : ""}",
+                  onTap: () => showCustomNowYearTermDialog(),
+                ),
+                context.buildSettingsItem(
+                  iconImage:
+                      const Svg("assets/icons/svg/ic_term_start_date.svg"),
+                  title: "更改开学时间",
+                  subtitle:
+                      "当前开学时间：${_customTermStartDate.data.formatDate()}${!_customTermStartDate.custom ? "\n【从云端获取】" : ""}",
+                  onTap: () => showCustomTermStartDateDialog(),
+                ),
+                context.buildSettingsItem(
+                  iconImage: const Svg(
+                      "assets/icons/svg/ic_set_term_start_date_server.svg"),
+                  title: "设置开学时间为自动获取",
+                  onTap: () async {
+                    await setCustomTermStartDate(Customisable.clearCustom(
+                        DateTime.fromMillisecondsSinceEpoch(0)));
+                    showToast("设置成功");
+                    _init();
+                  },
+                ),
+              ],
+            ),
           ],
         ),
       ),

@@ -2,6 +2,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:xhu_timetable_ios/api/server.dart';
 import 'package:xhu_timetable_ios/model/client_init.dart';
+import 'package:xhu_timetable_ios/model/team_member.dart';
 
 Future<ClientInitResponse> apiClientInit() async {
   var deviceInfo = DeviceInfoPlugin();
@@ -25,4 +26,11 @@ Future<Map<String, String>> apiCourseTime() async {
   Dio dio = getServerClient();
   var response = await dio.get("/api/rest/external/common/courseTime");
   return Map<String, String>.from(response.data);
+}
+
+Future<List<TeamMember>> apiTeamMemberList() async {
+  Dio dio = getServerClient();
+  var response = await dio.get("/api/rest/external/common/team");
+  return List<TeamMember>.from(
+      response.data.map((x) => TeamMember.fromJson(x)));
 }

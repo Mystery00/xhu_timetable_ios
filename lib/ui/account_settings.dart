@@ -1,4 +1,3 @@
-import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:xhu_timetable_ios/event/bus.dart';
@@ -8,6 +7,7 @@ import 'package:xhu_timetable_ios/store/user_store.dart';
 import 'package:xhu_timetable_ios/toast.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
 import 'package:xhu_timetable_ios/ui/theme/profile.dart';
+import 'package:xhu_timetable_ios/ui/theme/settings.dart';
 
 class AccountSettingsRoute extends StatefulWidget {
   const AccountSettingsRoute({super.key});
@@ -74,57 +74,31 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
           color: Theme.of(context).colorScheme.surfaceVariant,
           child: ListView(
             children: [
-              SettingsGroup(
-                  margin: const EdgeInsets.all(8),
-                  iconItemSize: 24,
-                  settingsGroupTitle: "多账号设置",
-                  settingsGroupTitleStyle: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+              context.buildSettingsGroup(
+                title: "多账号设置",
+                items: [
+                  context.buildSettingsItem(
+                    icons: Icons.account_circle,
+                    title: "多账号模式",
+                    subtitle: "将当前所有已登录账号的课表全部显示出来",
+                    trailing: Switch(
+                        value: false,
+                        onChanged: (value) {
+                          showToast("暂未实现");
+                        }),
                   ),
-                  items: [
-                    SettingsItem(
-                      icons: Icons.account_circle,
-                      title: "多账号模式",
-                      titleStyle: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface),
-                      subtitle: "将当前所有已登录账号的课表全部显示出来",
-                      subtitleStyle: TextStyle(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withAlpha(170)),
-                      trailing: Switch(
-                          value: false,
-                          onChanged: (value) {
-                            showToast("暂未实现");
-                          }),
-                    ),
-                  ]),
-              SettingsGroup(
-                  margin: const EdgeInsets.all(8),
-                  iconItemSize: 24,
-                  settingsGroupTitle: "账号管理",
-                  settingsGroupTitleStyle: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                ],
+              ),
+              context.buildSettingsGroup(
+                title: "账号管理",
+                items: [
+                  context.buildSettingsItem(
+                    title: "长按用户卡片可强制更新用户信息",
+                    subtitle: "转了专业或者因为某些原因，导致教务系统的个人信息变更，可通过此方式更新服务端的缓存",
+                    trailing: const SizedBox(),
                   ),
-                  items: [
-                    SettingsItem(
-                      title: "长按用户卡片可强制更新用户信息",
-                      titleStyle: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface),
-                      subtitle: "转了专业或者因为某些原因，导致教务系统的个人信息变更，可通过此方式更新服务端的缓存",
-                      subtitleStyle: TextStyle(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withAlpha(170)),
-                      trailing: const SizedBox(),
-                    ),
-                  ]),
+                ],
+              ),
               Column(
                 children: list
                     .map(

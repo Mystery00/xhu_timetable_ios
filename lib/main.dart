@@ -39,12 +39,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshConfiguration(
-        headerBuilder: () => const ClassicHeader(
-              refreshStyle: RefreshStyle.Follow,
-            ),
-        footerBuilder: () => const ClassicFooter(
-              loadStyle: LoadStyle.ShowAlways,
-            ),
+        headerBuilder: () => const XhuHeader(),
+        footerBuilder: () => const XhuFooter(),
         child: MaterialApp(
           title: '西瓜课表',
           theme: ThemeData(

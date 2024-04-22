@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:xhu_timetable_ios/repository/start.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
 import 'package:xhu_timetable_ios/toast.dart';
@@ -31,9 +32,29 @@ class StartScreenState extends State<StartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-        body: Center(
-      child: Text("Splash Screen"),
-    ));
+    return Container(
+        color: const Color(0xFF2196F3),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset("assets/images/icon.png", width: 240, height: 240),
+              const SizedBox(
+                height: 176,
+              ),
+              const SpinKitCircle(
+                color: Colors.white,
+                size: 50.0,
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              const Text(
+                "数据加载中...",
+                style: TextStyle(color: Colors.white, fontSize: 16.0),
+              )
+            ],
+          ),
+        ));
   }
 }

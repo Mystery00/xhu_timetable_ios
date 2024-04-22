@@ -183,7 +183,7 @@ class _MenuListState extends State<_MenuList> {
   VoidCallback? _onTapByMenuKey(Menu menu) {
     switch (menu.key) {
       case "query_exam":
-        return () => showToast("暂未实现");
+        return () => Navigator.pushNamed(context, routeQueryExam);
       case "query_score":
         return () => showToast("暂未实现");
       case "query_free_room":

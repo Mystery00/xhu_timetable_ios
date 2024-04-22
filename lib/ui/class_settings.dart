@@ -34,13 +34,14 @@ class _ClassSettingsRouteState extends State<ClassSettingsRoute> {
       list.sort((a, b) => a.userInfo.xhuGrade.compareTo(b.userInfo.xhuGrade));
       var startYear = list.firstOrNull?.userInfo.xhuGrade ?? 2019;
       var endYear = DateTime.now().year;
-      var resultList = ["自动获取"];
+      var resultList = <String>[];
       for (var i = startYear; i <= endYear; i++) {
         resultList.add("$i-${i + 1}学年 第1学期");
         resultList.add("$i-${i + 1}学年 第2学期");
       }
+      resultList.add("自动获取");
       setState(() {
-        selectYearAndTermList = resultList;
+        selectYearAndTermList = resultList.reversed.toList();
       });
     });
     _init();

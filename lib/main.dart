@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import "package:mmkv/mmkv.dart";
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:xhu_timetable_ios/page.dart';
 import 'package:xhu_timetable_ios/store/app.dart';
 import 'package:xhu_timetable_ios/store/db.dart';
 import 'package:xhu_timetable_ios/ui/account_settings.dart';
 import 'package:xhu_timetable_ios/ui/class_settings.dart';
 import 'package:xhu_timetable_ios/ui/login.dart';
+import 'package:xhu_timetable_ios/ui/query_exam.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
 import 'package:xhu_timetable_ios/ui/settings.dart';
 import 'package:xhu_timetable_ios/ui/start.dart';
@@ -35,22 +38,30 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '西瓜课表',
-      theme: ThemeData(
-        colorScheme: colorScheme,
-        useMaterial3: true,
-      ),
-      //注册路由表
-      routes: {
-        routeStart: (context) => const StartScreen(),
-        routeLogin: (context) => const LoginRoute(),
-        routeMain: (context) => const MainRoute(),
-        routeAccountSettings: (context) => const AccountSettingsRoute(),
-        routeClassSettings: (context) => const ClassSettingsRoute(),
-        routeSettings: (context) => const SettingsRoute(),
-      },
-      builder: FToastBuilder(),
-    );
+    return RefreshConfiguration(
+        headerBuilder: () => const ClassicHeader(
+              refreshStyle: RefreshStyle.Follow,
+            ),
+        footerBuilder: () => const ClassicFooter(
+              loadStyle: LoadStyle.ShowAlways,
+            ),
+        child: MaterialApp(
+          title: '西瓜课表',
+          theme: ThemeData(
+            colorScheme: colorScheme,
+            useMaterial3: true,
+          ),
+          //注册路由表
+          routes: {
+            routeStart: (context) => const StartScreen(),
+            routeLogin: (context) => const LoginRoute(),
+            routeMain: (context) => const MainRoute(),
+            routeAccountSettings: (context) => const AccountSettingsRoute(),
+            routeClassSettings: (context) => const ClassSettingsRoute(),
+            routeSettings: (context) => const SettingsRoute(),
+            routeQueryExam: (context) => const QueryExamRoute(),
+          },
+          builder: FToastBuilder(),
+        ));
   }
 }

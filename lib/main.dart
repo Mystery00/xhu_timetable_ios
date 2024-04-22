@@ -20,12 +20,16 @@ void main() async {
   await initDatabase();
   await FkUserAgent.init();
   await initApp();
+  ColorScheme colorScheme = await ColorScheme.fromImageProvider(
+      provider: const AssetImage("assets/images/main_bg.png"));
 
-  runApp(const MyApp());
+  runApp(MyApp(colorScheme: colorScheme));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final ColorScheme colorScheme;
+
+  const MyApp({super.key, required this.colorScheme});
 
   // This widget is the root of your application.
   @override
@@ -33,7 +37,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: '西瓜课表',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: colorScheme,
         useMaterial3: true,
       ),
       //注册路由表

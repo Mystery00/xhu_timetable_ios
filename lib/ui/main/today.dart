@@ -195,11 +195,12 @@ Widget _buildTodayCourseContent(BuildContext context, TodayCourseSheet course) {
             child: Stack(
               children: [
                 Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
+                  child: IntrinsicHeight(
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
                               IconsProfile.watermelon,
@@ -223,7 +224,7 @@ Widget _buildTodayCourseContent(BuildContext context, TodayCourseSheet course) {
                           ],
                         ),
                         Container(
-                          constraints: const BoxConstraints(minHeight: 64),
+                          height: double.infinity,
                           decoration: BoxDecoration(
                             color: course.color,
                             borderRadius: BorderRadius.circular(36),
@@ -274,7 +275,9 @@ Widget _buildTodayCourseContent(BuildContext context, TodayCourseSheet course) {
                           ),
                         ),
                       ],
-                    )),
+                    ),
+                  ),
+                ),
                 if (course.courseStatus.isNotEmpty)
                   Positioned(
                     right: 0,

@@ -15,7 +15,7 @@ class StartScreenState extends State<StartScreen> {
   @override
   void initState() {
     super.initState();
-    _doInint().then((value) => Navigator.pushReplacementNamed(context, value));
+    // _doInint().then((value) => Navigator.pushReplacementNamed(context, value));
   }
 
   Future<String> _doInint() async {
@@ -38,9 +38,9 @@ class StartScreenState extends State<StartScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset("assets/images/icon.png", width: 240, height: 240),
+              Image.asset("assets/images/icon.png", width: 180, height: 180),
               const SizedBox(
-                height: 176,
+                height: 156,
               ),
               const SpinKitCircle(
                 color: Colors.white,
@@ -49,10 +49,7 @@ class StartScreenState extends State<StartScreen> {
               const SizedBox(
                 height: 24,
               ),
-              const Text(
-                "数据加载中...",
-                style: TextStyle(color: Colors.white, fontSize: 16.0),
-              )
+              Image.asset("assets/images/splash_bottom.png", height: 120),
             ],
           ),
         ));

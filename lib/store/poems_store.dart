@@ -37,7 +37,7 @@ Future<void> setToken(String token) async {
 
 Future<bool> isShowTranslate() async {
   var store = await _getPoemsStore();
-  return store.decodeBool("showPoemsTranslate", defaultValue: false);
+  return store.decodeBool("showPoemsTranslate", defaultValue: true);
 }
 
 Future<void> setShowTranslate(bool show) async {
@@ -58,6 +58,10 @@ Future<Poems> loadPoems() async {
     throw Exception("Get token failed, status code: ${response.statusCode}");
   }
   var poems = Poems.fromJson(response.data);
+  var showTranslate = await isShowTranslate();
+  if (!showTranslate) {
+    poems.translate = null;
+  }
   _poems = poems;
   return poems;
 }

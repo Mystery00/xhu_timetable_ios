@@ -4,15 +4,16 @@ class Poems {
   final String dynasty;
   final String author;
   final List<String> fullContent;
-  final List<String>? translate;
+  List<String>? translate;
 
-  Poems(
-      {required this.content,
-      required this.title,
-      required this.dynasty,
-      required this.author,
-      required this.fullContent,
-      required this.translate});
+  Poems({
+    required this.content,
+    required this.title,
+    required this.dynasty,
+    required this.author,
+    required this.fullContent,
+    required this.translate,
+  });
 
   factory Poems.fromJson(Map<String, dynamic> json) {
     var translate = json['data']['origin']['translate'];

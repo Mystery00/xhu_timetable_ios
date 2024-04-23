@@ -15,7 +15,7 @@ class StartScreenState extends State<StartScreen> {
   @override
   void initState() {
     super.initState();
-    // _doInint().then((value) => Navigator.pushReplacementNamed(context, value));
+    _doInint().then((value) => Navigator.pushReplacementNamed(context, value));
   }
 
   Future<String> _doInint() async {

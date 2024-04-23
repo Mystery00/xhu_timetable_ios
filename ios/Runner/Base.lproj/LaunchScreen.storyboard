@@ -19,15 +19,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" ambiguous="YES" image="icon" translatesAutoresizingMaskIntoConstraints="NO" id="KbT-p4-Ifl">
-                                <rect key="frame" x="96" y="187" width="200" height="200"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="icon" translatesAutoresizingMaskIntoConstraints="NO" id="KbT-p4-Ifl">
+                                <rect key="frame" x="96.666666666666686" y="187" width="200" height="200"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="Ocx-8i-ltd"/>
                                     <constraint firstAttribute="height" constant="200" id="yf4-W4-zgD"/>
                                 </constraints>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" ambiguous="YES" image="splash_bottom" translatesAutoresizingMaskIntoConstraints="NO" id="1V8-75-Kot">
-                                <rect key="frame" x="63" y="670" width="267" height="100"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="splash_bottom" translatesAutoresizingMaskIntoConstraints="NO" id="1V8-75-Kot">
+                                <rect key="frame" x="46.666666666666657" y="670" width="300" height="100"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="300" id="52h-aa-gW1"/>
                                     <constraint firstAttribute="height" constant="100" id="eBi-Dk-Ixn"/>
@@ -36,8 +36,10 @@
                         </subviews>
                         <color key="backgroundColor" red="0.12941176470588234" green="0.58823529411764708" blue="0.95294117647058818" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="xbc-2k-c8Z" firstAttribute="top" secondItem="1V8-75-Kot" secondAttribute="bottom" constant="48" id="4WJ-HO-feu"/>
-                            <constraint firstItem="KbT-p4-Ifl" firstAttribute="top" secondItem="Ydg-fD-yQy" secondAttribute="bottom" constant="128" id="thb-e9-x5m"/>
+                            <constraint firstItem="1V8-75-Kot" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="WGM-j7-Vfq"/>
+                            <constraint firstItem="xbc-2k-c8Z" firstAttribute="top" secondItem="1V8-75-Kot" secondAttribute="bottom" constant="48" id="gvt-AB-FaV"/>
+                            <constraint firstItem="KbT-p4-Ifl" firstAttribute="top" secondItem="Ydg-fD-yQy" secondAttribute="bottom" constant="128" id="hl3-RF-VjT"/>
+                            <constraint firstItem="KbT-p4-Ifl" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="mVf-LC-SiL"/>
                         </constraints>
                     </view>
                 </viewController>

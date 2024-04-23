@@ -124,7 +124,9 @@ class _QueryExamRouteState extends SelectState<QueryExamRoute> {
                   },
                 ),
                 IconButton.filledTonal(
-                  onPressed: () {},
+                  onPressed: () {
+                    _refreshController.requestRefresh();
+                  },
                   icon: const Icon(Icons.search),
                 ),
               ],

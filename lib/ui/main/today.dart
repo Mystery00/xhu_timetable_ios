@@ -135,7 +135,7 @@ void _showPoemsDetail(BuildContext context, Poems poems) {
             mainAxisSize: MainAxisSize.min,
             children: [
               Center(
-                child: Text(
+                child: SelectableText(
                   "《${poems.title}》",
                   style: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold),
@@ -144,7 +144,7 @@ void _showPoemsDetail(BuildContext context, Poems poems) {
               ),
               const SizedBox(height: 6),
               Center(
-                child: Text(
+                child: SelectableText(
                   "[${poems.dynasty}] ${poems.author}",
                   style: const TextStyle(fontSize: 14),
                   textAlign: TextAlign.center,
@@ -152,7 +152,7 @@ void _showPoemsDetail(BuildContext context, Poems poems) {
               ),
               const SizedBox(height: 6),
               Center(
-                child: Text(
+                child: SelectableText(
                   poems.fullContent.join("\n"),
                   style: const TextStyle(fontSize: 14),
                   textAlign: TextAlign.center,
@@ -163,7 +163,7 @@ void _showPoemsDetail(BuildContext context, Poems poems) {
               if (poems.translate != null && poems.translate!.isNotEmpty)
                 SizedBox(
                   width: double.infinity,
-                  child: Text(
+                  child: SelectableText(
                     "诗词大意：${poems.translate!.join("")}",
                     style: const TextStyle(fontSize: 13),
                   ),

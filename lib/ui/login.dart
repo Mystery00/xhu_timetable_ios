@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:xhu_timetable_ios/api/server.dart';
+import 'package:xhu_timetable_ios/feature.dart';
 import 'package:xhu_timetable_ios/repository/login.dart';
 import 'package:xhu_timetable_ios/store/user_store.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
@@ -17,11 +18,14 @@ class LoginRoute extends StatefulWidget {
 class LoginRouteState extends State<LoginRoute> {
   final TextEditingController _unameController = TextEditingController();
   final TextEditingController _pwdController = TextEditingController();
-  String loginLabel = "密码填写说明";
+  String loginLabel = "";
 
   @override
   void initState() {
     super.initState();
+    getFeatureLoginLabel().then((value) => setState(() {
+          loginLabel = value;
+        }));
   }
 
   void showLoading() {
@@ -50,6 +54,11 @@ class LoginRouteState extends State<LoginRoute> {
         ModalRoute.of(context)!.settings.arguments as bool? ?? false;
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      appBar: fromSettings
+          ? AppBar(
+              title: const Text("登录其他账号"),
+            )
+          : null,
       body: Column(
         children: [
           Image.asset(
@@ -129,23 +138,6 @@ class LoginRouteState extends State<LoginRoute> {
                     ),
                   ),
                 ),
-                if (fromSettings)
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      style: TextButton.styleFrom(
-                        backgroundColor:
-                            Theme.of(context).colorScheme.primaryContainer,
-                        foregroundColor:
-                            Theme.of(context).colorScheme.onPrimaryContainer,
-                      ),
-                      child: const Text(
-                        "返回账号管理",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  ),
               ],
             ),
           ),

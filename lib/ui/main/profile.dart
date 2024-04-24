@@ -57,24 +57,28 @@ class _AccountInfoState extends State<_AccountInfo> {
   Widget build(BuildContext context) {
     List<String> userMoreInfoList = [];
     if (userInfo == null) {
-      return _build("账号未登录", "1", userMoreInfoList);
+      return _build("账号未登录", "男", userMoreInfoList);
     }
     userMoreInfoList.add(userInfo!.studentNo);
     userMoreInfoList.add("${userInfo!.xhuGrade}级 ${userInfo!.className}");
     userMoreInfoList.add(userInfo!.college);
     return _build(
       userInfo!.name,
-      userInfo!.studentNo,
+      userInfo!.gender,
       userMoreInfoList,
     );
   }
 
-  Widget _build(String title, String studentId, List<String> userMoreInfoList) {
+  Widget _build(
+    String userName,
+    String gender,
+    List<String> userMoreInfoList,
+  ) {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: BigUserCard(
         backgroundColor: Theme.of(context).colorScheme.primary,
-        userName: title,
+        userName: userName,
         userNameColor: Theme.of(context).colorScheme.onPrimary,
         userMoreInfo: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,14 +87,14 @@ class _AccountInfoState extends State<_AccountInfo> {
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.onPrimary)))
                 .toList()),
-        userProfilePic: defaultProfileImageByStudentId(studentId),
+        userProfilePic: defaultProfileImageByStudentId(userName, gender),
         cardActionWidget: SettingsItem(
           icons: IconsProfile.accountSettings,
           iconStyle: IconStyle(
             withBackground: true,
             borderRadius: 50,
             iconsColor: Colors.white,
-            backgroundColor: ProfileColor.hash(title),
+            backgroundColor: ProfileColor.hash(userName),
           ),
           title: "编辑账号",
           onTap: () {

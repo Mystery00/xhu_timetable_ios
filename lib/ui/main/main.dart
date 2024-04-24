@@ -6,6 +6,7 @@ import 'package:logger/logger.dart';
 import 'package:xhu_timetable_ios/api/server.dart';
 import 'package:xhu_timetable_ios/event/bus.dart';
 import 'package:xhu_timetable_ios/event/ui.dart';
+import 'package:xhu_timetable_ios/feature.dart';
 import 'package:xhu_timetable_ios/model/poems.dart';
 import 'package:xhu_timetable_ios/model/transfer/week_course_view.dart';
 import 'package:xhu_timetable_ios/repository/main.dart';
@@ -86,6 +87,9 @@ class _MainRouteState extends State<MainRoute> {
 
   Future<void> _showPoems() async {
     try {
+      if (!await isFeatureJRSC()) {
+        return;
+      }
       var poems = await loadPoems();
       setState(() {
         this.poems = poems;
@@ -118,8 +122,8 @@ class _MainRouteState extends State<MainRoute> {
     if (loadWarning.isNotEmpty) {
       showToast(loadWarning);
     }
-    var weekCourseList = await getWeekCourseSheetList(
-        currentWeek, week, data.weekViewList);
+    var weekCourseList =
+        await getWeekCourseSheetList(currentWeek, week, data.weekViewList);
     setState(() {
       weekCourseSheetList = weekCourseList;
     });

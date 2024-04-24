@@ -64,6 +64,9 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
           onPressed: () async {
             var loginOther =
                 await Navigator.pushNamed(context, routeLogin, arguments: true);
+            if (loginOther == null) {
+              return;
+            }
             bool loginOtherAccount = loginOther as bool;
             if (loginOtherAccount) {
               refresh();
@@ -151,7 +154,9 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
                                             height: 48,
                                             image:
                                                 defaultProfileImageByStudentId(
-                                                    u.studentId)),
+                                              u.userName,
+                                              u.gender,
+                                            )),
                                       ),
                                     ),
                                     Expanded(

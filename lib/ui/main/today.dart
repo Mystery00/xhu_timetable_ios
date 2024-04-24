@@ -138,7 +138,7 @@ void _showPoemsDetail(BuildContext context, Poems poems) {
                 child: Text(
                   "《${poems.title}》",
                   style: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.bold),
+                      fontSize: 16, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -146,7 +146,7 @@ void _showPoemsDetail(BuildContext context, Poems poems) {
               Center(
                 child: Text(
                   "[${poems.dynasty}] ${poems.author}",
-                  style: const TextStyle(fontSize: 12),
+                  style: const TextStyle(fontSize: 14),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -154,7 +154,7 @@ void _showPoemsDetail(BuildContext context, Poems poems) {
               Center(
                 child: Text(
                   poems.fullContent.join("\n"),
-                  style: const TextStyle(fontSize: 12),
+                  style: const TextStyle(fontSize: 14),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -165,7 +165,7 @@ void _showPoemsDetail(BuildContext context, Poems poems) {
                   width: double.infinity,
                   child: Text(
                     "诗词大意：${poems.translate!.join("")}",
-                    style: const TextStyle(fontSize: 11),
+                    style: const TextStyle(fontSize: 13),
                   ),
                 ),
               const SizedBox(height: 24),

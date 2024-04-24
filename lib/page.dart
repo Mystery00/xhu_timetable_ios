@@ -7,6 +7,7 @@ class XhuHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const ClassicHeader(
+      completeDuration: Duration(milliseconds: 150),
       refreshStyle: RefreshStyle.Follow,
       releaseText: "松开开始加载",
       refreshingIcon: CupertinoActivityIndicator(),
@@ -23,6 +24,7 @@ class XhuFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const ClassicFooter(
+      completeDuration: Duration(milliseconds: 150),
       loadStyle: LoadStyle.ShowAlways,
       idleText: "上拉加载更多数据",
       loadingIcon: CupertinoActivityIndicator(),

@@ -189,28 +189,28 @@ class _QueryExamRouteState extends SelectState<QueryExamRoute> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      SelectableText(
                         exam.courseName,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
                       ),
-                      Text(
+                      SelectableText(
                         "考试时间：${exam.dateString} ${exam.time}",
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.outline,
                           fontSize: 13,
                         ),
                       ),
-                      Text(
+                      SelectableText(
                         "考试地点：${exam.location}",
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.outline,
                           fontSize: 13,
                         ),
                       ),
-                      Text(
+                      SelectableText(
                         "考试类型：${exam.examName}",
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.outline,

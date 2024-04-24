@@ -5,3 +5,4 @@ const routeAccountSettings = '/account-settings';
 const routeClassSettings = '/class-settings';
 const routeSettings = '/settings';
 const routeQueryExam = '/query-exam';
+const routeQueryNotice = '/query-notice';

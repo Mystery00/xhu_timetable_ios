@@ -58,6 +58,16 @@ extension DateTimeExt on DateTime {
         .atStartOfDay();
   }
 
+  static DateTime instant(dynamic instant) {
+    if (instant is int) {
+      return DateTime.fromMillisecondsSinceEpoch(instant);
+    } else if (instant is String) {
+      return DateTime.fromMillisecondsSinceEpoch(int.parse(instant));
+    } else {
+      throw ArgumentError("instant must be int or String");
+    }
+  }
+
   DateTime atStartOfDay() => DateTime(year, month, day);
 
   DateTime atDate(DateTime date) {
@@ -90,6 +100,9 @@ extension DateTimeExt on DateTime {
 
   String formatDate() =>
       "$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}";
+
+  String formatChinaDateTime() =>
+      "$year年${month.toString().padLeft(2, '0')}月${day.toString().padLeft(2, '0')}日 ${hour.toString().padLeft(2, '0')}时${minute.toString().padLeft(2, '0')}分${second.toString().padLeft(2, '0')}秒";
 
   bool isToday() {
     var now = DateTime.now();

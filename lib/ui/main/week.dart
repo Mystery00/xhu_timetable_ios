@@ -144,10 +144,8 @@ class _WeekHomePageState extends State<WeekHomePage> {
                         width: double.infinity,
                         child: Column(
                           children: [
-                            Text(
+                            SelectableText(
                               course.courseName,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
@@ -155,26 +153,26 @@ class _WeekHomePageState extends State<WeekHomePage> {
                               ),
                               textAlign: TextAlign.center,
                             ),
-                            Text(
+                            SelectableText(
                               course.teacher,
                               style: const TextStyle(color: Colors.white),
                             ),
-                            Text(
+                            SelectableText(
                               course.location,
                               style: const TextStyle(color: Colors.white),
                             ),
-                            Text(
+                            SelectableText(
                               course.weekStr,
                               style: const TextStyle(color: Colors.white),
                             ),
-                            Text(
+                            SelectableText(
                               course.courseTime,
                               style: const TextStyle(color: Colors.white),
                             ),
                             if (course.extraData.isNotEmpty)
                               for (var element in course.extraData)
                                 if (element.isNotEmpty)
-                                  Text(element,
+                                  SelectableText(element,
                                       style:
                                           const TextStyle(color: Colors.white)),
                             Container(

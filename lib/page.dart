@@ -7,7 +7,7 @@ class XhuHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const ClassicHeader(
-      completeDuration: Duration(milliseconds: 150),
+      completeDuration: Duration(milliseconds: 400),
       refreshStyle: RefreshStyle.Follow,
       releaseText: "松开开始加载",
       refreshingIcon: CupertinoActivityIndicator(),

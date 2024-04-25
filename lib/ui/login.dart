@@ -59,89 +59,93 @@ class LoginRouteState extends State<LoginRoute> {
               title: const Text("登录其他账号"),
             )
           : null,
-      body: Column(
-        children: [
-          Image.asset(
-            "assets/images/login_header.png",
-            width: double.infinity,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 48),
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 62,
-                ),
-                TextField(
-                  decoration: const InputDecoration(
-                    labelText: "学号",
-                    hintText: "请输入学号",
-                    prefixIcon: Icon(Icons.account_circle),
-                    border: OutlineInputBorder(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Image.asset(
+              "assets/images/login_header.png",
+              width: double.infinity,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 48),
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 62,
                   ),
-                  controller: _unameController,
-                  autofocus: true,
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.next,
-                ),
-                const SizedBox(
-                  height: 48,
-                ),
-                TextField(
-                  decoration: const InputDecoration(
-                    labelText: "密码",
-                    hintText: "请输入密码",
-                    prefixIcon: Icon(Icons.lock),
-                    border: OutlineInputBorder(),
+                  TextField(
+                    decoration: const InputDecoration(
+                      labelText: "学号",
+                      hintText: "请输入学号",
+                      prefixIcon: Icon(Icons.account_circle),
+                      border: OutlineInputBorder(),
+                    ),
+                    controller: _unameController,
+                    autofocus: true,
+                    keyboardType: TextInputType.number,
+                    textInputAction: TextInputAction.next,
                   ),
-                  controller: _pwdController,
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: true,
-                  textInputAction: TextInputAction.done,
-                ),
-                if (loginLabel.isNotEmpty)
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                    child: Text(
-                      loginLabel,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.outline,
-                        fontSize: 12,
+                  const SizedBox(
+                    height: 48,
+                  ),
+                  TextField(
+                    decoration: const InputDecoration(
+                      labelText: "密码",
+                      hintText: "请输入密码",
+                      prefixIcon: Icon(Icons.lock),
+                      border: OutlineInputBorder(),
+                    ),
+                    controller: _pwdController,
+                    keyboardType: TextInputType.visiblePassword,
+                    obscureText: true,
+                    textInputAction: TextInputAction.done,
+                  ),
+                  if (loginLabel.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 4),
+                      child: Text(
+                        loginLabel,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.outline,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  const SizedBox(
+                    height: 60,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => {
+                        _doLogin().then((loginSuccess) {
+                          if (loginSuccess) {
+                            if (fromSettings) {
+                              Navigator.pop(context, true);
+                            } else {
+                              Navigator.pushReplacementNamed(
+                                  context, routeMain);
+                            }
+                          }
+                        })
+                      },
+                      style: TextButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onPrimary,
+                      ),
+                      child: const Text(
+                        "登 录",
+                        style: TextStyle(fontSize: 16),
                       ),
                     ),
                   ),
-                const SizedBox(
-                  height: 60,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () => {
-                      _doLogin().then((loginSuccess) {
-                        if (loginSuccess) {
-                          if (fromSettings) {
-                            Navigator.pop(context, true);
-                          } else {
-                            Navigator.pushReplacementNamed(context, routeMain);
-                          }
-                        }
-                      })
-                    },
-                    style: TextButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                    child: const Text(
-                      "登 录",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

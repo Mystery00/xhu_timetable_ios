@@ -9,12 +9,12 @@ PODS:
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
-  - MMKV (1.3.4):
-    - MMKVCore (~> 1.3.4)
-  - MMKVCore (1.3.4)
-  - mmkvflutter (1.3.4):
+  - MMKV (1.3.5):
+    - MMKVCore (~> 1.3.5)
+  - mmkv_ios (1.0.1):
     - Flutter
-    - MMKV (>= 1.3.4)
+    - MMKV (>= 1.3.5)
+  - MMKVCore (1.3.5)
   - package_info_plus (0.4.5):
     - Flutter
   - path_provider_foundation (0.0.1):
@@ -33,7 +33,7 @@ DEPENDENCIES:
   - fk_user_agent (from `.symlinks/plugins/fk_user_agent/ios`)
   - Flutter (from `Flutter`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
-  - mmkvflutter (from `.symlinks/plugins/mmkvflutter/ios`)
+  - mmkv_ios (from `.symlinks/plugins/mmkv_ios/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - sqflite (from `.symlinks/plugins/sqflite/darwin`)
@@ -56,8 +56,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
-  mmkvflutter:
-    :path: ".symlinks/plugins/mmkvflutter/ios"
+  mmkv_ios:
+    :path: ".symlinks/plugins/mmkv_ios/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_foundation:
@@ -72,16 +72,16 @@ SPEC CHECKSUMS:
   device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
   fk_user_agent: 1f47ec39291e8372b1d692b50084b0d54103c545
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  fluttertoast: 31b00dabfa7fb7bacd9e7dbee580d7a2ff4bf265
-  MMKV: ed58ad794b3f88c24d604a5b74f3fba17fcbaf74
-  MMKVCore: a67a1cede26175c413176f404a7cedec43f96a0b
-  mmkvflutter: 9f8249e06b670676faa531030dcba6533de91751
+  fluttertoast: 9f2f8e81bb5ce18facb9748d7855bf5a756fe3db
+  MMKV: 506311d0494023c2f7e0b62cc1f31b7370fa3cfb
+  mmkv_ios: 4f3c7499b8881c569eca713c5970ed7bfc58b8df
+  MMKVCore: 9e2e5fd529b64a9fe15f1a7afb3d73b2e27b4db9
   package_info_plus: 58f0028419748fad15bf008b270aaa8e54380b1c
   path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
   sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
   Toast: ec33c32b8688982cecc6348adeae667c1b9938da
   url_launcher_ios: 6116280ddcfe98ab8820085d8d76ae7449447586
 
-PODFILE CHECKSUM: d491c1a587fabb8cc4333170411f62154f2d4e5b
+PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 
 COCOAPODS: 1.15.2

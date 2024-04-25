@@ -224,7 +224,7 @@ class _WeekHomePageState extends State<WeekHomePage> {
               child: Container(
                 height: double.infinity,
                 margin: const EdgeInsets.all(1),
-                color: backgroundColor.withOpacity(0.8),
+                color: backgroundColor.withOpacity(0.7),
                 child: Text(
                   title,
                   style: TextStyle(

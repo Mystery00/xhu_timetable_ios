@@ -53,7 +53,6 @@ class LoginRouteState extends State<LoginRoute> {
     bool fromSettings =
         ModalRoute.of(context)!.settings.arguments as bool? ?? false;
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: fromSettings
           ? AppBar(
               title: const Text("登录其他账号"),

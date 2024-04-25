@@ -229,7 +229,7 @@ class _WeekHomePageState extends State<WeekHomePage> {
                   title,
                   style: TextStyle(
                     color: textColor,
-                    fontSize: 10,
+                    fontSize: 11,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -267,7 +267,7 @@ class _WeekHomePageState extends State<WeekHomePage> {
               "${dateTime.getDayOfWeek()}\n$dateStr",
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 10,
+                fontSize: 11,
               ),
               textAlign: TextAlign.center,
             ),
@@ -285,7 +285,8 @@ class _WeekHomePageState extends State<WeekHomePage> {
           time.toString(),
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 10,
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),

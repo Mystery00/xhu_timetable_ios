@@ -30,7 +30,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "54763f1f2528e08e733f8486ea1509a12abd5d70"
+      resolved-ref: "57e2e48649b95fe5fc5a80831b70a7f7f9a5b2bd"
       url: "https://github.com/Mystery00/babstrap_settings_screen.git"
     source: git
     version: "0.1.6"

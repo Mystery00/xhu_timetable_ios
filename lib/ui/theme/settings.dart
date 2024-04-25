@@ -8,7 +8,6 @@ extension SettingsExt on BuildContext {
   }) {
     return SettingsGroup(
       margin: const EdgeInsets.all(8),
-      iconItemSize: 24,
       settingsGroupTitle: title,
       settingsGroupTitleStyle: TextStyle(
         color: Theme.of(this).colorScheme.onSurfaceVariant,
@@ -23,6 +22,7 @@ extension SettingsExt on BuildContext {
     required String title,
     IconData? icons,
     ImageProvider? iconImage,
+    double? iconSize,
     String? subtitle,
     Widget? trailing,
     VoidCallback? onTap,
@@ -30,6 +30,9 @@ extension SettingsExt on BuildContext {
     return SettingsItem(
       icons: icons,
       iconImage: iconImage,
+      iconStyle: IconStyle(
+        iconSize: iconSize ?? 24.0,
+      ),
       title: title,
       titleStyle: TextStyle(
         color: Theme.of(this).colorScheme.onSurface,

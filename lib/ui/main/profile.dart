@@ -95,6 +95,7 @@ class _AccountInfoState extends State<_AccountInfo> {
             borderRadius: 50,
             iconsColor: Colors.white,
             backgroundColor: ProfileColor.hash(userName),
+            iconSize: 18.0,
           ),
           title: "编辑账号",
           onTap: () {
@@ -135,7 +136,6 @@ class _MenuListState extends State<_MenuList> {
         var list = _list[index];
         return SettingsGroup(
           margin: const EdgeInsets.all(8),
-          iconItemSize: 18,
           dividerColor: Theme.of(context).colorScheme.outline.withOpacity(0.24),
           items: list
               .map(
@@ -144,6 +144,7 @@ class _MenuListState extends State<_MenuList> {
                   iconStyle: IconStyle(
                     withBackground: true,
                     backgroundColor: ProfileColor.safeGet(menu.sort),
+                    iconSize: 18.0,
                   ),
                   titleStyle: const TextStyle(
                       fontSize: 13, fontWeight: FontWeight.bold),

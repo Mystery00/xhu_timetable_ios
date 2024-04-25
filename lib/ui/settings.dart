@@ -168,7 +168,6 @@ class _SettingsRouteState extends State<SettingsRoute> {
             ),
             SettingsGroup(
               margin: const EdgeInsets.all(8),
-              iconItemSize: 36,
               settingsGroupTitle: "西瓜课表团队出品",
               settingsGroupTitleStyle: TextStyle(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -179,6 +178,7 @@ class _SettingsRouteState extends State<SettingsRoute> {
                 for (var teamMember in teamMemberList)
                   context.buildSettingsItem(
                     iconImage: NetworkImage(teamMember.icon),
+                    iconSize: 36.0,
                     title: teamMember.title,
                     subtitle: teamMember.subtitle,
                   ),

@@ -73,7 +73,8 @@ class _WeekHomePageState extends State<WeekHomePage> {
                       flex: 10,
                       child: Column(
                         children: [
-                          for (var sheet in widget.weekCourseSheetList[i])
+                          for (var sheet
+                              in safeGet(widget.weekCourseSheetList, i))
                             _buildWeekItem(
                                 sheet.color,
                                 sheet.step,
@@ -92,6 +93,13 @@ class _WeekHomePageState extends State<WeekHomePage> {
         )),
       ],
     );
+  }
+
+  List<WeekCourseSheet> safeGet(List<List<WeekCourseSheet>> list, int index) {
+    if (index >= list.length) {
+      return [];
+    }
+    return list[index];
   }
 
   @override

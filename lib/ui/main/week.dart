@@ -224,7 +224,7 @@ class _WeekHomePageState extends State<WeekHomePage> {
     return SizedBox(
       height: (itemHeight * itemStep).toDouble(),
       child: InkWell(
-        onTap: showMore ? onClick : null,
+        onTap: onClick,
         child: Stack(
           children: [
             ClipRRect(

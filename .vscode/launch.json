@@ -5,14 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Flutter",
+            "name": "Release Run",
             "type": "dart",
             "request": "launch",
             "program": "lib/main.dart",
             "flutterMode": "release"
         },
         {
-            "name": "xhu_timetable_ios",
+            "name": "Debug",
             "request": "launch",
             "type": "dart"
         }

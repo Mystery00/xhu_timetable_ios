@@ -1,7 +1,7 @@
 name: xhu_timetable_ios
 description: "查课查成绩，就用西瓜课表"
 publish_to: 'none'
-version: 1.0.0+77
+version: 1.0.0+78
 
 environment:
   sdk: '>=3.3.2 <4.0.0'
@@ -15,7 +15,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  logger: ^2.2.0
+  logger: ^2.3.0
   babstrap_settings_screen:
     # path: ../babstrap_settings_screen
     git:
@@ -29,10 +29,11 @@ dependencies:
   mmkv: ">=1.3.5"
   crypto: ^3.0.3
   fluttertoast: ^8.2.5
-  pointycastle: ^3.9.0
+  pointycastle: ^3.9.1
   basic_utils: ^5.7.0
   url_launcher: ^6.2.6
-  sqflite: ^2.3.3
+  url_launcher_ios: ^6.3.0
+  sqflite: ^2.3.3+1
   path: ^1.9.0
   flutter_spinkit: ^5.2.1
   flashy_tab_bar2: ^0.0.10

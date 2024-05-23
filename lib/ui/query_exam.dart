@@ -93,36 +93,7 @@ class _QueryExamRouteState extends SelectState<QueryExamRoute> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                InkWell(
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                      borderRadius: const BorderRadius.all(Radius.circular(12)),
-                    ),
-                    child: Text(
-                      userSelectList.isEmpty
-                          ? "未登录"
-                          : userSelectList
-                              .firstWhere((element) => element.selected)
-                              .valueTitle,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-                  onTap: () {
-                    showSelectDialog(
-                        title: "请选择要查询的学生",
-                        list: userSelectList,
-                        updateState: (list) {
-                          setState(() {
-                            userSelectList = list;
-                          });
-                        });
-                  },
-                ),
+                showUserSelect(context, userSelectList),
                 IconButton.filledTonal(
                   onPressed: () {
                     _refreshController.requestRefresh();

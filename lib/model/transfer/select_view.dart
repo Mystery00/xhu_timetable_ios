@@ -62,6 +62,10 @@ Future<List<SelectView>> yearSelect() async {
   return resultList.reversed.toList();
 }
 
+Future<int> getSelectedYear(List<SelectView> list) async {
+  return int.parse(list.firstWhere((element) => element.selected).value);
+}
+
 Future<List<SelectView>> termSelect() async {
   var nowTerm = await getNowTerm();
   var resultList = <SelectView>[];
@@ -74,6 +78,10 @@ Future<List<SelectView>> termSelect() async {
     ));
   }
   return resultList;
+}
+
+Future<int> getSelectedTerm(List<SelectView> list) async {
+  return int.parse(list.firstWhere((element) => element.selected).value);
 }
 
 List<SelectView> doSelect(List<SelectView> list, String value) => list
@@ -148,4 +156,103 @@ abstract class SelectState<T extends StatefulWidget> extends State<T> {
     }
     updateState(doSelect(list, v));
   }
+
+  Widget showUserSelect(
+          BuildContext context, List<SelectView> userSelectList) =>
+      InkWell(
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
+          ),
+          child: Text(
+            userSelectList.isEmpty
+                ? "查询中"
+                : userSelectList
+                    .firstWhere((element) => element.selected)
+                    .valueTitle,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
+              fontSize: 12,
+            ),
+          ),
+        ),
+        onTap: () {
+          showSelectDialog(
+              title: "请选择要查询的学生",
+              list: userSelectList,
+              updateState: (list) {
+                setState(() {
+                  userSelectList = list;
+                });
+              });
+        },
+      );
+
+  Widget showYearSelect(
+          BuildContext context, List<SelectView> yearSelectList) =>
+      InkWell(
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
+          ),
+          child: Text(
+            yearSelectList.isEmpty
+                ? "查询中"
+                : yearSelectList
+                    .firstWhere((element) => element.selected)
+                    .valueTitle,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
+              fontSize: 12,
+            ),
+          ),
+        ),
+        onTap: () {
+          showSelectDialog(
+              title: "请选择要查询的学年",
+              list: yearSelectList,
+              updateState: (list) {
+                setState(() {
+                  yearSelectList = list;
+                });
+              });
+        },
+      );
+
+  Widget showTermSelect(
+          BuildContext context, List<SelectView> termSelectList) =>
+      InkWell(
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
+          ),
+          child: Text(
+            termSelectList.isEmpty
+                ? "查询中"
+                : termSelectList
+                    .firstWhere((element) => element.selected)
+                    .valueTitle,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
+              fontSize: 12,
+            ),
+          ),
+        ),
+        onTap: () {
+          showSelectDialog(
+              title: "请选择要查询的学期",
+              list: termSelectList,
+              updateState: (list) {
+                setState(() {
+                  termSelectList = list;
+                });
+              });
+        },
+      );
 }

@@ -231,6 +231,7 @@ class _WeekHomePageState extends State<WeekHomePage> {
               borderRadius: BorderRadius.circular(6),
               child: Container(
                 height: double.infinity,
+                width: double.infinity,
                 margin: const EdgeInsets.all(1),
                 color: backgroundColor.withOpacity(0.7),
                 child: Text(

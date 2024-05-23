@@ -138,6 +138,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "5.4.3+1"
+  easy_sticky_header:
+    dependency: "direct main"
+    description:
+      name: easy_sticky_header
+      sha256: da690bb0c48df602f53eb89141388b4e6b3a7c5e46a1be9e7c527d1c5aabe697
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.1"
   event_bus:
     dependency: "direct main"
     description:

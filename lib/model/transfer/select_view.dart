@@ -158,7 +158,10 @@ abstract class SelectState<T extends StatefulWidget> extends State<T> {
   }
 
   Widget showUserSelect(
-          BuildContext context, List<SelectView> userSelectList) =>
+    BuildContext context,
+    List<SelectView> userSelectList,
+    void Function(List<SelectView>) updateState,
+  ) =>
       InkWell(
         child: Container(
           padding: const EdgeInsets.all(8),
@@ -182,16 +185,15 @@ abstract class SelectState<T extends StatefulWidget> extends State<T> {
           showSelectDialog(
               title: "请选择要查询的学生",
               list: userSelectList,
-              updateState: (list) {
-                setState(() {
-                  userSelectList = list;
-                });
-              });
+              updateState: updateState);
         },
       );
 
   Widget showYearSelect(
-          BuildContext context, List<SelectView> yearSelectList) =>
+    BuildContext context,
+    List<SelectView> yearSelectList,
+    void Function(List<SelectView>) updateState,
+  ) =>
       InkWell(
         child: Container(
           padding: const EdgeInsets.all(8),
@@ -215,16 +217,15 @@ abstract class SelectState<T extends StatefulWidget> extends State<T> {
           showSelectDialog(
               title: "请选择要查询的学年",
               list: yearSelectList,
-              updateState: (list) {
-                setState(() {
-                  yearSelectList = list;
-                });
-              });
+              updateState: updateState);
         },
       );
 
   Widget showTermSelect(
-          BuildContext context, List<SelectView> termSelectList) =>
+    BuildContext context,
+    List<SelectView> termSelectList,
+    void Function(List<SelectView>) updateState,
+  ) =>
       InkWell(
         child: Container(
           padding: const EdgeInsets.all(8),
@@ -248,11 +249,7 @@ abstract class SelectState<T extends StatefulWidget> extends State<T> {
           showSelectDialog(
               title: "请选择要查询的学期",
               list: termSelectList,
-              updateState: (list) {
-                setState(() {
-                  termSelectList = list;
-                });
-              });
+              updateState: updateState);
         },
       );
 }

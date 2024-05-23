@@ -93,7 +93,11 @@ class _QueryExamRouteState extends SelectState<QueryExamRoute> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                showUserSelect(context, userSelectList),
+                showUserSelect(context, userSelectList, (list) {
+                  setState(() {
+                    userSelectList = list;
+                  });
+                }),
                 IconButton.filledTonal(
                   onPressed: () {
                     _refreshController.requestRefresh();

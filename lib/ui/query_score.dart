@@ -1,4 +1,7 @@
+import 'package:easy_sticky_header/easy_sticky_header.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:logger/logger.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:xhu_timetable_ios/api/rest/score.dart';
@@ -22,6 +25,8 @@ class _QueryScoreRouteState extends SelectState<QueryScoreRoute> {
   List<SelectView> yearSelectList = [];
   List<SelectView> termSelectList = [];
 
+  bool showMore = true;
+  ScoreGpaResponse? gpa;
   List<ScoreResponse> scoreList = [];
   final _refreshController = RefreshController(initialRefresh: true);
 
@@ -47,8 +52,11 @@ class _QueryScoreRouteState extends SelectState<QueryScoreRoute> {
 
   void _onRefresh() async {
     try {
-      var result = await _getScoreList(0, size);
+      _getGpa().then((value) => setState(() {
+            gpa = value;
+          }));
       index = 0;
+      var result = await _getScoreList(0, size);
       var list = result.items;
       setState(() {
         scoreList = list;
@@ -78,6 +86,15 @@ class _QueryScoreRouteState extends SelectState<QueryScoreRoute> {
     }
   }
 
+  Future<ScoreGpaResponse> _getGpa() async {
+    User user = await getSelectedUser(userSelectList);
+    var year = await getSelectedYear(yearSelectList);
+    var term = await getSelectedTerm(termSelectList);
+
+    return await user.withAutoLoginOnce(
+        (sessionToken) => apiScoreGpa(sessionToken, year, term));
+  }
+
   Future<PageResult<ScoreResponse>> _getScoreList(int index, size) async {
     User user = await getSelectedUser(userSelectList);
     var year = await getSelectedYear(yearSelectList);
@@ -91,7 +108,7 @@ class _QueryScoreRouteState extends SelectState<QueryScoreRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("成绩查询"),
+        title: const Text("课程成绩查询"),
       ),
       body: Column(
         children: [
@@ -99,9 +116,23 @@ class _QueryScoreRouteState extends SelectState<QueryScoreRoute> {
             padding: const EdgeInsets.all(8),
             child: Row(
               children: [
-                showUserSelect(context, userSelectList),
-                showYearSelect(context, yearSelectList),
-                showTermSelect(context, termSelectList),
+                showUserSelect(context, userSelectList, (list) {
+                  setState(() {
+                    userSelectList = list;
+                  });
+                }),
+                const SizedBox(width: 4),
+                showYearSelect(context, yearSelectList, (list) {
+                  setState(() {
+                    yearSelectList = list;
+                  });
+                }),
+                const SizedBox(width: 4),
+                showTermSelect(context, termSelectList, (list) {
+                  setState(() {
+                    termSelectList = list;
+                  });
+                }),
                 const Spacer(),
                 IconButton.filledTonal(
                   onPressed: () {
@@ -120,9 +151,69 @@ class _QueryScoreRouteState extends SelectState<QueryScoreRoute> {
               enablePullUp: true,
               onRefresh: _onRefresh,
               onLoading: _onLoading,
-              child: ListView.builder(
-                itemCount: scoreList.length,
-                itemBuilder: (context, index) => _buildItem(scoreList[index]),
+              child: StickyHeader(
+                child: ListView.builder(
+                  itemCount:
+                      gpa == null ? scoreList.length + 2 : scoreList.length + 4,
+                  itemBuilder: (context, index) {
+                    switch (index) {
+                      case 0:
+                        return StickyContainerWidget(
+                          index: 0,
+                          child: Container(
+                            height: 48,
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(12),
+                            color: Theme.of(context).colorScheme.surfaceVariant,
+                            child: InkWell(
+                              onTap: () => setState(() {
+                                showMore = !showMore;
+                              }),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text("显示更多信息"),
+                                  Switch(
+                                      value: showMore,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          showMore = value;
+                                        });
+                                      }),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      case 1:
+                        return StickyContainerWidget(
+                          index: 1,
+                          child: Container(
+                            height: 48,
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(12),
+                            color: Theme.of(context).colorScheme.surfaceVariant,
+                            child: const Text("学期总览"),
+                          ),
+                        );
+                      case 2:
+                        return _buildTermInfo(gpa!);
+                      case 3:
+                        return StickyContainerWidget(
+                          index: 2,
+                          child: Container(
+                            height: 48,
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(12),
+                            color: Theme.of(context).colorScheme.surfaceVariant,
+                            child: const Text("课程成绩列表"),
+                          ),
+                        );
+                    }
+                    return _buildItem(scoreList[index - 4], showMore);
+                  },
+                ),
               ),
             ),
           ),
@@ -131,17 +222,66 @@ class _QueryScoreRouteState extends SelectState<QueryScoreRoute> {
     );
   }
 
-  Widget _buildItem(ScoreResponse score) => Container(
+  Widget _buildTermInfo(ScoreGpaResponse gpa) => Card(
+        elevation: 0,
+        color: Theme.of(context).colorScheme.surfaceVariant,
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-        ),
-        child: IntrinsicHeight(
+        child: Padding(
+          padding: const EdgeInsets.all(8),
           child: Row(
             children: [
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "总成绩：${gpa.totalScore}",
+                      style: const TextStyle(
+                        fontSize: 13,
+                      ),
+                    ),
+                    Text(
+                      "平均成绩：${gpa.averageScore}",
+                      style: const TextStyle(
+                        fontSize: 13,
+                      ),
+                    ),
+                    Text(
+                      "总学分：${gpa.totalCredit}",
+                      style: const TextStyle(
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                  child: Column(
+                children: [
+                  Text(
+                    "GPA = ${gpa.gpa}",
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              )),
+            ],
+          ),
+        ),
+      );
+
+  Widget _buildItem(ScoreResponse score, bool showMore) => Card(
+        elevation: 0,
+        color: Theme.of(context).colorScheme.surfaceVariant,
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: IntrinsicHeight(
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              children: [
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -153,57 +293,64 @@ class _QueryScoreRouteState extends SelectState<QueryScoreRoute> {
                           fontSize: 16,
                         ),
                       ),
-                      SelectableText(
-                        score.courseType,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.outline,
-                          fontSize: 13,
+                      if (showMore)
+                        SelectableText(
+                          score.courseType,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.outline,
+                            fontSize: 13,
+                          ),
                         ),
-                      ),
-                      SelectableText(
-                        score.scoreType,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.outline,
-                          fontSize: 13,
+                      if (showMore)
+                        SelectableText(
+                          score.scoreType,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.outline,
+                            fontSize: 13,
+                          ),
                         ),
-                      ),
-                      SelectableText(
-                        "课程学分：${score.credit}",
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.outline,
-                          fontSize: 13,
+                      if (showMore)
+                        SelectableText(
+                          "课程学分：${score.credit}",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.outline,
+                            fontSize: 13,
+                          ),
                         ),
-                      ),
-                      SelectableText(
-                        "课程绩点：${score.gpa}",
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.outline,
-                          fontSize: 13,
+                      if (showMore)
+                        SelectableText(
+                          "课程绩点：${score.gpa}",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.outline,
+                            fontSize: 13,
+                          ),
                         ),
-                      ),
-                      SelectableText(
-                        "学分绩点：${score.creditGpa}",
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.outline,
-                          fontSize: 13,
+                      if (showMore)
+                        SelectableText(
+                          "学分绩点：${score.creditGpa}",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.outline,
+                            fontSize: 13,
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
-              ),
-              SizedBox(
-                height: double.infinity,
-                child: Text(
-                  score.score.toString(),
-                  style: TextStyle(
-                      color: score.score < 60
-                          ? Colors.red
-                          : Theme.of(context).colorScheme.onSurface,
-                      fontSize: 16),
+                SizedBox(
+                  height: double.infinity,
+                  child: Center(
+                    child: Text(
+                      score.score.toString(),
+                      style: TextStyle(
+                          color: score.score < 60
+                              ? Colors.red
+                              : Theme.of(context).colorScheme.onSurface,
+                          fontSize: 16),
+                    ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );

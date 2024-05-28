@@ -7,3 +7,4 @@ const routeSettings = '/settings';
 const routeQueryExam = '/query-exam';
 const routeQueryNotice = '/query-notice';
 const routeQueryScore = '/query-score';
+const routeQueryExpScore = '/query-exp-score';

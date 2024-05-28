@@ -164,6 +164,8 @@ class _MenuListState extends State<_MenuList> {
         return IconsProfile.exam;
       case "query_score":
         return IconsProfile.score;
+      case "exp_score":
+        return IconsProfile.expScore;
       case "query_free_room":
         return IconsProfile.classroom;
       case "account_manage":
@@ -191,6 +193,8 @@ class _MenuListState extends State<_MenuList> {
         return () => Navigator.pushNamed(context, routeQueryExam);
       case "query_score":
         return () => Navigator.pushNamed(context, routeQueryScore);
+      case "exp_score":
+        return () => Navigator.pushNamed(context, routeQueryExpScore);
       case "query_free_room":
         return () => showToast("暂未实现");
       case "class_setting":

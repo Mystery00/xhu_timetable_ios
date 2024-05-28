@@ -30,7 +30,7 @@ Future<List<ExperimentScoreResponse>> apiExperimentScore(
   var dio = getServerClient();
   dio.options.headers['sessionToken'] = sessionToken;
   var response =
-      await dio.get("/api/rest/external/score/experiment", queryParameters: {
+      await dio.get("/api/rest/external/score/experiment/list", queryParameters: {
     "year": year,
     "term": term,
   });

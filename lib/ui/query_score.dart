@@ -1,9 +1,7 @@
-import 'package:easy_sticky_header/easy_sticky_header.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:logger/logger.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:sticky_and_expandable_list/sticky_and_expandable_list.dart';
 import 'package:xhu_timetable_ios/api/rest/score.dart';
 import 'package:xhu_timetable_ios/model/page.dart';
 import 'package:xhu_timetable_ios/model/score.dart';
@@ -151,70 +149,64 @@ class _QueryScoreRouteState extends SelectState<QueryScoreRoute> {
               enablePullUp: true,
               onRefresh: _onRefresh,
               onLoading: _onLoading,
-              child: StickyHeader(
-                child: ListView.builder(
-                  itemCount:
-                      gpa == null ? scoreList.length + 2 : scoreList.length + 4,
-                  itemBuilder: (context, index) {
-                    switch (index) {
-                      case 0:
-                        return StickyContainerWidget(
-                          index: 0,
-                          child: Container(
-                            height: 48,
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(12),
-                            color: Theme.of(context).colorScheme.surfaceVariant,
-                            child: InkWell(
-                              onTap: () => setState(() {
-                                showMore = !showMore;
-                              }),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text("显示更多信息"),
-                                  Switch(
-                                      value: showMore,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          showMore = value;
-                                        });
-                                      }),
-                                ],
-                              ),
-                            ),
+              child: ExpandableListView(
+                  builder: SliverExpandableChildDelegate<String, ScoreSection>(
+                sectionList: [
+                  ScoreSection(items: List.empty()),
+                  ScoreSection(items: [""]),
+                  ScoreSection(
+                      items: scoreList.map((e) => e.courseName).toList()),
+                ],
+                headerBuilder: (context, sectionIndex, index) {
+                  switch (sectionIndex) {
+                    case 0:
+                      return Container(
+                        height: 48,
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        color: Theme.of(context).colorScheme.surfaceVariant,
+                        child: InkWell(
+                          onTap: () => setState(() {
+                            showMore = !showMore;
+                          }),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text("显示更多信息"),
+                              Switch(
+                                  value: showMore,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      showMore = value;
+                                    });
+                                  }),
+                            ],
                           ),
-                        );
-                      case 1:
-                        return StickyContainerWidget(
-                          index: 1,
-                          child: Container(
-                            height: 48,
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(12),
-                            color: Theme.of(context).colorScheme.surfaceVariant,
-                            child: const Text("学期总览"),
-                          ),
-                        );
-                      case 2:
-                        return _buildTermInfo(gpa!);
-                      case 3:
-                        return StickyContainerWidget(
-                          index: 2,
-                          child: Container(
-                            height: 48,
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(12),
-                            color: Theme.of(context).colorScheme.surfaceVariant,
-                            child: const Text("课程成绩列表"),
-                          ),
-                        );
-                    }
-                    return _buildItem(scoreList[index - 4], showMore);
-                  },
-                ),
-              ),
+                        ),
+                      );
+                    case 1:
+                      return Container(
+                        height: 48,
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        color: Theme.of(context).colorScheme.surfaceVariant,
+                        child: const Text("学期总览"),
+                      );
+                    default:
+                      return Container(
+                        height: 48,
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        color: Theme.of(context).colorScheme.surfaceVariant,
+                        child: const Text("课程成绩列表"),
+                      );
+                  }
+                },
+                itemBuilder: (context, sectionIndex, itemIndex, index) {
+                  if (sectionIndex == 1) return _buildTermInfo(gpa);
+                  return _buildItem(scoreList[itemIndex], showMore);
+                },
+              )),
             ),
           ),
         ],
@@ -222,55 +214,60 @@ class _QueryScoreRouteState extends SelectState<QueryScoreRoute> {
     );
   }
 
-  Widget _buildTermInfo(ScoreGpaResponse gpa) => Card(
-        elevation: 0,
-        color: Theme.of(context).colorScheme.surfaceVariant,
-        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "总成绩：${gpa.totalScore}",
-                      style: const TextStyle(
-                        fontSize: 13,
-                      ),
-                    ),
-                    Text(
-                      "平均成绩：${gpa.averageScore}",
-                      style: const TextStyle(
-                        fontSize: 13,
-                      ),
-                    ),
-                    Text(
-                      "总学分：${gpa.totalCredit}",
-                      style: const TextStyle(
-                        fontSize: 13,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                  child: Column(
+  Widget _buildTermInfo(ScoreGpaResponse? gpa) {
+    if (gpa == null) {
+      return const SizedBox();
+    }
+    return Card(
+      elevation: 0,
+      color: Theme.of(context).colorScheme.surfaceVariant,
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "GPA = ${gpa.gpa}",
+                    "总成绩：${gpa.totalScore.toStringAsFixed(2)}",
                     style: const TextStyle(
                       fontSize: 13,
-                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    "平均成绩：${gpa.averageScore.toStringAsFixed(2)}",
+                    style: const TextStyle(
+                      fontSize: 13,
+                    ),
+                  ),
+                  Text(
+                    "总学分：${gpa.totalCredit.toStringAsFixed(2)}",
+                    style: const TextStyle(
+                      fontSize: 13,
                     ),
                   ),
                 ],
-              )),
-            ],
-          ),
+              ),
+            ),
+            Expanded(
+                child: Column(
+              children: [
+                Text(
+                  "GPA = ${gpa.gpa.toStringAsFixed(2)}",
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            )),
+          ],
         ),
-      );
+      ),
+    );
+  }
 
   Widget _buildItem(ScoreResponse score, bool showMore) => Card(
         elevation: 0,
@@ -354,4 +351,19 @@ class _QueryScoreRouteState extends SelectState<QueryScoreRoute> {
           ),
         ),
       );
+}
+
+class ScoreSection implements ExpandableListSection<String> {
+  final List<String> items;
+
+  ScoreSection({required this.items});
+
+  @override
+  List<String> getItems() => items;
+
+  @override
+  bool isSectionExpanded() => true;
+
+  @override
+  void setSectionExpanded(bool expanded) {}
 }

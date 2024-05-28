@@ -22,6 +22,7 @@ class IconsProfile {
   static const IconData joinGroup = IconData(0xe608, fontFamily: _fontFamily);
   static const IconData notice = IconData(0xe620, fontFamily: _fontFamily);
   static const IconData score = IconData(0xe607, fontFamily: _fontFamily);
+  static const IconData expScore = IconData(0xe61a, fontFamily: _fontFamily);
   static const IconData serverDetect =
       IconData(0xe623, fontFamily: _fontFamily);
   static const IconData classSettings =

@@ -56,7 +56,7 @@ class _MainRouteState extends State<MainRoute> {
     super.initState();
     _init();
     eventBus.on<UIChangeEvent>().listen((event) async {
-      if (event.isChangeMainUser()) {
+      if (event.isMultiModeChanged() || event.isChangeMainUser()) {
         await _checkMainUser();
         await _refreshCloudDataToState();
       } else if (event.isMainUserLogout()) {
@@ -65,7 +65,8 @@ class _MainRouteState extends State<MainRoute> {
         await _refreshCloudDataToState();
       } else if (event.isChangeTermStartDate() ||
           event.isShowNotThisWeek() ||
-          event.isShowStatus()) {
+          event.isShowStatus() ||
+          event.isChangeCustomAccountTitle()) {
         await _loadLocalDataToState(true);
       }
     });

@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:mmkv/mmkv.dart';
+import 'package:xhu_timetable_ios/model/custom_account_title.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
 
 MMKV? _instance;
@@ -123,6 +126,25 @@ Future<void> setShowNotThisWeek(bool value) =>
 Future<bool> getShowStatus() => _getBool("showStatus", defaultValue: true);
 
 Future<void> setShowStatus(bool value) => _setBool("showStatus", value);
+
+Future<bool> getMultiAccountMode() =>
+    _getBool("multiAccountMode", defaultValue: false);
+
+Future<void> setMultiAccountMode(bool value) =>
+    _setBool("multiAccountMode", value);
+
+Future<CustomAccountTitle> getCustomAccountTitle() async {
+  var save = await _getString("customAccountTitle", "");
+  if (save.isEmpty) {
+    return DEFAULT_CUSTOM_ACCOUNT_TITLE;
+  }
+  return CustomAccountTitle.fromJson(json.decode(save));
+}
+
+Future<void> setCustomAccountTitle(CustomAccountTitle value) async {
+  var save = json.encode(value.toJson());
+  await _setString("customAccountTitle", save);
+}
 
 String _mapKey(String key) => "$key-custom";
 

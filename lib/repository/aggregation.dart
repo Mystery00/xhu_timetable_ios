@@ -19,6 +19,7 @@ class AggregationRepo extends BaseDataRepo {
     var nowYear = await getNowYear();
     var nowTerm = await getNowTerm();
     var userList = await requestUserList();
+    var customAccountTitle = await getCustomAccountTitle();
 
     List<TodayCourseView> todayViewList = [];
     List<WeekCourseView> weekViewList = [];
@@ -39,13 +40,13 @@ class AggregationRepo extends BaseDataRepo {
         for (var course in response.courseList) {
           todayViewList.add(TodayCourseView.valueOfCourse(course, user));
           weekViewList
-              .add(WeekCourseView.valueOfCourse(course, user.studentId));
+              .add(WeekCourseView.valueOfCourse(course, customAccountTitle.formatWeek(user.userInfo)));
         }
         for (var experimentCourse in response.experimentCourseList) {
           todayViewList.add(
               TodayCourseView.valueOfExperimentCourse(experimentCourse, user));
           weekViewList.add(WeekCourseView.valueOfExperimentCourse(
-              experimentCourse, user.studentId));
+              experimentCourse, customAccountTitle.formatWeek(user.userInfo)));
         }
         AggregationLocalRepo.saveAggregationMainPageResponse(
             nowYear, nowTerm, user, response);
@@ -58,13 +59,13 @@ class AggregationRepo extends BaseDataRepo {
         for (var course in response.courseList) {
           todayViewList.add(TodayCourseView.valueOfCourse(course, user));
           weekViewList
-              .add(WeekCourseView.valueOfCourse(course, user.userInfo.name));
+              .add(WeekCourseView.valueOfCourse(course, customAccountTitle.formatWeek(user.userInfo)));
         }
         for (var experimentCourse in response.experimentCourseList) {
           todayViewList.add(
               TodayCourseView.valueOfExperimentCourse(experimentCourse, user));
           weekViewList.add(WeekCourseView.valueOfExperimentCourse(
-              experimentCourse, user.userInfo.name));
+              experimentCourse, customAccountTitle.formatWeek(user.userInfo)));
         }
       }
     }

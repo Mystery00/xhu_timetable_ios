@@ -2,10 +2,12 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:xhu_timetable_ios/event/bus.dart';
 import 'package:xhu_timetable_ios/event/ui.dart';
+import 'package:xhu_timetable_ios/model/custom_account_title.dart';
 import 'package:xhu_timetable_ios/repository/user.dart';
+import 'package:xhu_timetable_ios/store/config_store.dart';
 import 'package:xhu_timetable_ios/store/user_store.dart';
-import 'package:xhu_timetable_ios/toast.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
+import 'package:xhu_timetable_ios/ui/theme/icons.dart';
 import 'package:xhu_timetable_ios/ui/theme/profile.dart';
 import 'package:xhu_timetable_ios/ui/theme/settings.dart';
 
@@ -20,12 +22,28 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
   EventBus eventBus = getEventBus();
 
   var editMode = false;
+  var _multiAccountMode = false;
+  var _customAccountTitle = DEFAULT_CUSTOM_ACCOUNT_TITLE;
   List<LoggedUserItem> list = [];
 
   @override
   void initState() {
     super.initState();
+    _init();
     refresh();
+  }
+
+  void _init() {
+    getMultiAccountMode().then((value) {
+      setState(() {
+        _multiAccountMode = value;
+      });
+    });
+    getCustomAccountTitle().then((value) {
+      setState(() {
+        _customAccountTitle = value;
+      });
+    });
   }
 
   void refresh() {
@@ -85,10 +103,43 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
                     title: "多账号模式",
                     subtitle: "将当前所有已登录账号的课表全部显示出来",
                     trailing: Switch(
-                        value: false,
+                        value: _multiAccountMode,
                         onChanged: (value) {
-                          showToast("暂未实现");
+                          setMultiAccountMode(value).then((_) {
+                            setState(() {
+                              _multiAccountMode = value;
+                            });
+                            eventBus.fire(UIChangeEvent.multiModeChanged());
+                          });
                         }),
+                  ),
+                  context.buildSettingsItem(
+                    icons: IconsProfile.navigationToday,
+                    title: "今日课程界面账号信息模板",
+                    subtitle: "启动多账号模式之后，使用该模板来显示对应的账号信息",
+                    onTap: () => showCustomAccountTitleDialog(
+                        _customAccountTitle.todayTemplate,
+                        DEFAULT_CUSTOM_ACCOUNT_TITLE.todayTemplate,
+                        (todayTemplate) async {
+                      await setCustomAccountTitle(CustomAccountTitle(
+                          todayTemplate: todayTemplate,
+                          weekTemplate: _customAccountTitle.weekTemplate));
+                      eventBus.fire(UIChangeEvent.changeCustomAccountTitle());
+                    }),
+                  ),
+                  context.buildSettingsItem(
+                    icons: IconsProfile.navigationWeek,
+                    title: "本周课程界面账号信息模板",
+                    subtitle: "启动多账号模式之后，使用该模板来显示对应的账号信息",
+                    onTap: () => showCustomAccountTitleDialog(
+                        _customAccountTitle.weekTemplate,
+                        DEFAULT_CUSTOM_ACCOUNT_TITLE.weekTemplate,
+                        (weekTemplate) async {
+                      await setCustomAccountTitle(CustomAccountTitle(
+                          todayTemplate: _customAccountTitle.todayTemplate,
+                          weekTemplate: weekTemplate));
+                      eventBus.fire(UIChangeEvent.changeCustomAccountTitle());
+                    }),
                   ),
                 ],
               ),
@@ -241,5 +292,96 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
             ],
           )),
     );
+  }
+
+  Future<void> showCustomAccountTitleDialog(
+      String oldData, String resetData, Function(String) func) async {
+    var inputController = TextEditingController(text: oldData);
+    String? result = await showDialog<String>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("请输入模板内容"),
+            content: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                    autofocus: true,
+                    maxLines: 3,
+                    controller: inputController,
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      TextButton(
+                        style: ButtonStyle(
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.all(4)),
+                        ),
+                        onPressed: () {
+                          inputController.text =
+                              "${inputController.text}{studentNo}";
+                        },
+                        child: const Text("学号"),
+                      ),
+                      TextButton(
+                        style: ButtonStyle(
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.all(4)),
+                        ),
+                        onPressed: () {
+                          inputController.text =
+                              "${inputController.text}{name}";
+                        },
+                        child: const Text("姓名"),
+                      ),
+                      TextButton(
+                        style: ButtonStyle(
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.all(4)),
+                        ),
+                        onPressed: () {
+                          inputController.text =
+                              "${inputController.text}{nickName}";
+                        },
+                        child: const Text("昵称"),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  inputController.text = resetData;
+                },
+                child: const Text("重置"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("取消"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, inputController.text);
+                },
+                child: const Text("确定"),
+              ),
+            ],
+          );
+        });
+    if (result == null) {
+      return;
+    }
+    await func(result);
+    _customAccountTitle = await getCustomAccountTitle();
   }
 }

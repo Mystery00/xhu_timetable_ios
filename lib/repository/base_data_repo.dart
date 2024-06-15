@@ -1,4 +1,5 @@
 import 'package:xhu_timetable_ios/model/user.dart';
+import 'package:xhu_timetable_ios/store/config_store.dart';
 import 'package:xhu_timetable_ios/store/user_store.dart';
 
 class BaseDataRepo {
@@ -17,6 +18,10 @@ class BaseDataRepo {
   }
 
   Future<List<User>> requestUserList() async {
+    var multiAccountMode = await getMultiAccountMode();
+    if (multiAccountMode) {
+      return await loggedUserList();
+    }
     var u = await mainUser();
     return [u];
   }

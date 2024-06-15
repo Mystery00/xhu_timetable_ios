@@ -194,8 +194,36 @@ Widget _buildTodayCourseContent(BuildContext context, TodayCourseSheet course) {
             margin: const EdgeInsets.only(right: 8),
             child: Stack(
               children: [
+                if (course.accountTitle.isNotEmpty)
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(12),
+                          bottomLeft: Radius.circular(4),
+                        ),
+                      ),
+                      child: Text(
+                        course.accountTitle,
+                        style: TextStyle(
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.only(
+                    top: course.accountTitle.isNotEmpty ? 18 : 8,
+                    bottom: course.courseStatus.isNotEmpty ? 18 : 8,
+                    left: 8,
+                    right: 8,
+                  ),
                   child: IntrinsicHeight(
                     child: Row(
                       children: [

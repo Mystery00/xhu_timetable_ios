@@ -65,6 +65,8 @@ Future<List<TodayCourseSheet>> getTodayCourseSheetList(
       showListGroupByStudentId[element.user.studentId] = [element];
     }
   }
+  var multiAccountMode = await getMultiAccountMode();
+  var customAccountTitle = await getCustomAccountTitle();
   var showStatus = await getShowStatus();
   showListGroupByStudentId.forEach((key, list) {
     var last = list.first;
@@ -107,15 +109,19 @@ Future<List<TodayCourseSheet>> getTodayCourseSheetList(
       timeSet.add(i);
     }
     var sheet = TodayCourseSheet(
-        courseName: element.courseName,
-        teacherName: element.teacher,
-        timeSet: timeSet,
-        startTime: DateTimeExt.localTime(element.startTime),
-        endTime: DateTimeExt.localTime(element.endTime),
-        timeString: element.courseDayTime,
-        location: element.location,
-        color: element.backgroundColor,
-        showDate: showDate);
+      courseName: element.courseName,
+      teacherName: element.teacher,
+      timeSet: timeSet,
+      startTime: DateTimeExt.localTime(element.startTime),
+      endTime: DateTimeExt.localTime(element.endTime),
+      timeString: element.courseDayTime,
+      location: element.location,
+      color: element.backgroundColor,
+      showDate: showDate,
+      accountTitle: multiAccountMode
+          ? customAccountTitle.formatToday(element.user.userInfo)
+          : "",
+    );
     if (showStatus) {
       sheet.calc(now);
     }
@@ -265,6 +271,7 @@ class TodayCourseSheet {
   final String location;
   final Color color;
   final DateTime showDate;
+  String accountTitle = "";
   String courseStatus = "";
 
   TodayCourseSheet(
@@ -276,7 +283,8 @@ class TodayCourseSheet {
       required this.timeString,
       required this.location,
       required this.color,
-      required this.showDate});
+      required this.showDate,
+      this.accountTitle = ""});
 
   void calc(DateTime now) {
     var sTime = startTime.atDate(showDate);

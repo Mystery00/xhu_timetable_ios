@@ -233,7 +233,9 @@ class _WeekHomePageState extends State<WeekHomePage> {
                 height: double.infinity,
                 width: double.infinity,
                 margin: const EdgeInsets.all(1),
-                color: backgroundColor.withOpacity(0.7),
+                color: title.isNotEmpty
+                    ? backgroundColor.withOpacity(0.7)
+                    : Colors.transparent,
                 child: Text(
                   title,
                   style: TextStyle(

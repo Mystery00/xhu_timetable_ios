@@ -72,7 +72,7 @@ SPEC CHECKSUMS:
   device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
   fk_user_agent: 1f47ec39291e8372b1d692b50084b0d54103c545
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  fluttertoast: 9f2f8e81bb5ce18facb9748d7855bf5a756fe3db
+  fluttertoast: e9a18c7be5413da53898f660530c56f35edfba9c
   MMKV: 506311d0494023c2f7e0b62cc1f31b7370fa3cfb
   mmkv_ios: 4f3c7499b8881c569eca713c5970ed7bfc58b8df
   MMKVCore: 9e2e5fd529b64a9fe15f1a7afb3d73b2e27b4db9

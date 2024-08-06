@@ -6,14 +6,17 @@ class XhuRepo {
     var dateStart = date.atStartOfDay();
     var termStartDate = await getTermStartDate();
     var days = dateStart.difference(termStartDate).inDays;
-    var week = ((days / 7) + 1).toInt();
-    if (days < 0 && week > 0) {
-      week = 0;
+    if (days < 0) {
+      return 0;
+    }
+    int week = ((days / 7) + 1).toInt();
+    if (week > 20) {
+      return 21;
     }
     return week;
   }
 
-  static Future<String> calculateDateTitle(bool showTomorrow) async {
+  static Future<String> calculateTodayTitle(bool showTomorrow) async {
     var termStartDate = await getTermStartDate();
     var now = DateTime.now().atStartOfDay();
     var todayWeekIndex = now.getDayOfWeek();
@@ -29,6 +32,31 @@ class XhuRepo {
       return "本学期已结束";
     } else {
       return "第$week周 $weekIndex";
+    }
+  }
+
+  static String calculateWeekTitle(int initWeek) {
+    if (initWeek < 1) {
+      return "还没开学呢～";
+    } else if (initWeek > 20) {
+      return "本学期已结束";
+    } else {
+      return "第$initWeek周";
+    }
+  }
+
+  static Future<DateTime> calculateWeekStartDay(int initWeek) async {
+    var termStartDate = await getTermStartDate();
+    if (initWeek < 1) {
+      return termStartDate;
+    } else if (initWeek > 20) {
+      var now = DateTime.now().atStartOfDay();
+      while (now.weekday != DateTime.monday) {
+        now = now.subtract(const Duration(days: 1));
+      }
+      return now;
+    } else {
+      return termStartDate.add(Duration(days: 7 * (initWeek - 1)));
     }
   }
 }

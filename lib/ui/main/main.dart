@@ -35,7 +35,8 @@ class _MainRouteState extends State<MainRoute> {
   EventBus eventBus = getEventBus();
 
   var _loading = false;
-  var todayWeek = 1;
+  var todayTitle = "";
+  var weekTitle = "";
   var _week = 1;
   Poems? poems;
   DateTime _dateStart = DateTime.now().atStartOfDay();
@@ -101,14 +102,14 @@ class _MainRouteState extends State<MainRoute> {
   }
 
   Future<void> _calculateWeek() async {
-    var termStartDate = await getTermStartDate();
-    var currentWeek = await XhuRepo.calculateWeek();
+    var initWeek = await XhuRepo.calculateWeek();
+    var todayTitle = await XhuRepo.calculateTodayTitle(false);
+    var weekTitle = XhuRepo.calculateWeekTitle(initWeek);
+    var dateStart = await XhuRepo.calculateWeekStartDay(initWeek);
     setState(() {
-      todayWeek = currentWeek;
-      _week = currentWeek;
-    });
-    var dateStart = termStartDate.add(Duration(days: 7 * (currentWeek - 1)));
-    setState(() {
+      this.todayTitle = todayTitle;
+      this.weekTitle = weekTitle;
+      _week = initWeek;
       _dateStart = dateStart;
     });
   }
@@ -116,7 +117,9 @@ class _MainRouteState extends State<MainRoute> {
   Future<void> _changeWeek(int week) async {
     var termStartDate = await getTermStartDate();
     var currentWeek = await XhuRepo.calculateWeek();
+    var weekTitle = XhuRepo.calculateWeekTitle(week);
     setState(() {
+      this.weekTitle = weekTitle;
       _week = week;
     });
     var (data, loadWarning) = await getMainPageData(false, true);
@@ -260,10 +263,14 @@ class _MainRouteState extends State<MainRoute> {
     var title = "西瓜课表";
     switch (_currentIndex) {
       case 0:
-        title = "第$todayWeek周 ${DateTime.now().getDayOfWeek()}";
+        if (todayTitle.isNotEmpty) {
+          title = todayTitle;
+        }
         break;
       case 1:
-        title = "第$_week周";
+        if (weekTitle.isNotEmpty) {
+          title = weekTitle;
+        }
         break;
       case 2:
         title = "个人中心";

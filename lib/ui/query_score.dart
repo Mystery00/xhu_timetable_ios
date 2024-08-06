@@ -164,7 +164,7 @@ class _QueryScoreRouteState extends SelectState<QueryScoreRoute> {
                         height: 48,
                         width: double.infinity,
                         padding: const EdgeInsets.all(12),
-                        color: Theme.of(context).colorScheme.surfaceVariant,
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
                         child: InkWell(
                           onTap: () => setState(() {
                             showMore = !showMore;
@@ -189,7 +189,7 @@ class _QueryScoreRouteState extends SelectState<QueryScoreRoute> {
                         height: 48,
                         width: double.infinity,
                         padding: const EdgeInsets.all(12),
-                        color: Theme.of(context).colorScheme.surfaceVariant,
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
                         child: const Text("学期总览"),
                       );
                     default:
@@ -197,7 +197,7 @@ class _QueryScoreRouteState extends SelectState<QueryScoreRoute> {
                         height: 48,
                         width: double.infinity,
                         padding: const EdgeInsets.all(12),
-                        color: Theme.of(context).colorScheme.surfaceVariant,
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
                         child: const Text("课程成绩列表"),
                       );
                   }
@@ -220,7 +220,7 @@ class _QueryScoreRouteState extends SelectState<QueryScoreRoute> {
     }
     return Card(
       elevation: 0,
-      color: Theme.of(context).colorScheme.surfaceVariant,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Padding(
         padding: const EdgeInsets.all(8),
@@ -271,7 +271,7 @@ class _QueryScoreRouteState extends SelectState<QueryScoreRoute> {
 
   Widget _buildItem(ScoreResponse score, bool showMore) => Card(
         elevation: 0,
-        color: Theme.of(context).colorScheme.surfaceVariant,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: IntrinsicHeight(
           child: Padding(

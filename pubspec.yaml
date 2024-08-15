@@ -1,10 +1,10 @@
 name: xhu_timetable_ios
 description: "查课查成绩，就用西瓜课表"
-publish_to: 'none'
-version: 1.0.1+91
+publish_to: "none"
+version: 1.0.2+92
 
 environment:
-  sdk: '>=3.3.2 <4.0.0'
+  sdk: ">=3.3.2 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -71,7 +71,6 @@ flutter_icons:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

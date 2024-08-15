@@ -2,8 +2,11 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:pointycastle/export.dart' as pc;
 import 'package:basic_utils/basic_utils.dart';
+import 'package:xhu_timetable_ios/api/rest/menu.dart';
 import 'package:xhu_timetable_ios/api/rest/user.dart';
+import 'package:xhu_timetable_ios/model/menu.dart';
 import 'package:xhu_timetable_ios/model/user.dart';
+import 'package:xhu_timetable_ios/store/menu_store.dart';
 import 'package:xhu_timetable_ios/store/user_store.dart';
 
 Future<User> doLogin(String username, String password) async {
@@ -19,13 +22,16 @@ Future<User> doLogin(String username, String password) async {
       userInfo: userInfo,
       profileImage: null);
   await login(user);
+  if (isMenuListEmpty()) {
+    List<Menu> menuList = await apiGetMenuList();
+    await updateMenuList(menuList);
+  }
   return user;
 }
 
 String encryptStringWithRSA(String publicKeyBase64, String plaintext) {
   var publicKeyAsUint8List = base64.decode(publicKeyBase64);
-  var rsaPublicKey =
-      CryptoUtils.rsaPublicKeyFromDERBytes(publicKeyAsUint8List);
+  var rsaPublicKey = CryptoUtils.rsaPublicKeyFromDERBytes(publicKeyAsUint8List);
   final encryptor = pc.PKCS1Encoding(pc.RSAEngine())
     ..init(true, pc.PublicKeyParameter<pc.RSAPublicKey>(rsaPublicKey));
   final Uint8List encoded = utf8.encode(plaintext);

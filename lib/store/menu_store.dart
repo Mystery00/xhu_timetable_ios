@@ -13,6 +13,10 @@ Future<MMKV> _getMenuStore() async {
   return _instance!;
 }
 
+bool isMenuListEmpty() {
+  return _menuList == null || _menuList!.isEmpty;
+}
+
 List<List<Menu>>? _menuList;
 Future<List<List<Menu>>> loadAllMenu() async {
   var store = await _getMenuStore();

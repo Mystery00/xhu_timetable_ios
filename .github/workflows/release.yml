@@ -1,8 +1,10 @@
 name: Flutter iOS
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
+  workflow_dispatch:
+
 jobs:
   build_ios:
     runs-on: macos-latest

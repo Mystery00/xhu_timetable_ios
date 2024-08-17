@@ -1,6 +1,8 @@
 PODS:
   - babstrap_settings_screen (0.0.1):
     - Flutter
+  - background_downloader (0.0.1):
+    - Flutter
   - device_info_plus (0.0.1):
     - Flutter
   - fk_user_agent (2.0.0):
@@ -29,6 +31,7 @@ PODS:
 
 DEPENDENCIES:
   - babstrap_settings_screen (from `.symlinks/plugins/babstrap_settings_screen/ios`)
+  - background_downloader (from `.symlinks/plugins/background_downloader/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - fk_user_agent (from `.symlinks/plugins/fk_user_agent/ios`)
   - Flutter (from `Flutter`)
@@ -48,6 +51,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   babstrap_settings_screen:
     :path: ".symlinks/plugins/babstrap_settings_screen/ios"
+  background_downloader:
+    :path: ".symlinks/plugins/background_downloader/ios"
   device_info_plus:
     :path: ".symlinks/plugins/device_info_plus/ios"
   fk_user_agent:
@@ -69,6 +74,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   babstrap_settings_screen: 535097da0fa521a47fef6f6678ff2b464ee15937
+  background_downloader: 9f788ffc5de45acf87d6380e91ca0841066c18cf
   device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
   fk_user_agent: 1f47ec39291e8372b1d692b50084b0d54103c545
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
@@ -82,6 +88,6 @@ SPEC CHECKSUMS:
   Toast: 1f5ea13423a1e6674c4abdac5be53587ae481c4e
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
 
-PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
+PODFILE CHECKSUM: a57f30d18f102dd3ce366b1d62a55ecbef2158e5
 
 COCOAPODS: 1.15.2

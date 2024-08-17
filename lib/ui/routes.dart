@@ -1,5 +1,6 @@
 const routeStart = '/';
 const routeLogin = '/login';
+const routeSplashImage = '/splash-image';
 const routeMain = '/main';
 const routeAccountSettings = '/account-settings';
 const routeClassSettings = '/class-settings';

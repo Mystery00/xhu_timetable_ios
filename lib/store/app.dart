@@ -19,7 +19,7 @@ Future<void> initApp() async {
   var iosInfo = await deviceInfo.iosInfo;
   _deviceId = "ios-${iosInfo.identifierForVendor ?? "unknown"}";
   if (!iosInfo.isPhysicalDevice) {
-    _isDebug = true;
+    // _isDebug = true;
     _deviceId = "debug";
   }
 }

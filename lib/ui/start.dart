@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:xhu_timetable_ios/repository/start.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
 import 'package:xhu_timetable_ios/toast.dart';
+import 'package:xhu_timetable_ios/ui/splash_image.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
@@ -15,19 +16,25 @@ class StartScreenState extends State<StartScreen> {
   @override
   void initState() {
     super.initState();
-    _doInint().then((value) => Navigator.pushReplacementNamed(context, value));
+    _doInint(context);
   }
 
-  Future<String> _doInint() async {
-    var readyState = await init();
-    if (readyState.errorMessage != null) {
-      showToast(readyState.errorMessage!);
-    }
-    if (readyState.isLogin) {
-      return routeMain;
-    } else {
-      return routeLogin;
-    }
+  void _doInint(BuildContext context) {
+    init().then((readyState) {
+      if (readyState.errorMessage != null) {
+        showToast(readyState.errorMessage!);
+      }
+      if (!readyState.isLogin) {
+        Navigator.pushReplacementNamed(context, routeLogin);
+      } else if (readyState.splashFile == null || readyState.splash == null) {
+        Navigator.pushReplacementNamed(context, routeMain);
+      } else {
+        Navigator.pushReplacementNamed(context, routeSplashImage,
+            arguments: SplashImageArguments(
+                filePath: readyState.splashFile!.path,
+                splash: readyState.splash!));
+      }
+    });
   }
 
   @override

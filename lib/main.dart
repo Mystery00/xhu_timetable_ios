@@ -5,6 +5,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:xhu_timetable_ios/page.dart';
 import 'package:xhu_timetable_ios/store/app.dart';
 import 'package:xhu_timetable_ios/store/db.dart';
+import 'package:xhu_timetable_ios/store/downloader.dart';
 import 'package:xhu_timetable_ios/ui/account_settings.dart';
 import 'package:xhu_timetable_ios/ui/class_settings.dart';
 import 'package:xhu_timetable_ios/ui/login.dart';
@@ -14,6 +15,7 @@ import 'package:xhu_timetable_ios/ui/query_notice.dart';
 import 'package:xhu_timetable_ios/ui/query_score.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
 import 'package:xhu_timetable_ios/ui/settings.dart';
+import 'package:xhu_timetable_ios/ui/splash_image.dart';
 import 'package:xhu_timetable_ios/ui/start.dart';
 import 'ui/main/main.dart';
 import 'package:fk_user_agent/fk_user_agent.dart';
@@ -29,6 +31,7 @@ void main() async {
   await initApp();
   ColorScheme colorScheme = await ColorScheme.fromImageProvider(
       provider: const AssetImage("assets/images/main_bg.png"));
+  initDownloader();
 
   runApp(MyApp(colorScheme: colorScheme));
 }
@@ -54,14 +57,15 @@ class MyApp extends StatelessWidget {
           routes: {
             routeStart: (context) => const StartScreen(),
             routeLogin: (context) => const LoginRoute(),
+            routeSplashImage: (context) => const SplashImageRoute(),
             routeMain: (context) => const MainRoute(),
             routeAccountSettings: (context) => const AccountSettingsRoute(),
             routeClassSettings: (context) => const ClassSettingsRoute(),
             routeSettings: (context) => const SettingsRoute(),
             routeQueryExam: (context) => const QueryExamRoute(),
-            routeQueryNotice:(context) => const QueryNoticeRoute(),
-            routeQueryScore:(context) => const QueryScoreRoute(),
-            routeQueryExpScore:(context) => const QueryExpScoreRoute(),
+            routeQueryNotice: (context) => const QueryNoticeRoute(),
+            routeQueryScore: (context) => const QueryScoreRoute(),
+            routeQueryExpScore: (context) => const QueryExpScoreRoute(),
           },
           builder: FToastBuilder(),
         ));

@@ -146,6 +146,10 @@ Future<void> setCustomAccountTitle(CustomAccountTitle value) async {
   await _setString("customAccountTitle", save);
 }
 
+Future<bool> isDebugMode() => _getBool("debugMode", defaultValue: false);
+
+Future<void> setDebugMode(bool value) => _setBool("debugMode", value);
+
 String _mapKey(String key) => "$key-custom";
 
 class Customisable<T> {

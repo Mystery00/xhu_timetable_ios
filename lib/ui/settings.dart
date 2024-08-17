@@ -1,11 +1,14 @@
 import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:xhu_timetable_ios/event/bus.dart';
 import 'package:xhu_timetable_ios/model/team_member.dart';
+import 'package:xhu_timetable_ios/repository/xhu.dart';
 import 'package:xhu_timetable_ios/store/app.dart';
 import 'package:xhu_timetable_ios/store/cache_store.dart';
+import 'package:xhu_timetable_ios/store/config_store.dart';
 import 'package:xhu_timetable_ios/store/poems_store.dart';
 import 'package:xhu_timetable_ios/toast.dart';
 import 'package:xhu_timetable_ios/ui/theme/settings.dart';
@@ -21,10 +24,15 @@ class SettingsRoute extends StatefulWidget {
 class _SettingsRouteState extends State<SettingsRoute> {
   EventBus eventBus = getEventBus();
 
+  DateTime lastClickTime = DateTime(2000, 0, 0);
   List<TeamMember> teamMemberList = [];
 
   var _disablePoems = false;
   var _showPoemsTranslate = true;
+  var _showDeveloperOptions = false;
+
+  var debugLastSyncCourseTime = "";
+  var debugPoemsToken = "";
 
   @override
   void initState() {
@@ -42,6 +50,22 @@ class _SettingsRouteState extends State<SettingsRoute> {
     isShowTranslate().then((value) {
       setState(() {
         _showPoemsTranslate = value;
+      });
+    });
+
+    isDebugMode().then((value) {
+      setState(() {
+        _showDeveloperOptions = value;
+      });
+    });
+    getLastSyncCourse().then((value) {
+      setState(() {
+        debugLastSyncCourseTime = value.formatDate();
+      });
+    });
+    getToken().then((value) {
+      setState(() {
+        debugPoemsToken = value;
       });
     });
   }
@@ -163,6 +187,18 @@ class _SettingsRouteState extends State<SettingsRoute> {
                   iconImage: const Svg("assets/icons/svg/ic_version.svg"),
                   title: "版本号",
                   subtitle: "${getVersion()} - ${getBuildNumber()}",
+                  onTap: () {
+                    if (DateTime.now().difference(lastClickTime).inSeconds <
+                        1) {
+                      showToast('开发者模式已启动');
+                      setDebugMode(true).then((_) {
+                        setState(() {
+                          _showDeveloperOptions = true;
+                        });
+                      });
+                    }
+                    lastClickTime = DateTime.now();
+                  },
                 ),
               ],
             ),
@@ -184,6 +220,47 @@ class _SettingsRouteState extends State<SettingsRoute> {
                   ),
               ],
             ),
+            if (_showDeveloperOptions)
+              SettingsGroup(
+                margin: const EdgeInsets.all(8),
+                settingsGroupTitle: "开发者选项",
+                settingsGroupTitleStyle: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+                items: [
+                  context.buildSettingsItem(
+                    iconImage: const Svg("assets/icons/svg/ic_debug.svg"),
+                    title: "启用开发者模式",
+                    trailing: Switch(
+                        value: _showDeveloperOptions,
+                        onChanged: (value) {
+                          setDebugMode(value).then((_) {
+                            setState(() {
+                              _showDeveloperOptions = value;
+                            });
+                          });
+                        }),
+                  ),
+                  context.buildSettingsItem(
+                    title: "设备id",
+                    subtitle: getDeviceId(),
+                    onTap: () {
+                      showToast("设备id已复制到剪贴板");
+                      Clipboard.setData(ClipboardData(text: getDeviceId()));
+                    },
+                  ),
+                  context.buildSettingsItem(
+                    title: "上一次同步课程数据时间",
+                    subtitle: debugLastSyncCourseTime,
+                  ),
+                  context.buildSettingsItem(
+                    title: "今日诗词Token",
+                    subtitle: debugPoemsToken,
+                  ),
+                ],
+              ),
           ],
         ),
       ),

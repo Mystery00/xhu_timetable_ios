@@ -122,7 +122,7 @@ class _QueryExpScoreRouteState extends SelectState<QueryExpScoreRoute> {
                     height: 48,
                     width: double.infinity,
                     padding: const EdgeInsets.all(12),
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    color: Theme.of(context).colorScheme.surfaceVariant,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -146,7 +146,7 @@ class _QueryExpScoreRouteState extends SelectState<QueryExpScoreRoute> {
 
   Widget _buildItem(ExperimentScoreItemResponse expScore) => Card(
         elevation: 0,
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        color: Theme.of(context).colorScheme.surfaceVariant,
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: IntrinsicHeight(
           child: Padding(

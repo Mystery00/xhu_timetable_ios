@@ -92,7 +92,7 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
           },
           label: const Text("登录其他账号")),
       body: Container(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          color: Theme.of(context).colorScheme.surfaceVariant,
           child: ListView(
             children: [
               context.buildSettingsGroup(
@@ -260,11 +260,13 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
                                         child: TextButton(
                                           style: ButtonStyle(
                                             foregroundColor:
-                                                WidgetStateColor.resolveWith(
-                                                    (states) => Colors.white),
+                                                MaterialStateProperty
+                                                    .resolveWith((states) =>
+                                                        Colors.white),
                                             backgroundColor:
-                                                WidgetStateColor.resolveWith(
-                                                    (states) => Colors.red),
+                                                MaterialStateProperty
+                                                    .resolveWith(
+                                                        (states) => Colors.red),
                                           ),
                                           onPressed: () {
                                             _logout(u.studentId);
@@ -320,7 +322,7 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
                     children: [
                       TextButton(
                         style: ButtonStyle(
-                          padding: WidgetStateProperty.all(
+                          padding: MaterialStateProperty.all(
                               const EdgeInsets.all(4)),
                         ),
                         onPressed: () {
@@ -331,7 +333,7 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
                       ),
                       TextButton(
                         style: ButtonStyle(
-                          padding: WidgetStateProperty.all(
+                          padding: MaterialStateProperty.all(
                               const EdgeInsets.all(4)),
                         ),
                         onPressed: () {
@@ -342,7 +344,7 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
                       ),
                       TextButton(
                         style: ButtonStyle(
-                          padding: WidgetStateProperty.all(
+                          padding: MaterialStateProperty.all(
                               const EdgeInsets.all(4)),
                         ),
                         onPressed: () {

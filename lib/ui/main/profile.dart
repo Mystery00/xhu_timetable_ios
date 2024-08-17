@@ -22,7 +22,7 @@ class _AccountHomePageState extends State<AccountHomePage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      color: Theme.of(context).colorScheme.surfaceVariant,
       child: const Column(
         children: [
           _AccountInfo(),

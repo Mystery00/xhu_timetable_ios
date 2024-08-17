@@ -142,7 +142,8 @@ class _SettingsRouteState extends State<SettingsRoute> {
                   iconImage: const Svg("assets/icons/svg/ic_update_log.svg"),
                   title: "更新日志",
                   onTap: () {
-                    loadInBrowser("https://blog.mystery0.vip/xgkb-changelog");
+                    loadInBrowser(
+                        "https://blog.mystery0.vip/xgkb-changelog-ios");
                   },
                 ),
                 context.buildSettingsItem(

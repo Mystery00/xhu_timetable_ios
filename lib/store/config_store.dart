@@ -53,7 +53,7 @@ Future<Customisable<DateTime>> getCustomTermStartDate() async {
     return Customisable(
         data: DateTime.fromMillisecondsSinceEpoch(value), custom: false);
   }
-  return Customisable(data: DateTime(2024, 2, 26, 0, 0, 0), custom: false);
+  return Customisable(data: DateTime(2024, 9, 2, 0, 0, 0), custom: false);
 }
 
 Future<void> setCustomTermStartDate(Customisable<DateTime> value) async {

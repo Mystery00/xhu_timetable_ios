@@ -53,7 +53,7 @@
 			<string>UIInterfaceOrientationLandscapeLeft</string>
 			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
-		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-		<string>Your clear and concise description of why your app needs location access.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>We need access to your photo library to upload and share photos within the app.</string>
 	</dict>
 </plist>

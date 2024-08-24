@@ -44,7 +44,7 @@ Future<ReadyState> init() async {
   Splash? splash = await _initSplash();
   File? splashFile;
   if (splash != null) {
-    var dir = await getApplicationDocumentsDirectory();
+    var dir = await getApplicationCacheDirectory();
     splashFile = getSplashFilePath(dir, splash);
   }
   return ReadyState(
@@ -89,7 +89,7 @@ Future<Splash?> _initSplash() async {
     }
     var now = DateTime.now();
     List<Splash> existSplashList = [];
-    var dir = await getApplicationDocumentsDirectory();
+    var dir = await getApplicationCacheDirectory();
     List<Splash> splashList = await getSplashList();
     Map<String, String> downloadSplashMap = {};
     splashList

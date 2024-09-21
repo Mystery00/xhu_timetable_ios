@@ -62,7 +62,7 @@ class _MainRouteState extends State<MainRoute> {
         await _refreshCloudDataToState();
       } else if (event.isMainUserLogout()) {
         await _checkMainUser();
-      } else if (event.isChangeCurrentYearAndTerm()) {
+      } else if (event.isChangeCurrentYearAndTerm() || event.isChangeCampus()) {
         await _refreshCloudDataToState();
       } else if (event.isChangeTermStartDate() ||
           event.isShowNotThisWeek() ||

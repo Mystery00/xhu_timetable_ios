@@ -11,6 +11,7 @@ class UIChangeEvent {
   bool isShowStatus() => event == _showStatus;
   bool isMultiModeChanged() => event == _multiModeChanged;
   bool isChangeCustomAccountTitle() => event == _changeCustomAccountTitle;
+  bool isChangeCampus() => event == _changeCampus;
 
   factory UIChangeEvent.changeMainUser() =>
       UIChangeEvent(event: _changeMainUser);
@@ -27,6 +28,7 @@ class UIChangeEvent {
       UIChangeEvent(event: _multiModeChanged);
   factory UIChangeEvent.changeCustomAccountTitle() =>
       UIChangeEvent(event: _changeCustomAccountTitle);
+  factory UIChangeEvent.changeCampus() => UIChangeEvent(event: _changeCampus);
 }
 
 var _changeMainUser = 1;
@@ -37,3 +39,4 @@ var _showNotThisWeek = 5;
 var _showStatus = 6;
 var _multiModeChanged = 7;
 var _changeCustomAccountTitle = 8;
+var _changeCampus = 9;

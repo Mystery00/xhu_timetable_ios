@@ -36,8 +36,6 @@ Future<ReadyState> init() async {
   }
   //初始化菜单
   await _initMenu();
-  //初始化课程时间
-  await _initCourseTime();
   //初始化团队成员列表
   await _initTeamMember();
   //判断启动页信息
@@ -58,15 +56,6 @@ Future<void> _initMenu() async {
   try {
     List<Menu> menuList = await apiGetMenuList();
     await updateMenuList(menuList);
-  } catch (e) {
-    Logger().w(e);
-  }
-}
-
-Future<void> _initCourseTime() async {
-  try {
-    Map<String, String> courseTime = await apiCourseTime();
-    await setCourseTime(courseTime);
   } catch (e) {
     Logger().w(e);
   }

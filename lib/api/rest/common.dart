@@ -22,12 +22,6 @@ Future<ClientInitResponse> apiClientInit() async {
   return ClientInitResponse.fromJson(response.data);
 }
 
-Future<Map<String, String>> apiCourseTime() async {
-  Dio dio = getServerClient();
-  var response = await dio.get("/api/rest/external/common/courseTime");
-  return Map<String, String>.from(response.data);
-}
-
 Future<List<TeamMember>> apiTeamMemberList() async {
   Dio dio = getServerClient();
   var response = await dio.get("/api/rest/external/common/team");

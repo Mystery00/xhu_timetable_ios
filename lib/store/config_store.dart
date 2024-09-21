@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:mmkv/mmkv.dart';
 import 'package:xhu_timetable_ios/model/custom_account_title.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
+import 'package:xhu_timetable_ios/store/app.dart';
 
 MMKV? _instance;
 Future<MMKV> _getConfigStore() async {
@@ -53,7 +54,7 @@ Future<Customisable<DateTime>> getCustomTermStartDate() async {
     return Customisable(
         data: DateTime.fromMillisecondsSinceEpoch(value), custom: false);
   }
-  return Customisable(data: DateTime(2024, 9, 2, 0, 0, 0), custom: false);
+  return Customisable(data: initTermStartDate, custom: false);
 }
 
 Future<void> setCustomTermStartDate(Customisable<DateTime> value) async {
@@ -79,7 +80,7 @@ Future<Customisable<int>> getCustomNowYear() async {
   if (value != -1) {
     return Customisable(data: value, custom: false);
   }
-  return Customisable(data: 2023, custom: false);
+  return Customisable(data: initNowYear, custom: false);
 }
 
 Future<void> setCustomNowYear(Customisable<int> value) async {
@@ -104,7 +105,7 @@ Future<Customisable<int>> getCustomNowTerm() async {
   if (value != -1) {
     return Customisable(data: value, custom: false);
   }
-  return Customisable(data: 2, custom: false);
+  return Customisable(data: initNowTerm, custom: false);
 }
 
 Future<void> setCustomNowTerm(Customisable<int> value) async {

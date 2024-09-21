@@ -61,26 +61,6 @@ Future<DateTime> getLastSyncCourse() async {
 Future<void> setLastSyncCourse(DateTime date) =>
     _setString('lastSyncCourse', date.formatDate());
 
-Future<List<(DateTime, DateTime)>> getCourseTime() async {
-  var value = await _getStringN('courseTime');
-  if (value == null) {
-    return List.empty();
-  }
-  Map<String, dynamic> m = json.decode(value);
-  List<(DateTime, DateTime)> list = [];
-  for (var key in m.keys) {
-    var value = m[key];
-    list.add((
-      DateTimeExt.localTimeNoSeconds(key),
-      DateTimeExt.localTimeNoSeconds(value.toString())
-    ));
-  }
-  return list;
-}
-
-Future<void> setCourseTime(Map<String, String> value) =>
-    _setString("courseTime", json.encode(value));
-
 Future<List<TeamMember>> getTeamMemberList() async {
   var value = await _getStringN('teamMemberList');
   if (value == null) {

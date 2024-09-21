@@ -171,7 +171,7 @@ class _ClassSettingsRouteState extends SelectState<ClassSettingsRoute> {
               title: "校区设置",
               items: [
                 context.buildSettingsItem(
-                  iconImage: const Svg("assets/icons/svg/ic_now_year_term.svg"),
+                  iconImage: const Svg("assets/icons/svg/ic_user_campus.svg"),
                   title: "更新当前主用户校区",
                   subtitle: "当前校区：${userCampus?.selected}",
                   onTap: () => showCustomCampusDialog(),

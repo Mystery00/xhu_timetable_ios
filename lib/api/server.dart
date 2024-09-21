@@ -44,7 +44,7 @@ Dio getServerClient() {
       map['body'] = body;
       map['clientVersionCode'] = getBuildNumber();
       map['clientVersionName'] = getVersion();
-      map['content-length'] = body.length.toString();
+      map['content-length'] = utf8.encode(body).length.toString();
       map['content-type'] = contentType ?? 'empty';
       map['method'] = options.method;
       map['signTime'] = signTime.toString();
@@ -89,7 +89,7 @@ String handleException(Object e) {
     return e.message;
   }
   if (e is DioException) {
-    if (e.error is ServerError){
+    if (e.error is ServerError) {
       return (e.error as ServerError).message;
     }
     return e.error.toString();

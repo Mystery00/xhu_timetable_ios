@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:xhu_timetable_ios/repository/start.dart';
@@ -20,7 +22,10 @@ class StartScreenState extends State<StartScreen> {
   }
 
   void _doInint(BuildContext context) {
+    var startTime = DateTime.now();
     init().then((readyState) {
+      var duration = DateTime.now().difference(startTime);
+      log("init duration: ${duration.inMilliseconds}ms");
       if (readyState.errorMessage != null) {
         showToast(readyState.errorMessage!);
       }

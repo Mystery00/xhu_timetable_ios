@@ -9,7 +9,6 @@ import 'package:xhu_timetable_ios/api/rest/common.dart';
 import 'package:xhu_timetable_ios/api/rest/menu.dart';
 import 'package:xhu_timetable_ios/model/client_init.dart';
 import 'package:xhu_timetable_ios/model/menu.dart';
-import 'package:xhu_timetable_ios/model/team_member.dart';
 import 'package:xhu_timetable_ios/store/cache_store.dart';
 import 'package:xhu_timetable_ios/store/config_store.dart';
 import 'package:xhu_timetable_ios/store/downloader.dart';
@@ -37,7 +36,7 @@ Future<ReadyState> init() async {
   //初始化菜单
   await _initMenu();
   //初始化团队成员列表
-  await _initTeamMember();
+  _initTeamMember();
   //判断启动页信息
   Splash? splash = await _initSplash();
   File? splashFile;
@@ -53,21 +52,22 @@ Future<ReadyState> init() async {
 }
 
 Future<void> _initMenu() async {
-  try {
-    List<Menu> menuList = await apiGetMenuList();
-    await updateMenuList(menuList);
-  } catch (e) {
-    Logger().w(e);
+  if (await isMenuStoreEmpty()) {
+    //没有缓存菜单，阻塞到获取到菜单
+    try {
+      List<Menu> menuList = await apiGetMenuList();
+      await updateMenuList(menuList);
+    } catch (e) {
+      Logger().w(e);
+    }
+  } else {
+    //有缓存菜单，后台更新菜单
+    apiGetMenuList().then((value) => updateMenuList(value));
   }
 }
 
-Future<void> _initTeamMember() async {
-  try {
-    List<TeamMember> teamMemberList = await apiTeamMemberList();
-    await setTeamMemberList(teamMemberList);
-  } catch (e) {
-    Logger().w(e);
-  }
+void _initTeamMember() {
+  apiTeamMemberList().then((value) => setTeamMemberList(value));
 }
 
 Future<Splash?> _initSplash() async {

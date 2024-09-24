@@ -17,6 +17,11 @@ bool isMenuListEmpty() {
   return _menuList == null || _menuList!.isEmpty;
 }
 
+Future<bool> isMenuStoreEmpty() async {
+  var store = await _getMenuStore();
+  return store.containsKey("menuList");
+}
+
 List<List<Menu>>? _menuList;
 Future<List<List<Menu>>> loadAllMenu() async {
   var store = await _getMenuStore();

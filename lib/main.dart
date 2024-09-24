@@ -17,7 +17,7 @@ import 'package:xhu_timetable_ios/ui/routes.dart';
 import 'package:xhu_timetable_ios/ui/settings.dart';
 import 'package:xhu_timetable_ios/ui/splash_image.dart';
 import 'package:xhu_timetable_ios/ui/start.dart';
-import 'ui/main/main.dart';
+import 'package:xhu_timetable_ios/ui/main/main.dart';
 import 'package:fk_user_agent/fk_user_agent.dart';
 import 'package:path_provider/path_provider.dart';
 

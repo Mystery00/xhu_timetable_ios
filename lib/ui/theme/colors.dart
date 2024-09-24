@@ -38,24 +38,22 @@ class ProfileColor {
 
 class ColorPool {
   static const List<Color> pool = [
-    Color(0xFFF44336),
-    Color(0xFFE91E63),
-    Color(0xFF9C27B0),
-    Color(0xFF673AB7),
-    Color(0xFF3F51B5),
-    Color(0xFF2196F3),
-    Color(0xFF03A9F4),
-    Color(0xFF00BCD4),
-    Color(0xFF009688),
-    Color(0xFF4CAF50),
-    Color(0xFF8BC34A),
-    Color(0xFFCDDC39),
-    Color(0xFFFFC107),
-    Color(0xFFFF9800),
-    Color(0xFFFF5722),
-    Color(0xFF795548),
-    Color(0xFF9E9E9E),
-    Color(0xFF607D8B),
+    Color(0xFF1E88E5),
+    Color(0xFF43A047),
+    Color(0xFFFDD835),
+    Color(0xFFE53935),
+    Color(0xFF8E24AA),
+    Color(0xFFFB8C00),
+    Color(0xFF3949AB),
+    Color(0xFF00ACC1),
+    Color(0xFF7CB342),
+    Color(0xFFD81B60),
+    Color(0xFF5E35B1),
+    Color(0xFF00897B),
+    Color(0xFF6D4C41),
+    Color(0xFF546E7A),
+    Color(0xFFEC407A),
+    Color(0xFFAB47BC)
   ];
 
   static Color random() {

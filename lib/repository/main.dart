@@ -149,6 +149,13 @@ Future<List<List<WeekCourseSheet>>> getWeekCourseSheetList(
   if (!showNotThisWeek) {
     courseList.removeWhere((element) => !element.thisWeek);
   }
+  //多账号模式检测
+  var multiAccountMode = await getMultiAccountMode();
+  if (!multiAccountMode) {
+    for (var element in courseList) {
+      element.accountTitle = "";
+    }
+  }
   //组建表格数据
   List<List<WeekCourseSheet>> expandTableCourse = List.generate(
       7,

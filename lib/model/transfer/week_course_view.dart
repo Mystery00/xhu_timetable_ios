@@ -16,7 +16,7 @@ class WeekCourseView {
   final String location;
   final String teacher;
   final List<String> extraData;
-  final String accountTitle;
+  String accountTitle;
   bool thisWeek = false;
   Color backgroundColor = Colors.transparent;
   String key = "";

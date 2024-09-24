@@ -18,7 +18,8 @@ class WeekHomePage extends StatefulWidget {
   State<WeekHomePage> createState() => _WeekHomePageState();
 }
 
-const _dateBackgroundColor = Color(0x2E000000);
+const _dateBackgroundColor = Color.fromARGB(32, 0, 0, 0);
+const _dateFocusColor = Color.fromARGB(128, 0, 0, 0);
 const itemHeight = 72;
 
 class _WeekHomePageState extends State<WeekHomePage> {
@@ -109,6 +110,9 @@ class _WeekHomePageState extends State<WeekHomePage> {
   }
 
   void _handleCourseItemTap(WeekCourseSheet sheet) {
+    if (sheet.course.isEmpty) {
+      return;
+    }
     showMaterialModalBottomSheet(
         context: context,
         shape: ShapeBorder.lerp(
@@ -122,7 +126,7 @@ class _WeekHomePageState extends State<WeekHomePage> {
                     topRight: Radius.circular(16))),
             0),
         backgroundColor: Theme.of(context).colorScheme.surface.withOpacity(0.8),
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 150),
         builder: (context) {
           return Container(
             constraints: const BoxConstraints(
@@ -130,7 +134,8 @@ class _WeekHomePageState extends State<WeekHomePage> {
             ),
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.only(
+                    left: 16, right: 16, top: 16, bottom: 48),
                 child: Column(
                   children: [
                     Text(
@@ -183,25 +188,26 @@ class _WeekHomePageState extends State<WeekHomePage> {
                                   SelectableText(element,
                                       style:
                                           const TextStyle(color: Colors.white)),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: course.backgroundColor,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              padding: const EdgeInsets.all(4),
-                              child: Text(
-                                course.accountTitle,
-                                style: TextStyle(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onPrimaryContainer,
-                                  fontSize: 12,
-                                  backgroundColor: Theme.of(context)
-                                      .colorScheme
-                                      .primaryContainer,
+                            if (course.accountTitle.isNotEmpty)
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: course.backgroundColor,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: const EdgeInsets.all(4),
+                                child: Text(
+                                  course.accountTitle,
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimaryContainer,
+                                    fontSize: 12,
+                                    backgroundColor: Theme.of(context)
+                                        .colorScheme
+                                        .primaryContainer,
+                                  ),
                                 ),
                               ),
-                            ),
                           ],
                         ),
                       ),
@@ -248,11 +254,11 @@ class _WeekHomePageState extends State<WeekHomePage> {
             ),
             if (showMore)
               const Positioned(
-                bottom: 0,
-                right: 0,
+                bottom: 1,
+                right: 1,
                 child: Image(
-                  width: 6,
-                  height: 6,
+                  width: 8,
+                  height: 8,
                   image: Svg("assets/icons/svg/ic_radius_cell.svg"),
                 ),
               ),
@@ -270,8 +276,7 @@ class _WeekHomePageState extends State<WeekHomePage> {
     return Expanded(
       flex: 10,
       child: Container(
-        color:
-            dateTime.isToday() ? const Color(0x80000000) : Colors.transparent,
+        color: dateTime.isToday() ? _dateFocusColor : Colors.transparent,
         child: Column(
           children: [
             Text(

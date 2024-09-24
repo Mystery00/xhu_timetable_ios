@@ -182,7 +182,7 @@ class _MainRouteState extends State<MainRoute> {
         });
         if (!changeWeekOnly) {
           var weekList =
-              await _calculateWeekView(data.weekViewList, currentWeek);
+              await _calculateWeekView(cloudData.weekViewList, currentWeek);
           setState(() {
             weekViewList = weekList;
           });

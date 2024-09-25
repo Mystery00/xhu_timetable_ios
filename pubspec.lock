@@ -590,6 +590,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  sn_progress_dialog:
+    dependency: "direct main"
+    description:
+      name: sn_progress_dialog
+      sha256: "6ecd6ce8ac3cffc879fbbbe2259652b526d8769401e4726a67a5a5e2dac3d252"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.4"
   socket_io_client:
     dependency: "direct main"
     description:

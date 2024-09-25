@@ -34,6 +34,8 @@ class MainRoute extends StatefulWidget {
 class _MainRouteState extends State<MainRoute> {
   EventBus eventBus = getEventBus();
 
+  Image? _background;
+
   var _loading = false;
   var todayTitle = "";
   var weekTitle = "";
@@ -69,14 +71,40 @@ class _MainRouteState extends State<MainRoute> {
           event.isShowStatus() ||
           event.isChangeCustomAccountTitle()) {
         await _loadLocalDataToState(true);
+      } else if (event.isChangeBackground()) {
+        _loadBackground();
       }
     });
   }
 
   Future<void> _init() async {
+    _loadBackground();
     await _showPoems();
     await _calculateWeek();
     await _loadLocalDataToState(false);
+  }
+
+  void _loadBackground() async {
+    var backgroundImage = await getBackgroundImage();
+    if (backgroundImage.data != null) {
+      setState(() {
+        _background = Image.file(
+          backgroundImage.data!,
+          width: double.infinity,
+          height: double.infinity,
+          fit: BoxFit.cover,
+        );
+      });
+    } else {
+      setState(() {
+        _background = Image.asset(
+          "assets/images/main_bg.png",
+          width: double.infinity,
+          height: double.infinity,
+          fit: BoxFit.cover,
+        );
+      });
+    }
   }
 
   Future<void> _checkMainUser() async {
@@ -318,12 +346,7 @@ class _MainRouteState extends State<MainRoute> {
       ),
       body: Stack(
         children: [
-          Image.asset(
-            "assets/images/main_bg.png",
-            width: double.infinity,
-            height: double.infinity,
-            fit: BoxFit.cover,
-          ),
+          _background ?? const SizedBox(),
           pages[_currentIndex],
         ],
       ),

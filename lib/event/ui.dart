@@ -12,6 +12,7 @@ class UIChangeEvent {
   bool isMultiModeChanged() => event == _multiModeChanged;
   bool isChangeCustomAccountTitle() => event == _changeCustomAccountTitle;
   bool isChangeCampus() => event == _changeCampus;
+  bool isChangeBackground() => event == _changeBackground;
 
   factory UIChangeEvent.changeMainUser() =>
       UIChangeEvent(event: _changeMainUser);
@@ -29,6 +30,8 @@ class UIChangeEvent {
   factory UIChangeEvent.changeCustomAccountTitle() =>
       UIChangeEvent(event: _changeCustomAccountTitle);
   factory UIChangeEvent.changeCampus() => UIChangeEvent(event: _changeCampus);
+  factory UIChangeEvent.changeBackground() =>
+      UIChangeEvent(event: _changeBackground);
 }
 
 var _changeMainUser = 1;
@@ -40,3 +43,4 @@ var _showStatus = 6;
 var _multiModeChanged = 7;
 var _changeCustomAccountTitle = 8;
 var _changeCampus = 9;
+var _changeBackground = 10;

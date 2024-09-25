@@ -7,6 +7,7 @@ import 'package:xhu_timetable_ios/store/app.dart';
 import 'package:xhu_timetable_ios/store/db.dart';
 import 'package:xhu_timetable_ios/store/downloader.dart';
 import 'package:xhu_timetable_ios/ui/account_settings.dart';
+import 'package:xhu_timetable_ios/ui/background.dart';
 import 'package:xhu_timetable_ios/ui/class_settings.dart';
 import 'package:xhu_timetable_ios/ui/login.dart';
 import 'package:xhu_timetable_ios/ui/query_exam.dart';
@@ -66,6 +67,7 @@ class MyApp extends StatelessWidget {
             routeQueryNotice: (context) => const QueryNoticeRoute(),
             routeQueryScore: (context) => const QueryScoreRoute(),
             routeQueryExpScore: (context) => const QueryExpScoreRoute(),
+            routeBackground: (context) => const BackgroundRoute(),
           },
           builder: FToastBuilder(),
         ));

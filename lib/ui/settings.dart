@@ -11,6 +11,7 @@ import 'package:xhu_timetable_ios/store/cache_store.dart';
 import 'package:xhu_timetable_ios/store/config_store.dart';
 import 'package:xhu_timetable_ios/store/poems_store.dart';
 import 'package:xhu_timetable_ios/toast.dart';
+import 'package:xhu_timetable_ios/ui/routes.dart';
 import 'package:xhu_timetable_ios/ui/theme/settings.dart';
 import 'package:xhu_timetable_ios/url.dart';
 
@@ -80,6 +81,17 @@ class _SettingsRouteState extends State<SettingsRoute> {
         color: Theme.of(context).colorScheme.surfaceVariant,
         child: ListView(
           children: [
+            context.buildSettingsGroup(
+              title: "界面设置",
+              items: [
+                context.buildSettingsItem(
+                  iconImage:
+                      const Svg("assets/icons/svg/ic_custom_background.svg"),
+                  title: "自定义背景图片",
+                  onTap: () => Navigator.pushNamed(context, routeBackground),
+                ),
+              ],
+            ),
             context.buildSettingsGroup(
               title: "诗词设置",
               items: [

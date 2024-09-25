@@ -23,11 +23,11 @@ Future<ReadyState> init() async {
     isUserLogin = await isLogin();
     var response = await apiClientInit();
     await setCustomTermStartDate(
-        Customisable.serverDetect(response.xhuStartTime.startDate));
+        Customisable.notCustom(response.xhuStartTime.startDate));
     await setCustomNowYear(
-        Customisable.serverDetect(response.xhuStartTime.nowYear));
+        Customisable.notCustom(response.xhuStartTime.nowYear));
     await setCustomNowTerm(
-        Customisable.serverDetect(response.xhuStartTime.nowTerm));
+        Customisable.notCustom(response.xhuStartTime.nowTerm));
     await setSplashList(response.splash);
   } catch (e) {
     Logger().w(e);
@@ -41,7 +41,7 @@ Future<ReadyState> init() async {
   Splash? splash = await _initSplash();
   File? splashFile;
   if (splash != null) {
-    var dir = await getApplicationCacheDirectory();
+    var dir = await getApplicationDocumentsDirectory();
     splashFile = getSplashFilePath(dir, splash);
   }
   return ReadyState(
@@ -78,7 +78,7 @@ Future<Splash?> _initSplash() async {
     }
     var now = DateTime.now();
     List<Splash> existSplashList = [];
-    var dir = await getApplicationCacheDirectory();
+    var dir = await getApplicationDocumentsDirectory();
     List<Splash> splashList = await getSplashList();
     Map<String, String> downloadSplashMap = {};
     splashList

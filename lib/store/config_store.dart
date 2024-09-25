@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:mmkv/mmkv.dart';
 import 'package:xhu_timetable_ios/model/custom_account_title.dart';
@@ -151,6 +152,40 @@ Future<bool> isDebugMode() => _getBool("debugMode", defaultValue: false);
 
 Future<void> setDebugMode(bool value) => _setBool("debugMode", value);
 
+Future<Customisable<File?>> getBackgroundImage() async {
+  var store = await _getConfigStore();
+  if (store.containsKey(_mapKey("backgroundImage"))) {
+    //有自定义数据
+    var customValue = store.decodeString(_mapKey("backgroundImage"));
+    if (customValue != null) {
+      return Customisable.custom(File(customValue));
+    }
+  }
+  var value = store.decodeString("backgroundImage");
+  if (value != null) {
+    return Customisable.notCustom(File(value));
+  }
+  //没有设置过背景图
+  return Customisable.notCustom(null);
+}
+
+Future<void> setBackgroundImage(Customisable<File?> image) async {
+  var store = await _getConfigStore();
+  if (image.data == null) {
+    //默认值
+    store.removeValue(_mapKey("backgroundImage"));
+    store.removeValue("backgroundImage");
+    return;
+  }
+  if (image.custom) {
+    var key = image.mapKey("backgroundImage");
+    var saveValue = image.data!.path;
+    store.encodeString(key, saveValue);
+  } else {
+    store.encodeString("backgroundImage", image.data!.path);
+  }
+}
+
 String _mapKey(String key) => "$key-custom";
 
 class Customisable<T> {
@@ -161,7 +196,7 @@ class Customisable<T> {
 
   factory Customisable.custom(T data) => Customisable(data: data, custom: true);
 
-  factory Customisable.serverDetect(T data) =>
+  factory Customisable.notCustom(T data) =>
       Customisable(data: data, custom: false);
 
   factory Customisable.clearCustom(T data) =>

@@ -99,7 +99,7 @@ class _QueryExpScoreRouteState extends SelectState<QueryExpScoreRoute> {
                   onPressed: () {
                     _refreshController.requestRefresh();
                   },
-                  icon: const Icon(Icons.search),
+                  icon: const Icon(Icons.search_outlined),
                 ),
               ],
             ),

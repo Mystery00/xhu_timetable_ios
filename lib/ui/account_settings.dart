@@ -69,7 +69,7 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
         title: const Text("账号设置"),
         actions: [
           IconButton(
-            icon: const Icon(Icons.delete_forever),
+            icon: const Icon(Icons.delete_sweep_outlined),
             onPressed: () {
               setState(() {
                 editMode = !editMode;
@@ -99,7 +99,7 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
                 title: "多账号设置",
                 items: [
                   context.buildSettingsItem(
-                    icons: Icons.account_circle,
+                    icons: Icons.account_circle_outlined,
                     title: "多账号模式",
                     subtitle: "将当前所有已登录账号的课表全部显示出来",
                     trailing: Switch(

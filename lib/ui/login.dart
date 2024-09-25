@@ -76,7 +76,7 @@ class LoginRouteState extends State<LoginRoute> {
                     decoration: const InputDecoration(
                       labelText: "学号",
                       hintText: "请输入学号",
-                      prefixIcon: Icon(Icons.account_circle),
+                      prefixIcon: Icon(Icons.account_circle_outlined),
                       border: OutlineInputBorder(),
                     ),
                     controller: _unameController,
@@ -91,7 +91,7 @@ class LoginRouteState extends State<LoginRoute> {
                     decoration: const InputDecoration(
                       labelText: "密码",
                       hintText: "请输入密码",
-                      prefixIcon: Icon(Icons.lock),
+                      prefixIcon: Icon(Icons.lock_outline),
                       border: OutlineInputBorder(),
                     ),
                     controller: _pwdController,

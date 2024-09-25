@@ -8,11 +8,15 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import 'package:xhu_timetable_ios/store/config_store.dart';
 
+Future<void> setDefaultBackground() async {
+  await setBackgroundImage(Customisable.clearCustom(null));
+}
+
 Future<void> setBackground(int backgroundId, int resourceId, String imageUrl,
     ProgressDialog pd) async {
   if (backgroundId == 0) {
     //设置为默认图片
-    setBackgroundImage(Customisable.clearCustom(null));
+    await setDefaultBackground();
     return;
   }
   if (backgroundId == -1) {

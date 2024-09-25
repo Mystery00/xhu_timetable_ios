@@ -102,7 +102,7 @@ class _QueryExamRouteState extends SelectState<QueryExamRoute> {
                   onPressed: () {
                     _refreshController.requestRefresh();
                   },
-                  icon: const Icon(Icons.search),
+                  icon: const Icon(Icons.search_outlined),
                 ),
               ],
             ),

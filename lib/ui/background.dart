@@ -120,6 +120,21 @@ class _BackgroundRouteState extends SelectState<BackgroundRoute> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("自定义背景图片"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.restore_outlined),
+            onPressed: () {
+              setDefaultBackground().then((value) => _justSelectUpdate()).then(
+                  (value) => eventBus.fire(UIChangeEvent.changeBackground()));
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.add_outlined),
+            onPressed: () {
+              //TODO: 设置为自定义图片
+            },
+          ),
+        ],
       ),
       body: SmartRefresher(
         controller: _refreshController,

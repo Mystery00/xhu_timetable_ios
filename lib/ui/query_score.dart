@@ -136,7 +136,7 @@ class _QueryScoreRouteState extends SelectState<QueryScoreRoute> {
                   onPressed: () {
                     _refreshController.requestRefresh();
                   },
-                  icon: const Icon(Icons.search),
+                  icon: const Icon(Icons.search_outlined),
                 ),
               ],
             ),

@@ -1,7 +1,7 @@
 name: xhu_timetable_ios
 description: "查课查成绩，就用西瓜课表"
 publish_to: "none"
-version: 1.0.2+113
+version: 1.0.3+114
 
 environment:
   sdk: ">=3.3.2 <4.0.0"

@@ -15,6 +15,7 @@ import 'package:xhu_timetable_ios/ui/query_exp_score.dart';
 import 'package:xhu_timetable_ios/ui/query_notice.dart';
 import 'package:xhu_timetable_ios/ui/query_score.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
+import 'package:xhu_timetable_ios/ui/school_calendar.dart';
 import 'package:xhu_timetable_ios/ui/settings.dart';
 import 'package:xhu_timetable_ios/ui/splash_image.dart';
 import 'package:xhu_timetable_ios/ui/start.dart';
@@ -68,6 +69,7 @@ class MyApp extends StatelessWidget {
             routeQueryScore: (context) => const QueryScoreRoute(),
             routeQueryExpScore: (context) => const QueryExpScoreRoute(),
             routeBackground: (context) => const BackgroundRoute(),
+            routeSchoolCalendar: (context) => const SchoolCalendarRoute(),
           },
           builder: FToastBuilder(),
         ));

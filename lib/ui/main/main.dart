@@ -58,19 +58,22 @@ class _MainRouteState extends State<MainRoute> {
   void initState() {
     super.initState();
     _init();
-    eventBus.on<UIChangeEvent>().listen((event) async {
+    eventBus.on<UIChangeEvent>().listen((event) {
       if (event.isMultiModeChanged() || event.isChangeMainUser()) {
-        await _checkMainUser();
-        await _refreshCloudDataToState();
+        _checkMainUser().then((needLogin) => needLogin
+            ? Navigator.pushReplacementNamed(context, routeLogin)
+            : _refreshCloudDataToState());
       } else if (event.isMainUserLogout()) {
-        await _checkMainUser();
+        _checkMainUser().then((needLogin) => needLogin
+            ? Navigator.pushReplacementNamed(context, routeLogin)
+            : {});
       } else if (event.isChangeCurrentYearAndTerm() || event.isChangeCampus()) {
-        await _refreshCloudDataToState();
+        _refreshCloudDataToState();
       } else if (event.isChangeTermStartDate() ||
           event.isShowNotThisWeek() ||
           event.isShowStatus() ||
           event.isChangeCustomAccountTitle()) {
-        await _loadLocalDataToState(true);
+        _loadLocalDataToState(true);
       } else if (event.isChangeBackground()) {
         _loadBackground();
       }
@@ -107,12 +110,13 @@ class _MainRouteState extends State<MainRoute> {
     }
   }
 
-  Future<void> _checkMainUser() async {
+  Future<bool> _checkMainUser() async {
     var mainUser = await getMainUser();
     if (mainUser == null) {
       await clearMainUserCache();
-      Navigator.pushReplacementNamed(context, routeLogin);
+      return true;
     }
+    return false;
   }
 
   Future<void> _showPoems() async {

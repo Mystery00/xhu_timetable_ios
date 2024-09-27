@@ -53,6 +53,8 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>保存校历到图库功能需要授予添加照片的权限</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>设置自定义背景图片功能需要访问您的相册用于选择图片</string>
 </dict>

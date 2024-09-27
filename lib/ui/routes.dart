@@ -10,3 +10,4 @@ const routeQueryNotice = '/query-notice';
 const routeQueryScore = '/query-score';
 const routeQueryExpScore = '/query-exp-score';
 const routeBackground = '/background';
+const routeSchoolCalendar = '/school-calendar';

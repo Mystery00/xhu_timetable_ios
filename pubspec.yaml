@@ -1,7 +1,7 @@
 name: xhu_timetable_ios
 description: "查课查成绩，就用西瓜课表"
 publish_to: "none"
-version: 1.0.2+112
+version: 1.0.2+113
 
 environment:
   sdk: ">=3.3.2 <4.0.0"
@@ -47,6 +47,8 @@ dependencies:
   background_downloader: ^8.5.5
   sn_progress_dialog: ^1.1.4
   image_picker: ^1.1.2
+  photo_view: ^0.15.0
+  image_gallery_saver: ^2.0.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

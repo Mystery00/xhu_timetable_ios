@@ -11,6 +11,7 @@ import 'package:xhu_timetable_ios/store/app.dart';
 import 'package:xhu_timetable_ios/store/config_store.dart';
 import 'package:xhu_timetable_ios/store/user_store.dart';
 import 'package:xhu_timetable_ios/toast.dart';
+import 'package:xhu_timetable_ios/ui/routes.dart';
 import 'package:xhu_timetable_ios/ui/theme/settings.dart';
 
 class ClassSettingsRoute extends StatefulWidget {
@@ -175,6 +176,29 @@ class _ClassSettingsRouteState extends SelectState<ClassSettingsRoute> {
                   title: "更新当前主用户校区",
                   subtitle: "当前校区：${userCampus?.selected}",
                   onTap: () => showCustomCampusDialog(),
+                ),
+              ],
+            ),
+            context.buildSettingsGroup(
+              title: "自定义设置",
+              items: [
+                context.buildSettingsItem(
+                  iconImage:
+                      const Svg("assets/icons/svg/ic_custom_background.svg"),
+                  title: "自定义课程颜色",
+                  onTap: () => {},
+                ),
+              ],
+            ),
+            context.buildSettingsGroup(
+              title: "额外功能",
+              items: [
+                context.buildSettingsItem(
+                  iconImage:
+                      const Svg("assets/icons/svg/ic_custom_background.svg"),
+                  title: "查看校历",
+                  onTap: () =>
+                      Navigator.pushNamed(context, routeSchoolCalendar),
                 ),
               ],
             ),

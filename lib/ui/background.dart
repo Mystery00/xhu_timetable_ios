@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
@@ -34,6 +35,25 @@ class _BackgroundRouteState extends SelectState<BackgroundRoute> {
       return e;
     }).toList();
     var backgroundImage = await getBackgroundImage();
+    if (backgroundImage.data != null && backgroundImage.custom) {
+      //自定义了图片
+      copyList.removeWhere((element) => element.backgroundId <= 0);
+      copyList = [
+        //自定义了图片
+        _background(
+          backgroundId: 0,
+          resourceId: 0,
+          assertPath: "assets/images/main_bg.png",
+        ),
+        //自定义了图片
+        _background(
+            backgroundId: -1, resourceId: -1, imageFile: backgroundImage.data),
+        ...copyList,
+      ];
+    } else {
+      copyList.removeWhere((element) => element.backgroundId == -1);
+    }
+
     //没有设置背景图
     if (backgroundImage.data == null) {
       copyList[0].selected = true;
@@ -130,8 +150,15 @@ class _BackgroundRouteState extends SelectState<BackgroundRoute> {
           ),
           IconButton(
             icon: const Icon(Icons.add_outlined),
-            onPressed: () {
-              //TODO: 设置为自定义图片
+            onPressed: () async {
+              final XFile? image =
+                  await ImagePicker().pickImage(source: ImageSource.gallery);
+              if (image != null) {
+                setCustomBackgroundFile(image.path)
+                    .then((value) => _justSelectUpdate())
+                    .then((value) =>
+                        eventBus.fire(UIChangeEvent.changeBackground()));
+              }
             },
           ),
         ],

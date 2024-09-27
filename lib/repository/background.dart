@@ -12,6 +12,16 @@ Future<void> setDefaultBackground() async {
   await setBackgroundImage(Customisable.clearCustom(null));
 }
 
+Future<void> setCustomBackgroundFile(String filePath) async {
+  var directory = await getApplicationDocumentsDirectory();
+  var timestamp = DateTime.now().millisecondsSinceEpoch;
+  var extension = filePath.split('.').last;
+  var targetSaveFile =
+      File("${directory.path}/background/custom-$timestamp.$extension");
+  await targetSaveFile.writeAsBytes(await File(filePath).readAsBytes());
+  await setBackgroundImage(Customisable.custom(targetSaveFile));
+}
+
 Future<void> setBackground(int backgroundId, int resourceId, String imageUrl,
     ProgressDialog pd) async {
   if (backgroundId == 0) {
@@ -20,7 +30,8 @@ Future<void> setBackground(int backgroundId, int resourceId, String imageUrl,
     return;
   }
   if (backgroundId == -1) {
-    //TODO: 设置为自定义图片
+    //设置为自定义图片
+    await setCustomBackgroundFile(imageUrl);
     return;
   }
   var targetSaveFile =

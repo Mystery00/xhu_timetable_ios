@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 import 'package:xhu_timetable_ios/repository/main.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
+import 'package:xhu_timetable_ios/ui/main/model.dart';
 
 class WeekHomePage extends StatefulWidget {
-  final DateTime weekDateStart;
-  final List<List<WeekCourseSheet>> weekCourseSheetList;
-
   const WeekHomePage({
     super.key,
-    required this.weekDateStart,
-    required this.weekCourseSheetList,
   });
 
   @override
@@ -27,72 +24,75 @@ class _WeekHomePageState extends State<WeekHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          color: _dateBackgroundColor,
-          child: Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: Text(
-                  "${widget.weekDateStart.month}\n月",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
+    return Consumer(
+      builder: (context, MainModel mainModel, child) => Column(
+        children: [
+          Container(
+            color: _dateBackgroundColor,
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Text(
+                    "${mainModel.weekDateStart.month}\n月",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
                 ),
-              ),
-              for (var i = 0; i < 7; i++)
-                _buildDateItem(widget.weekDateStart.add(Duration(days: i))),
-            ],
+                for (var i = 0; i < 7; i++)
+                  _buildDateItem(
+                      mainModel.weekDateStart.add(Duration(days: i))),
+              ],
+            ),
           ),
-        ),
-        Expanded(
-            child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          controller: _controller,
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                      color: _dateBackgroundColor,
-                      child: Column(
-                        children: [
-                          for (var i = 0; i < 11; i++)
-                            _buildTimeItem(i + 1, itemHeight),
-                        ],
-                      ),
-                    ),
-                  ),
-                  for (var i = 0; i < 7; i++)
+          Expanded(
+              child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            controller: _controller,
+            child: Column(
+              children: [
+                Row(
+                  children: [
                     Expanded(
-                      flex: 10,
-                      child: Column(
-                        children: [
-                          for (var sheet
-                              in safeGet(widget.weekCourseSheetList, i))
-                            _buildWeekItem(
-                                sheet.color,
-                                sheet.step,
-                                sheet.showTitle,
-                                sheet.textColor,
-                                sheet.course.length > 1, () {
-                              _handleCourseItemTap(sheet);
-                            }),
-                        ],
+                      flex: 3,
+                      child: Container(
+                        color: _dateBackgroundColor,
+                        child: Column(
+                          children: [
+                            for (var i = 0; i < 11; i++)
+                              _buildTimeItem(i + 1, itemHeight),
+                          ],
+                        ),
                       ),
                     ),
-                ],
-              )
-            ],
-          ),
-        )),
-      ],
+                    for (var i = 0; i < 7; i++)
+                      Expanded(
+                        flex: 10,
+                        child: Column(
+                          children: [
+                            for (var sheet
+                                in safeGet(mainModel.weekCourseSheetList, i))
+                              _buildWeekItem(
+                                  sheet.color,
+                                  sheet.step,
+                                  sheet.showTitle,
+                                  sheet.textColor,
+                                  sheet.course.length > 1, () {
+                                _handleCourseItemTap(sheet);
+                              }),
+                          ],
+                        ),
+                      ),
+                  ],
+                )
+              ],
+            ),
+          )),
+        ],
+      ),
     );
   }
 

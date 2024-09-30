@@ -3,20 +3,19 @@ import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 import 'package:xhu_timetable_ios/api/server.dart';
 import 'package:xhu_timetable_ios/event/bus.dart';
 import 'package:xhu_timetable_ios/event/ui.dart';
-import 'package:xhu_timetable_ios/feature.dart';
-import 'package:xhu_timetable_ios/model/poems.dart';
 import 'package:xhu_timetable_ios/model/transfer/week_course_view.dart';
 import 'package:xhu_timetable_ios/repository/main.dart';
 import 'package:xhu_timetable_ios/repository/profile.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
 import 'package:xhu_timetable_ios/store/cache_store.dart';
 import 'package:xhu_timetable_ios/store/config_store.dart';
-import 'package:xhu_timetable_ios/store/poems_store.dart';
 import 'package:xhu_timetable_ios/store/user_store.dart';
 import 'package:xhu_timetable_ios/toast.dart';
+import 'package:xhu_timetable_ios/ui/main/model.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
 import 'package:xhu_timetable_ios/ui/theme/icons.dart';
 
@@ -35,15 +34,10 @@ class _MainRouteState extends State<MainRoute> {
   EventBus eventBus = getEventBus();
 
   Image? _background;
-
-  var _loading = false;
+  final PageController _pageController = PageController();
   var todayTitle = "";
   var weekTitle = "";
   var _week = 1;
-  Poems? poems;
-  DateTime _dateStart = DateTime.now().atStartOfDay();
-  var todayCourseSheetList = <TodayCourseSheet>[];
-  List<List<WeekCourseSheet>> weekCourseSheetList = List.generate(7, (_) => []);
   List<WeekView> weekViewList = List.generate(
     20,
     (index) => WeekView(
@@ -57,34 +51,34 @@ class _MainRouteState extends State<MainRoute> {
   @override
   void initState() {
     super.initState();
-    _init();
+    MainModel mainModel = MainModel.of(context, listen: false);
+    _loadBackground();
     eventBus.on<UIChangeEvent>().listen((event) {
       if (event.isMultiModeChanged() || event.isChangeMainUser()) {
         _checkMainUser().then((needLogin) => needLogin
             ? Navigator.pushReplacementNamed(context, routeLogin)
-            : _refreshCloudDataToState());
+            : _refreshCloudDataToState(mainModel));
       } else if (event.isMainUserLogout()) {
         _checkMainUser().then((needLogin) => needLogin
             ? Navigator.pushReplacementNamed(context, routeLogin)
             : {});
       } else if (event.isChangeCurrentYearAndTerm() || event.isChangeCampus()) {
-        _refreshCloudDataToState();
+        _refreshCloudDataToState(mainModel);
       } else if (event.isChangeTermStartDate() ||
           event.isShowNotThisWeek() ||
           event.isShowStatus() ||
           event.isChangeCustomAccountTitle()) {
-        _loadLocalDataToState(true);
+        _loadLocalDataToState(mainModel, true);
       } else if (event.isChangeBackground()) {
         _loadBackground();
       }
     });
   }
 
-  Future<void> _init() async {
-    _loadBackground();
-    await _showPoems();
-    await _calculateWeek();
-    await _loadLocalDataToState(false);
+  void _initWithModel(MainModel mainModel) async {
+    mainModel.setRefreshing(true);
+    await _calculateWeek(mainModel);
+    await _loadLocalDataToState(mainModel, false);
   }
 
   void _loadBackground() async {
@@ -119,34 +113,20 @@ class _MainRouteState extends State<MainRoute> {
     return false;
   }
 
-  Future<void> _showPoems() async {
-    try {
-      if (!await isFeatureJRSC()) {
-        return;
-      }
-      var poems = await loadPoems();
-      setState(() {
-        this.poems = poems;
-      });
-    } catch (e) {
-      Logger().e(e);
-    }
-  }
-
-  Future<void> _calculateWeek() async {
+  Future<void> _calculateWeek(MainModel mainModel) async {
     var initWeek = await XhuRepo.calculateWeek();
     var todayTitle = await XhuRepo.calculateTodayTitle(false);
     var weekTitle = XhuRepo.calculateWeekTitle(initWeek);
     var dateStart = await XhuRepo.calculateWeekStartDay(initWeek);
+    mainModel.setWeekDateStart(dateStart);
     setState(() {
       this.todayTitle = todayTitle;
       this.weekTitle = weekTitle;
       _week = initWeek;
-      _dateStart = dateStart;
     });
   }
 
-  Future<void> _changeWeek(int week) async {
+  Future<void> _changeWeek(MainModel mainModel, int week) async {
     var termStartDate = await getTermStartDate();
     var currentWeek = await XhuRepo.calculateWeek();
     var weekTitle = XhuRepo.calculateWeekTitle(week);
@@ -160,21 +140,16 @@ class _MainRouteState extends State<MainRoute> {
     }
     var weekCourseList =
         await getWeekCourseSheetList(currentWeek, week, data.weekViewList);
-    setState(() {
-      weekCourseSheetList = weekCourseList;
-    });
+    mainModel.setWeekCourseSheetList(weekCourseList);
     var dateStart = termStartDate.add(Duration(days: 7 * (week - 1)));
-    setState(() {
-      _dateStart = dateStart;
-    });
+    mainModel.setWeekDateStart(dateStart);
   }
 
   // 初始化时候加载数据的方法
-  Future<void> _loadLocalDataToState(bool changeWeekOnly) async {
+  Future<void> _loadLocalDataToState(
+      MainModel mainModel, bool changeWeekOnly) async {
     try {
-      setState(() {
-        _loading = true;
-      });
+      mainModel.setRefreshing(true);
       var (currentWeek, loadFromCloud) = await _loadCourseConfig(false);
       var (data, loadWarning) = await getMainPageData(false, true);
       if (loadWarning.isNotEmpty) {
@@ -182,14 +157,10 @@ class _MainRouteState extends State<MainRoute> {
       }
       var todayCourseList =
           await getTodayCourseSheetList(currentWeek, data.todayViewList);
-      setState(() {
-        todayCourseSheetList = todayCourseList;
-      });
+      mainModel.setTodayCourseSheetList(todayCourseList);
       var weekCourseList = await getWeekCourseSheetList(
           currentWeek, currentWeek, data.weekViewList);
-      setState(() {
-        weekCourseSheetList = weekCourseList;
-      });
+      mainModel.setWeekCourseSheetList(weekCourseList);
       if (!changeWeekOnly) {
         var weekList = await _calculateWeekView(data.weekViewList, currentWeek);
         setState(() {
@@ -204,14 +175,10 @@ class _MainRouteState extends State<MainRoute> {
         }
         var todayCourseList =
             await getTodayCourseSheetList(currentWeek, cloudData.todayViewList);
-        setState(() {
-          todayCourseSheetList = todayCourseList;
-        });
+        mainModel.setTodayCourseSheetList(todayCourseList);
         var weekCourseList = await getWeekCourseSheetList(
             currentWeek, currentWeek, cloudData.weekViewList);
-        setState(() {
-          weekCourseSheetList = weekCourseList;
-        });
+        mainModel.setWeekCourseSheetList(weekCourseList);
         if (!changeWeekOnly) {
           var weekList =
               await _calculateWeekView(cloudData.weekViewList, currentWeek);
@@ -220,24 +187,18 @@ class _MainRouteState extends State<MainRoute> {
           });
         }
       }
-      setState(() {
-        _loading = false;
-      });
+      mainModel.setRefreshing(false);
     } catch (e) {
       Logger().e(e);
-      setState(() {
-        _loading = false;
-      });
+      mainModel.setRefreshing(false);
       showToast("数据加载失败, ${handleException(e)}");
     }
   }
 
   //手动刷新加载数据的方法
-  Future<void> _refreshCloudDataToState() async {
+  Future<void> _refreshCloudDataToState(MainModel mainModel) async {
     try {
-      setState(() {
-        _loading = true;
-      });
+      mainModel.setRefreshing(true);
       var (currentWeek, _) = await _loadCourseConfig(false);
       //从云端加载数据
       var (cloudData, loadWarning) = await getMainPageData(true, false);
@@ -250,18 +211,22 @@ class _MainRouteState extends State<MainRoute> {
           currentWeek, currentWeek, cloudData.weekViewList);
       var weekList =
           await _calculateWeekView(cloudData.weekViewList, currentWeek);
+      mainModel.setTodayCourseSheetList(todayCourseList);
+      mainModel.setWeekCourseSheetList(weekCourseList);
       setState(() {
-        todayCourseSheetList = todayCourseList;
-        weekCourseSheetList = weekCourseList;
         weekViewList = weekList;
-        _loading = false;
       });
+      mainModel.setRefreshing(false);
       showToast("数据同步成功");
+      var todayTitle = await XhuRepo.calculateTodayTitle(false);
+      var weekTitle = XhuRepo.calculateWeekTitle(currentWeek);
+      setState(() {
+        this.todayTitle = todayTitle;
+        this.weekTitle = weekTitle;
+      });
     } catch (e) {
       Logger().e(e);
-      setState(() {
-        _loading = false;
-      });
+      mainModel.setRefreshing(false);
       showToast("数据同步失败, $e");
     }
   }
@@ -281,105 +246,117 @@ class _MainRouteState extends State<MainRoute> {
 
   @override
   Widget build(BuildContext context) {
-    var pages = [
-      TodayHomePage(
-        poems: poems,
-        todayCourseSheetList: todayCourseSheetList,
-      ),
-      WeekHomePage(
-        weekDateStart: _dateStart,
-        weekCourseSheetList: weekCourseSheetList,
-      ),
-      const AccountHomePage(),
-    ];
-    var title = "西瓜课表";
-    switch (_currentIndex) {
-      case 0:
-        if (todayTitle.isNotEmpty) {
-          title = todayTitle;
-        }
-        break;
-      case 1:
-        if (weekTitle.isNotEmpty) {
-          title = weekTitle;
-        }
-        break;
-      case 2:
-        title = "个人中心";
-        break;
-    }
-    return Scaffold(
-      appBar: AppBar(
-        title: InkWell(
-          onTap: () {
-            if (_currentIndex == 1) {
-              _calculateWeek();
-            }
-          },
-          child: Text(title),
-        ),
-        actions: [
-          if (_currentIndex == 1)
-            IconButton(
-              icon: const Icon(IconsProfile.showWeekView),
-              onPressed: () {
-                _showWeekChooser(context, _week, weekViewList, (week) async {
-                  await _changeWeek(week);
-                });
+    return ChangeNotifierProvider(
+      create: (context) {
+        var model = MainModel();
+        _initWithModel(model);
+        return model;
+      },
+      child: Consumer<MainModel>(
+        builder: (context, MainModel mainModel, child) {
+          var pages = [
+            const TodayHomePage(),
+            const WeekHomePage(),
+            const AccountHomePage(),
+          ];
+          var title = "西瓜课表";
+          switch (_currentIndex) {
+            case 0:
+              if (todayTitle.isNotEmpty) {
+                title = todayTitle;
+              }
+              break;
+            case 1:
+              if (weekTitle.isNotEmpty) {
+                title = weekTitle;
+              }
+              break;
+            case 2:
+              title = "个人中心";
+              break;
+          }
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(title),
+              actions: [
+                if (_currentIndex == 1)
+                  IconButton(
+                    icon: const Icon(IconsProfile.showWeekView),
+                    onPressed: () {
+                      _showWeekChooser(context, _week, weekViewList,
+                          (week) async {
+                        await _changeWeek(mainModel, week);
+                      });
+                    },
+                  ),
+                if (mainModel.isRefreshing)
+                  SizedBox(
+                    height: 48,
+                    width: 48,
+                    child: SpinKitFadingCube(
+                      color: Theme.of(context).colorScheme.primary,
+                      size: 16,
+                    ),
+                  ),
+                if (!mainModel.isRefreshing && _currentIndex == 1)
+                  IconButton(
+                    icon: const Icon(Icons.refresh),
+                    onPressed: () async {
+                      if (!mainModel.isRefreshing) {
+                        await _refreshCloudDataToState(mainModel);
+                      }
+                    },
+                  ),
+              ],
+            ),
+            body: Stack(
+              children: [
+                _background ?? const SizedBox(),
+                PageView(
+                  controller: _pageController,
+                  children: pages,
+                  onPageChanged: (value) {
+                    setState(() {
+                      _currentIndex = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+            bottomNavigationBar: FlashyTabBar(
+              selectedIndex: _currentIndex,
+              onItemSelected: (value) {
+                _pageController.animateToPage(value,
+                    duration: const Duration(milliseconds: 360),
+                    curve: Curves.fastLinearToSlowEaseIn);
+                setState(() => _currentIndex = value);
               },
+              animationCurve: Curves.fastLinearToSlowEaseIn,
+              animationDuration: const Duration(milliseconds: 360),
+              iconSize: 24,
+              shadows: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 8,
+                ),
+              ],
+              items: [
+                FlashyTabBarItem(
+                  icon: const Icon(IconsProfile.navigationToday),
+                  title: const Text("今日"),
+                ),
+                FlashyTabBarItem(
+                  icon: const Icon(IconsProfile.navigationWeek),
+                  title: const Text("本周"),
+                ),
+                FlashyTabBarItem(
+                  icon: const Icon(IconsProfile.navigationProfile),
+                  title: const Text("我的"),
+                ),
+              ],
             ),
-          if (_loading)
-            SizedBox(
-              height: 48,
-              width: 48,
-              child: SpinKitFadingCube(
-                color: Theme.of(context).colorScheme.primary,
-                size: 16,
-              ),
-            ),
-          if (!_loading && _currentIndex == 1)
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: () async {
-                if (!_loading) {
-                  await _refreshCloudDataToState();
-                }
-              },
-            ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          _background ?? const SizedBox(),
-          pages[_currentIndex],
-        ],
-      ),
-      bottomNavigationBar: FlashyTabBar(
-        selectedIndex: _currentIndex,
-        onItemSelected: (value) => setState(() => _currentIndex = value),
-        animationCurve: Curves.fastLinearToSlowEaseIn,
-        animationDuration: const Duration(milliseconds: 360),
-        iconSize: 24,
-        shadows: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 8,
-          ),
-        ],
-        items: [
-          FlashyTabBarItem(
-            icon: const Icon(IconsProfile.navigationToday),
-            title: const Text("今日"),
-          ),
-          FlashyTabBarItem(
-            icon: const Icon(IconsProfile.navigationWeek),
-            title: const Text("本周"),
-          ),
-          FlashyTabBarItem(
-            icon: const Icon(IconsProfile.navigationProfile),
-            title: const Text("我的"),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

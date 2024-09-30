@@ -1,7 +1,7 @@
 name: xhu_timetable_ios
 description: "查课查成绩，就用西瓜课表"
 publish_to: "none"
-version: 1.0.3+114
+version: 1.0.3+115
 
 environment:
   sdk: ">=3.3.2 <4.0.0"
@@ -21,6 +21,7 @@ dependencies:
     # path: ../babstrap_settings_screen
     git:
       url: https://github.com/Mystery00/babstrap_settings_screen.git
+  provider: ^6.1.2
   device_info_plus: ^10.1.2
   package_info_plus: ^8.0.2
   dio: ^5.7.0

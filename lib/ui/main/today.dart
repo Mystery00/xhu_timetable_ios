@@ -1,52 +1,77 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
+import 'package:xhu_timetable_ios/feature.dart';
 import 'package:xhu_timetable_ios/model/poems.dart';
 import 'package:xhu_timetable_ios/repository/main.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
+import 'package:xhu_timetable_ios/store/poems_store.dart';
+import 'package:xhu_timetable_ios/ui/main/model.dart';
 import 'package:xhu_timetable_ios/ui/theme/colors.dart';
 import 'package:xhu_timetable_ios/ui/theme/icons.dart';
 
 class TodayHomePage extends StatefulWidget {
-  final Poems? poems;
-  final List<TodayCourseSheet> todayCourseSheetList;
-
-  const TodayHomePage(
-      {super.key, this.poems, required this.todayCourseSheetList});
+  const TodayHomePage({super.key});
 
   @override
   State<StatefulWidget> createState() => _TodayHomePageState();
 }
 
 class _TodayHomePageState extends State<TodayHomePage> {
+  Poems? poems;
+
+  @override
+  void initState() {
+    super.initState();
+    _showPoems();
+  }
+
+  void _showPoems() async {
+    try {
+      if (!await isFeatureJRSC()) {
+        return;
+      }
+      var poems = await loadPoems();
+      setState(() {
+        this.poems = poems;
+      });
+    } catch (e) {
+      Logger().e(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Align(
-          alignment: AlignmentDirectional.centerStart,
-          child: Container(
-            width: 1,
-            height: double.infinity,
-            color: Colors.white,
-            margin: const EdgeInsets.symmetric(horizontal: 10),
+    return Consumer(
+      builder: (context, MainModel mainModel, child) => Stack(
+        children: [
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: Container(
+              width: 1,
+              height: double.infinity,
+              color: Colors.white,
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+            ),
           ),
-        ),
-        SizedBox(
-          width: double.infinity,
-          child: ListView.builder(
-            itemCount: widget.todayCourseSheetList.length + 1,
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                return _PoemsItem(
-                  poems: widget.poems,
-                );
-              }
-              return _buildTodayCourseContent(
-                  context, widget.todayCourseSheetList[index - 1]);
-            },
-          ),
-        )
-      ],
+          SizedBox(
+            width: double.infinity,
+            child: ListView.builder(
+              itemCount: mainModel.todayCourseSheetList.length + 1,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return _PoemsItem(
+                    poems: poems,
+                  );
+                }
+                return _buildTodayCourseContent(
+                    context, mainModel.todayCourseSheetList[index - 1]);
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 }

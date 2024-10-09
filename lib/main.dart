@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import "package:mmkv/mmkv.dart";
-import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:xhu_timetable_ios/page.dart';
 import 'package:xhu_timetable_ios/store/app.dart';
@@ -11,7 +10,6 @@ import 'package:xhu_timetable_ios/ui/account_settings.dart';
 import 'package:xhu_timetable_ios/ui/background.dart';
 import 'package:xhu_timetable_ios/ui/class_settings.dart';
 import 'package:xhu_timetable_ios/ui/login.dart';
-import 'package:xhu_timetable_ios/ui/main/model.dart';
 import 'package:xhu_timetable_ios/ui/query_exam.dart';
 import 'package:xhu_timetable_ios/ui/query_exp_score.dart';
 import 'package:xhu_timetable_ios/ui/query_notice.dart';

@@ -32,6 +32,7 @@ class MainRoute extends StatefulWidget {
 
 class _MainRouteState extends State<MainRoute> {
   EventBus eventBus = getEventBus();
+  MainModel? mainModel;
 
   Image? _background;
   final PageController _pageController = PageController();
@@ -51,24 +52,23 @@ class _MainRouteState extends State<MainRoute> {
   @override
   void initState() {
     super.initState();
-    MainModel mainModel = MainModel.of(context, listen: false);
     _loadBackground();
     eventBus.on<UIChangeEvent>().listen((event) {
       if (event.isMultiModeChanged() || event.isChangeMainUser()) {
         _checkMainUser().then((needLogin) => needLogin
             ? Navigator.pushReplacementNamed(context, routeLogin)
-            : _refreshCloudDataToState(mainModel));
+            : _refreshCloudDataToState(mainModel!));
       } else if (event.isMainUserLogout()) {
         _checkMainUser().then((needLogin) => needLogin
             ? Navigator.pushReplacementNamed(context, routeLogin)
             : {});
       } else if (event.isChangeCurrentYearAndTerm() || event.isChangeCampus()) {
-        _refreshCloudDataToState(mainModel);
+        _refreshCloudDataToState(mainModel!);
       } else if (event.isChangeTermStartDate() ||
           event.isShowNotThisWeek() ||
           event.isShowStatus() ||
           event.isChangeCustomAccountTitle()) {
-        _loadLocalDataToState(mainModel, true);
+        _loadLocalDataToState(mainModel!, true);
       } else if (event.isChangeBackground()) {
         _loadBackground();
       }
@@ -76,6 +76,7 @@ class _MainRouteState extends State<MainRoute> {
   }
 
   void _initWithModel(MainModel mainModel) async {
+    this.mainModel = mainModel;
     mainModel.setRefreshing(true);
     await _calculateWeek(mainModel);
     await _loadLocalDataToState(mainModel, false);

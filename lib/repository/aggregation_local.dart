@@ -1,10 +1,10 @@
+import 'package:xhu_timetable_ios/db/database.dart';
+import 'package:xhu_timetable_ios/db/entity/course.dart';
+import 'package:xhu_timetable_ios/db/entity/experiment_course.dart';
+import 'package:xhu_timetable_ios/db/entity/practical_course.dart';
 import 'package:xhu_timetable_ios/model/aggregation.dart';
 import 'package:xhu_timetable_ios/model/course.dart';
-import 'package:xhu_timetable_ios/model/entity/course.dart';
-import 'package:xhu_timetable_ios/model/entity/experiment_course.dart';
-import 'package:xhu_timetable_ios/model/entity/practical_course.dart';
 import 'package:xhu_timetable_ios/model/user.dart';
-import 'package:xhu_timetable_ios/store/db.dart';
 
 class AggregationLocalRepo {
   static Future<void> saveAggregationMainPageResponse(
@@ -13,83 +13,69 @@ class AggregationLocalRepo {
     User user,
     AggregationMainResponse response,
   ) async {
-    var db = database();
-    await db.transaction((txn) async {
-      //删除旧数据
-      await txn.delete(
-        tableCourse,
-        where: 'year = ? and term = ? and studentId = ?',
-        whereArgs: [year, term, user.studentId],
-      );
-      await txn.delete(
-        tablePracticalCourse,
-        where: 'year = ? and term = ? and studentId = ?',
-        whereArgs: [year, term, user.studentId],
-      );
-      await txn.delete(
-        tableExperimentCourse,
-        where: 'year = ? and term = ? and studentId = ?',
-        whereArgs: [year, term, user.studentId],
-      );
+    var db = await DataBaseManager.database();
+    //删除旧数据
+    await db.courseDao.deleteOld(year, term, user.studentId);
+    await db.practicalCourseDao.deleteOld(year, term, user.studentId);
+    await db.experimentCourseDao.deleteOld(year, term, user.studentId);
 
-      //插入新数据
-      for (var course in response.courseList) {
-        CourseEntity courseEntity = CourseEntity(
-            courseName: course.courseName,
-            weekStr: course.weekStr,
-            weekList: course.weekList.join(','),
-            dayIndex: course.dayIndex,
-            startDayTime: course.startDayTime,
-            endDayTime: course.endDayTime,
-            startTime: course.startTime,
-            endTime: course.endTime,
-            location: course.location,
-            teacher: course.teacher,
-            extraData: course.extraData.join(','),
-            campus: course.campus,
-            courseType: course.courseType,
-            credit: course.credit,
-            courseCodeType: course.courseCodeType,
-            courseCodeFlag: course.courseCodeFlag,
-            year: year,
-            term: term,
-            studentId: user.studentId);
-        await txn.insert(tableCourse, courseEntity.toMap());
-      }
-      for (var practicalCourse in response.practicalCourseList) {
-        PracticalCourseEntity practicalCourseEntity = PracticalCourseEntity(
-            courseName: practicalCourse.courseName,
-            weekStr: practicalCourse.weekStr,
-            weekList: practicalCourse.weekList.join(','),
-            teacher: practicalCourse.teacher,
-            campus: practicalCourse.campus,
-            credit: practicalCourse.credit,
-            year: year,
-            term: term,
-            studentId: user.studentId);
-        await txn.insert(tablePracticalCourse, practicalCourseEntity.toMap());
-      }
-      for (var experimentCourse in response.experimentCourseList) {
-        ExperimentCourseEntity experimentCourseEntity = ExperimentCourseEntity(
-            courseName: experimentCourse.courseName,
-            experimentProjectName: experimentCourse.experimentProjectName,
-            teacherName: experimentCourse.teacherName,
-            experimentGroupName: experimentCourse.experimentGroupName,
-            weekStr: experimentCourse.weekStr,
-            weekList: experimentCourse.weekList.join(','),
-            dayIndex: experimentCourse.dayIndex,
-            startDayTime: experimentCourse.startDayTime,
-            endDayTime: experimentCourse.endDayTime,
-            startTime: experimentCourse.startTime,
-            endTime: experimentCourse.endTime,
-            region: experimentCourse.region,
-            location: experimentCourse.location,
-            year: year,
-            term: term,
-            studentId: user.studentId);
-        await txn.insert(tableExperimentCourse, experimentCourseEntity.toMap());
-      }
-    });
+    //插入新数据
+    for (var course in response.courseList) {
+      CourseEntity courseEntity = CourseEntity(
+          courseName: course.courseName,
+          weekStr: course.weekStr,
+          weekList: course.weekList.join(','),
+          dayIndex: course.dayIndex,
+          startDayTime: course.startDayTime,
+          endDayTime: course.endDayTime,
+          startTime: course.startTime,
+          endTime: course.endTime,
+          location: course.location,
+          teacher: course.teacher,
+          extraData: course.extraData.join(','),
+          campus: course.campus,
+          courseType: course.courseType,
+          credit: course.credit,
+          courseCodeType: course.courseCodeType,
+          courseCodeFlag: course.courseCodeFlag,
+          year: year,
+          term: term,
+          studentId: user.studentId);
+      await db.courseDao.insertData(courseEntity);
+    }
+    for (var practicalCourse in response.practicalCourseList) {
+      PracticalCourseEntity practicalCourseEntity = PracticalCourseEntity(
+          courseName: practicalCourse.courseName,
+          weekStr: practicalCourse.weekStr,
+          weekList: practicalCourse.weekList.join(','),
+          teacher: practicalCourse.teacher,
+          campus: practicalCourse.campus,
+          credit: practicalCourse.credit,
+          year: year,
+          term: term,
+          studentId: user.studentId);
+      await db.practicalCourseDao.insertData(practicalCourseEntity);
+    }
+    for (var experimentCourse in response.experimentCourseList) {
+      ExperimentCourseEntity experimentCourseEntity = ExperimentCourseEntity(
+          courseName: experimentCourse.courseName,
+          experimentProjectName: experimentCourse.experimentProjectName,
+          teacherName: experimentCourse.teacherName,
+          experimentGroupName: experimentCourse.experimentGroupName,
+          weekStr: experimentCourse.weekStr,
+          weekList: experimentCourse.weekList.join(','),
+          dayIndex: experimentCourse.dayIndex,
+          startDayTime: experimentCourse.startDayTime,
+          endDayTime: experimentCourse.endDayTime,
+          startTime: experimentCourse.startTime,
+          endTime: experimentCourse.endTime,
+          region: experimentCourse.region,
+          location: experimentCourse.location,
+          year: year,
+          term: term,
+          studentId: user.studentId);
+      await db.experimentCourseDao.insertData(experimentCourseEntity);
+    }
   }
 
   static Future<void> queryAndMap<T, R>(
@@ -105,7 +91,7 @@ class AggregationLocalRepo {
 
   static Future<AggregationMainResponse> fetchAggregationMainPage(
       int nowYear, int nowTerm, User user) async {
-    var db = database();
+    var db = await DataBaseManager.database();
 
     List<Course> courseList = [];
     List<PracticalCourse> practicalCourseList = [];
@@ -113,11 +99,7 @@ class AggregationLocalRepo {
 
     await queryAndMap<CourseEntity, Course>(
       courseList,
-      () => db.query(
-        tableCourse,
-        where: 'year = ? and term = ? and studentId = ?',
-        whereArgs: [nowYear, nowTerm, user.studentId],
-      ).then((value) => value.map((e) => CourseEntity.fromMap(e)).toList()),
+      () => db.courseDao.queryCourse(nowYear, nowTerm, user.studentId),
       (item) {
         CourseEntity entity = item as CourseEntity;
         return Course(
@@ -143,12 +125,8 @@ class AggregationLocalRepo {
     );
     await queryAndMap<PracticalCourseEntity, PracticalCourse>(
       practicalCourseList,
-      () => db.query(
-        tablePracticalCourse,
-        where: 'year = ? and term = ? and studentId = ?',
-        whereArgs: [nowYear, nowTerm, user.studentId],
-      ).then((value) =>
-          value.map((e) => PracticalCourseEntity.fromMap(e)).toList()),
+      () => db.practicalCourseDao
+          .queryPracticalCourse(nowYear, nowTerm, user.studentId),
       (item) {
         PracticalCourseEntity entity = item as PracticalCourseEntity;
         return PracticalCourse(
@@ -164,12 +142,8 @@ class AggregationLocalRepo {
     );
     await queryAndMap<ExperimentCourseEntity, ExperimentCourse>(
       experimentCourseList,
-      () => db.query(
-        tableExperimentCourse,
-        where: 'year = ? and term = ? and studentId = ?',
-        whereArgs: [nowYear, nowTerm, user.studentId],
-      ).then((value) =>
-          value.map((e) => ExperimentCourseEntity.fromMap(e)).toList()),
+      () => db.experimentCourseDao
+          .queryExperimentCourse(nowYear, nowTerm, user.studentId),
       (item) {
         ExperimentCourseEntity entity = item as ExperimentCourseEntity;
         return ExperimentCourse(

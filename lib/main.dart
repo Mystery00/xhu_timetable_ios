@@ -4,7 +4,6 @@ import "package:mmkv/mmkv.dart";
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:xhu_timetable_ios/page.dart';
 import 'package:xhu_timetable_ios/store/app.dart';
-import 'package:xhu_timetable_ios/store/db.dart';
 import 'package:xhu_timetable_ios/store/downloader.dart';
 import 'package:xhu_timetable_ios/ui/account_settings.dart';
 import 'package:xhu_timetable_ios/ui/background.dart';
@@ -28,7 +27,6 @@ void main() async {
 
   String dir = (await getApplicationDocumentsDirectory()).path;
   await MMKV.initialize(groupDir: "$dir/mmkv");
-  await initDatabase();
   await FkUserAgent.init();
   await initApp();
   ColorScheme colorScheme = await ColorScheme.fromImageProvider(

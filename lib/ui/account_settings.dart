@@ -55,10 +55,7 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
   }
 
   void _logout(String studentId) async {
-    var result = await logout(studentId);
-    if (result) {
-      eventBus.fire(UIChangeEvent.mainUserLogout());
-    }
+    await logout(studentId);
     refresh();
   }
 
@@ -159,7 +156,6 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
                       (u) => InkWell(
                         onTap: () async {
                           await setMainUserById(u.studentId);
-                          eventBus.fire(UIChangeEvent.changeMainUser());
                           refresh();
                         },
                         child: Card(

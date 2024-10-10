@@ -5,6 +5,8 @@ import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 import 'package:mmkv/mmkv.dart';
 import 'package:xhu_timetable_ios/api/server.dart';
+import 'package:xhu_timetable_ios/event/bus.dart';
+import 'package:xhu_timetable_ios/event/ui.dart';
 import 'package:xhu_timetable_ios/model/user.dart';
 import 'package:xhu_timetable_ios/repository/login.dart';
 import 'package:xhu_timetable_ios/store/config_store.dart';
@@ -38,6 +40,7 @@ Future<void> setMainUser(User user) async =>
 Future<void> setMainUserById(String studentId) async {
   var store = await _getUserStore();
   store.encodeString(_mainUserKey, studentId);
+  getEventBus().fire(UIChangeEvent.changeMainUser());
 }
 
 Future<String?> getMainUserId() async {

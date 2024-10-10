@@ -52,15 +52,13 @@ class _MainRouteState extends State<MainRoute> {
   void initState() {
     super.initState();
     _loadBackground();
-    eventBus.on<UIChangeEvent>().listen((event) async {
+    eventBus.on<UIChangeEvent>().listen((event) {
       if (event.isMultiModeChanged() || event.isChangeMainUser()) {
-        _checkMainUser(mainModel!).then((needLogin) => needLogin
-            ? Navigator.pushReplacementNamed(context, routeLogin)
-            : _refreshCloudDataToState(mainModel!));
-      } else if (event.isMainUserLogout()) {
-        _checkMainUser(mainModel!).then((needLogin) => needLogin
-            ? Navigator.pushReplacementNamed(context, routeLogin)
-            : {});
+        _checkMainUser(mainModel!).then((needLogin) {
+          if (!needLogin) {
+            _refreshCloudDataToState(mainModel!);
+          }
+        });
       } else if (event.isChangeCurrentYearAndTerm() || event.isChangeCampus()) {
         _refreshCloudDataToState(mainModel!);
       } else if (event.isChangeTermStartDate() ||
@@ -109,7 +107,13 @@ class _MainRouteState extends State<MainRoute> {
   Future<bool> _checkMainUser(MainModel mainModel) async {
     var mainUser = await getMainUser();
     mainModel.setUserInfo(mainUser?.userInfo);
-    return mainUser == null;
+    if (mainUser == null) {
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, routeLogin);
+      }
+      return true;
+    }
+    return false;
   }
 
   Future<void> _calculateWeek(MainModel mainModel) async {

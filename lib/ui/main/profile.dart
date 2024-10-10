@@ -23,12 +23,7 @@ class _AccountHomePageState extends State<AccountHomePage> {
   Widget build(BuildContext context) {
     return Container(
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
-      child: const Column(
-        children: [
-          _AccountInfo(),
-          Expanded(child: _MenuList()),
-        ],
-      ),
+      child: const _MenuList(),
     );
   }
 }
@@ -68,6 +63,7 @@ class _AccountInfoState extends State<_AccountInfo> {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: BigUserCard(
+        cardRadius: 16,
         backgroundColor: Theme.of(context).colorScheme.primary,
         userName: userName,
         userNameColor: Theme.of(context).colorScheme.onPrimary,
@@ -122,9 +118,12 @@ class _MenuListState extends State<_MenuList> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: _list.length,
+      itemCount: _list.length + 1,
       itemBuilder: (context, index) {
-        var list = _list[index];
+        if (index == 0) {
+          return const _AccountInfo();
+        }
+        var list = _list[index - 1];
         return SettingsGroup(
           margin: const EdgeInsets.all(8),
           dividerColor: Theme.of(context).colorScheme.outline.withOpacity(0.24),

@@ -1,8 +1,6 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-bool _isDebug = false;
-
 DateTime initTermStartDate = DateTime(2024, 9, 2, 0, 0, 0);
 int initNowYear = 2024;
 int initNowTerm = 1;
@@ -23,13 +21,8 @@ Future<void> initApp() async {
   var iosInfo = await deviceInfo.iosInfo;
   _deviceId = "ios-${iosInfo.identifierForVendor ?? "unknown"}";
   if (!iosInfo.isPhysicalDevice) {
-    _isDebug = true;
     _deviceId = "debug";
   }
-}
-
-bool isDebug() {
-  return _isDebug;
 }
 
 String getAppName() {

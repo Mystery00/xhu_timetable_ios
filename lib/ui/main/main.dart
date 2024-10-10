@@ -67,7 +67,8 @@ class _MainRouteState extends State<MainRoute> {
       } else if (event.isChangeTermStartDate() ||
           event.isShowNotThisWeek() ||
           event.isShowStatus() ||
-          event.isChangeCustomAccountTitle()) {
+          event.isChangeCustomAccountTitle() ||
+          event.isChangeCourseColor()) {
         _loadLocalDataToState(mainModel!, true);
       } else if (event.isChangeBackground()) {
         _loadBackground();

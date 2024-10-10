@@ -1,8 +1,11 @@
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:logger/logger.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:xhu_timetable_ios/event/bus.dart';
+import 'package:xhu_timetable_ios/event/ui.dart';
 import 'package:xhu_timetable_ios/model/transfer/select_view.dart';
 import 'package:xhu_timetable_ios/repository/course_color.dart';
 
@@ -14,6 +17,8 @@ class CustomCourseColorRoute extends StatefulWidget {
 }
 
 class _CustomCourseColorRouteState extends SelectState<CustomCourseColorRoute> {
+  EventBus eventBus = getEventBus();
+
   List<CustomColor> colorList = [];
   final _refreshController = RefreshController(initialRefresh: true);
 
@@ -119,6 +124,8 @@ class _CustomCourseColorRouteState extends SelectState<CustomCourseColorRoute> {
               onPressed: () {
                 deleteCourseColor(courseName)
                     .then((value) => Navigator.of(context).pop())
+                    .then((value) =>
+                        eventBus.fire(UIChangeEvent.changeCourseColor()))
                     .then((value) => _refreshController.requestRefresh());
               },
               child: const Text("重置为默认"),
@@ -133,6 +140,8 @@ class _CustomCourseColorRouteState extends SelectState<CustomCourseColorRoute> {
               onPressed: () {
                 saveCourseColor(courseName, selectedColor)
                     .then((value) => Navigator.of(context).pop())
+                    .then((value) =>
+                        eventBus.fire(UIChangeEvent.changeCourseColor()))
                     .then((value) => _refreshController.requestRefresh());
               },
               child: const Text("确定"),
@@ -162,6 +171,8 @@ class _CustomCourseColorRouteState extends SelectState<CustomCourseColorRoute> {
               onPressed: () {
                 deleteCourseColor(courseName)
                     .then((value) => Navigator.of(context).pop())
+                    .then((value) =>
+                        eventBus.fire(UIChangeEvent.changeCourseColor()))
                     .then((value) => _refreshController.requestRefresh());
               },
               child: const Text("重置为默认"),
@@ -176,6 +187,8 @@ class _CustomCourseColorRouteState extends SelectState<CustomCourseColorRoute> {
               onPressed: () {
                 saveCourseColor(courseName, selectedColor)
                     .then((value) => Navigator.of(context).pop())
+                    .then((value) =>
+                        eventBus.fire(UIChangeEvent.changeCourseColor()))
                     .then((value) => _refreshController.requestRefresh());
               },
               child: const Text("确定"),

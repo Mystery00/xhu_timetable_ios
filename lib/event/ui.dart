@@ -13,6 +13,7 @@ class UIChangeEvent {
   bool isChangeCustomAccountTitle() => event == _changeCustomAccountTitle;
   bool isChangeCampus() => event == _changeCampus;
   bool isChangeBackground() => event == _changeBackground;
+  bool isChangeCourseColor() => event == _changeCourseColor;
 
   factory UIChangeEvent.changeMainUser() =>
       UIChangeEvent(event: _changeMainUser);
@@ -32,6 +33,8 @@ class UIChangeEvent {
   factory UIChangeEvent.changeCampus() => UIChangeEvent(event: _changeCampus);
   factory UIChangeEvent.changeBackground() =>
       UIChangeEvent(event: _changeBackground);
+  factory UIChangeEvent.changeCourseColor() =>
+      UIChangeEvent(event: _changeCourseColor);
 }
 
 var _changeMainUser = 1;
@@ -44,3 +47,4 @@ var _multiModeChanged = 7;
 var _changeCustomAccountTitle = 8;
 var _changeCampus = 9;
 var _changeBackground = 10;
+var _changeCourseColor = 11;

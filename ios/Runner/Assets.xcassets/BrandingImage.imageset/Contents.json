@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "laun_bottom.png",
+      "filename" : "BrandingImage.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "BrandingImage@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "BrandingImage@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

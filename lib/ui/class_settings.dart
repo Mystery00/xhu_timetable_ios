@@ -100,7 +100,7 @@ class _ClassSettingsRouteState extends SelectState<ClassSettingsRoute> {
         title: const Text("课程设置"),
       ),
       body: Container(
-        color: Theme.of(context).colorScheme.surfaceVariant,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         child: ListView(
           children: [
             context.buildSettingsGroup(

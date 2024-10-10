@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:xhu_timetable_ios/model/user_info.dart';
 import 'package:xhu_timetable_ios/repository/main.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
 
@@ -8,6 +9,7 @@ class MainModel with ChangeNotifier {
   List<TodayCourseSheet> todayCourseSheetList = [];
   List<List<WeekCourseSheet>> weekCourseSheetList = List.generate(7, (_) => []);
   DateTime weekDateStart = DateTime.now().atStartOfDay();
+  UserInfo? userInfo;
 
   static MainModel of(BuildContext context, {bool listen = true}) {
     return Provider.of<MainModel>(context, listen: listen);
@@ -30,6 +32,11 @@ class MainModel with ChangeNotifier {
 
   void setWeekDateStart(DateTime weekDateStart) {
     this.weekDateStart = weekDateStart;
+    notifyListeners();
+  }
+
+  void setUserInfo(UserInfo? userInfo) {
+    this.userInfo = userInfo;
     notifyListeners();
   }
 }

@@ -122,8 +122,8 @@ class _CustomCourseColorRouteState extends SelectState<CustomCourseColorRoute> {
           actions: [
             TextButton(
               onPressed: () {
+                Navigator.of(context).pop();
                 deleteCourseColor(courseName)
-                    .then((value) => Navigator.of(context).pop())
                     .then((value) =>
                         eventBus.fire(UIChangeEvent.changeCourseColor()))
                     .then((value) => _refreshController.requestRefresh());
@@ -138,8 +138,8 @@ class _CustomCourseColorRouteState extends SelectState<CustomCourseColorRoute> {
             ),
             TextButton(
               onPressed: () {
+                Navigator.of(context).pop();
                 saveCourseColor(courseName, selectedColor)
-                    .then((value) => Navigator.of(context).pop())
                     .then((value) =>
                         eventBus.fire(UIChangeEvent.changeCourseColor()))
                     .then((value) => _refreshController.requestRefresh());
@@ -169,8 +169,8 @@ class _CustomCourseColorRouteState extends SelectState<CustomCourseColorRoute> {
           actions: [
             TextButton(
               onPressed: () {
+                Navigator.of(context).pop();
                 deleteCourseColor(courseName)
-                    .then((value) => Navigator.of(context).pop())
                     .then((value) =>
                         eventBus.fire(UIChangeEvent.changeCourseColor()))
                     .then((value) => _refreshController.requestRefresh());
@@ -185,8 +185,8 @@ class _CustomCourseColorRouteState extends SelectState<CustomCourseColorRoute> {
             ),
             TextButton(
               onPressed: () {
+                Navigator.of(context).pop();
                 saveCourseColor(courseName, selectedColor)
-                    .then((value) => Navigator.of(context).pop())
                     .then((value) =>
                         eventBus.fire(UIChangeEvent.changeCourseColor()))
                     .then((value) => _refreshController.requestRefresh());

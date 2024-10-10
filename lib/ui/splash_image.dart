@@ -83,7 +83,7 @@ class SplashImageRouteState extends State<SplashImageRoute> {
               onPressed: tapSkip,
               style: ButtonStyle(
                 backgroundColor:
-                    MaterialStateProperty.all(const Color(0x80000000)),
+                    WidgetStateProperty.all(const Color(0x80000000)),
               ),
               child: Text(stopTime == 0 ? "跳 过" : "跳 过 ${stopTime - _time}",
                   style: const TextStyle(color: Colors.white, fontSize: 12),
@@ -96,7 +96,7 @@ class SplashImageRouteState extends State<SplashImageRoute> {
               onPressed: tapHide,
               style: ButtonStyle(
                 backgroundColor:
-                    MaterialStateProperty.all(const Color(0x80000000)),
+                    WidgetStateProperty.all(const Color(0x80000000)),
               ),
               child: const Text('隐藏',
                   style: TextStyle(color: Colors.white, fontSize: 12),

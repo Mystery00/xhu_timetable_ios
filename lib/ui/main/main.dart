@@ -9,7 +9,6 @@ import 'package:xhu_timetable_ios/event/bus.dart';
 import 'package:xhu_timetable_ios/event/ui.dart';
 import 'package:xhu_timetable_ios/model/transfer/week_course_view.dart';
 import 'package:xhu_timetable_ios/repository/main.dart';
-import 'package:xhu_timetable_ios/repository/profile.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
 import 'package:xhu_timetable_ios/store/cache_store.dart';
 import 'package:xhu_timetable_ios/store/config_store.dart';
@@ -53,13 +52,13 @@ class _MainRouteState extends State<MainRoute> {
   void initState() {
     super.initState();
     _loadBackground();
-    eventBus.on<UIChangeEvent>().listen((event) {
+    eventBus.on<UIChangeEvent>().listen((event) async {
       if (event.isMultiModeChanged() || event.isChangeMainUser()) {
-        _checkMainUser().then((needLogin) => needLogin
+        _checkMainUser(mainModel!).then((needLogin) => needLogin
             ? Navigator.pushReplacementNamed(context, routeLogin)
             : _refreshCloudDataToState(mainModel!));
       } else if (event.isMainUserLogout()) {
-        _checkMainUser().then((needLogin) => needLogin
+        _checkMainUser(mainModel!).then((needLogin) => needLogin
             ? Navigator.pushReplacementNamed(context, routeLogin)
             : {});
       } else if (event.isChangeCurrentYearAndTerm() || event.isChangeCampus()) {
@@ -81,6 +80,7 @@ class _MainRouteState extends State<MainRoute> {
     mainModel.setRefreshing(true);
     await _calculateWeek(mainModel);
     await _loadLocalDataToState(mainModel, false);
+    await _checkMainUser(mainModel);
   }
 
   void _loadBackground() async {
@@ -106,13 +106,10 @@ class _MainRouteState extends State<MainRoute> {
     }
   }
 
-  Future<bool> _checkMainUser() async {
+  Future<bool> _checkMainUser(MainModel mainModel) async {
     var mainUser = await getMainUser();
-    if (mainUser == null) {
-      await clearMainUserCache();
-      return true;
-    }
-    return false;
+    mainModel.setUserInfo(mainUser?.userInfo);
+    return mainUser == null;
   }
 
   Future<void> _calculateWeek(MainModel mainModel) async {

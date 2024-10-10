@@ -29,12 +29,14 @@ class StartScreenState extends State<StartScreen> {
       if (readyState.errorMessage != null) {
         showToast(readyState.errorMessage!);
       }
+      if (!context.mounted) return;
+      var navigator = Navigator.of(context);
       if (!readyState.isLogin) {
-        Navigator.pushReplacementNamed(context, routeLogin);
+        navigator.pushReplacementNamed(routeLogin);
       } else if (readyState.splashFile == null || readyState.splash == null) {
-        Navigator.pushReplacementNamed(context, routeMain);
+        navigator.pushReplacementNamed(routeMain);
       } else {
-        Navigator.pushReplacementNamed(context, routeSplashImage,
+        navigator.pushReplacementNamed(routeSplashImage,
             arguments: SplashImageArguments(
                 filePath: readyState.splashFile!.path,
                 splash: readyState.splash!));

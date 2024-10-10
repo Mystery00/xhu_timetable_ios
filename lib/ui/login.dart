@@ -121,10 +121,14 @@ class LoginRouteState extends State<LoginRoute> {
                         _doLogin().then((loginSuccess) {
                           if (loginSuccess) {
                             if (fromSettings) {
-                              Navigator.pop(context, true);
+                              if (context.mounted) {
+                                Navigator.pop(context, true);
+                              }
                             } else {
-                              Navigator.pushReplacementNamed(
-                                  context, routeMain);
+                              if (context.mounted) {
+                                Navigator.pushReplacementNamed(
+                                    context, routeMain);
+                              }
                             }
                           }
                         })

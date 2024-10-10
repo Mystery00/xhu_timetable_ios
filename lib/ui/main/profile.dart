@@ -1,10 +1,10 @@
 import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:xhu_timetable_ios/model/menu.dart';
-import 'package:xhu_timetable_ios/model/user_info.dart';
-import 'package:xhu_timetable_ios/repository/profile.dart';
 import 'package:xhu_timetable_ios/store/menu_store.dart';
 import 'package:xhu_timetable_ios/toast.dart';
+import 'package:xhu_timetable_ios/ui/main/model.dart';
 import 'package:xhu_timetable_ios/ui/theme/icons.dart';
 import 'package:xhu_timetable_ios/ui/theme/colors.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';
@@ -22,7 +22,7 @@ class _AccountHomePageState extends State<AccountHomePage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).colorScheme.surfaceVariant,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: const Column(
         children: [
           _AccountInfo(),
@@ -41,32 +41,23 @@ class _AccountInfo extends StatefulWidget {
 }
 
 class _AccountInfoState extends State<_AccountInfo> {
-  UserInfo? userInfo;
-
-  @override
-  void initState() {
-    super.initState();
-    getMainUserWithCache().then((value) {
-      setState(() {
-        userInfo = value?.userInfo;
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    List<String> userMoreInfoList = [];
-    if (userInfo == null) {
-      return _build("账号未登录", "男", userMoreInfoList);
-    }
-    userMoreInfoList.add(userInfo!.studentNo);
-    userMoreInfoList.add("${userInfo!.xhuGrade}级 ${userInfo!.className}");
-    userMoreInfoList.add(userInfo!.college);
-    return _build(
-      userInfo!.name,
-      userInfo!.gender,
-      userMoreInfoList,
-    );
+    return Consumer(builder: (context, MainModel mainModel, child) {
+      List<String> userMoreInfoList = [];
+      if (mainModel.userInfo == null) {
+        return _build("账号未登录", "男", userMoreInfoList);
+      }
+      userMoreInfoList.add(mainModel.userInfo!.studentNo);
+      userMoreInfoList.add(
+          "${mainModel.userInfo!.xhuGrade}级 ${mainModel.userInfo!.className}");
+      userMoreInfoList.add(mainModel.userInfo!.college);
+      return _build(
+        mainModel.userInfo!.name,
+        mainModel.userInfo!.gender,
+        userMoreInfoList,
+      );
+    });
   }
 
   Widget _build(

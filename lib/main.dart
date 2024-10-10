@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import "package:mmkv/mmkv.dart";
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -24,7 +25,8 @@ import 'package:fk_user_agent/fk_user_agent.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   String dir = (await getApplicationDocumentsDirectory()).path;
   await MMKV.initialize(groupDir: "$dir/mmkv");
@@ -34,6 +36,7 @@ void main() async {
       provider: const AssetImage("assets/images/main_bg.png"));
   initDownloader();
 
+  FlutterNativeSplash.remove();
   runApp(MyApp(colorScheme: colorScheme));
 }
 

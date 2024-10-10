@@ -1,6 +1,8 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:xhu_timetable_ios/repository/start.dart';
 import 'package:xhu_timetable_ios/ui/routes.dart';

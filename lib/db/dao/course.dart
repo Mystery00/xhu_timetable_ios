@@ -13,4 +13,7 @@ abstract class CourseDao {
   @Query(
       'SELECT * FROM tb_course WHERE year = :year AND term = :term AND studentId = :studentId')
   Future<List<CourseEntity>> queryCourse(int year, int term, String studentId);
+
+  @Query('SELECT distinct courseName FROM tb_course')
+  Future<List<String>> queryAllCourseName();
 }

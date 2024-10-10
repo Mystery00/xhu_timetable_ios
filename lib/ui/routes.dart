@@ -11,3 +11,4 @@ const routeQueryScore = '/query-score';
 const routeQueryExpScore = '/query-exp-score';
 const routeBackground = '/background';
 const routeSchoolCalendar = '/school-calendar';
+const routeCustomCourseColor = '/custom-course-color';

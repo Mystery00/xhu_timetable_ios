@@ -5,6 +5,7 @@ import 'package:xhu_timetable_ios/model/transfer/aggregation_view.dart';
 import 'package:xhu_timetable_ios/model/transfer/today_course_view.dart';
 import 'package:xhu_timetable_ios/model/transfer/week_course_view.dart';
 import 'package:xhu_timetable_ios/repository/aggregation.dart';
+import 'package:xhu_timetable_ios/repository/course_color.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
 import 'package:xhu_timetable_ios/store/config_store.dart';
 import 'package:xhu_timetable_ios/ui/theme/colors.dart';
@@ -53,8 +54,10 @@ Future<List<TodayCourseSheet>> getTodayCourseSheetList(
   //合并相同课程
   var resultList = <TodayCourseView>[];
   //计算key与设置颜色
+  var courseColorMap = await getCourseColorList();
   for (var element in showList) {
-    element.backgroundColor = ColorPool.hash(element.courseName);
+    element.backgroundColor = courseColorMap[element.courseName] ??
+        ColorPool.hash(element.courseName);
     element.generateKey();
   }
   Map<String, List<TodayCourseView>> showListGroupByStudentId = {};
@@ -139,9 +142,11 @@ Future<List<List<WeekCourseSheet>>> getWeekCourseSheetList(
     return List.generate(7, (_) => []);
   }
   //设置是否本周以及课程颜色
+  var courseColorMap = await getCourseColorList();
   for (var element in courseList) {
     element.thisWeek = element.weekList.contains(showWeek);
-    element.backgroundColor = ColorPool.hash(element.courseName);
+    element.backgroundColor = courseColorMap[element.courseName] ??
+        ColorPool.hash(element.courseName);
     element.generateKey();
   }
   //过滤非本周课程
@@ -222,7 +227,8 @@ Future<List<List<WeekCourseSheet>>> getWeekCourseSheetList(
       sheet.course.sort((a, b) => a.weekList.first.compareTo(b.weekList.first));
       if (show.thisWeek) {
         sheet.showTitle = "${show.courseName}\n@${show.location}";
-        sheet.color = ColorPool.hash(show.courseName);
+        sheet.color =
+            courseColorMap[show.courseName] ?? ColorPool.hash(show.courseName);
         sheet.textColor = Colors.white;
       } else {
         sheet.showTitle = "[非本周]\n${show.courseName}\n@${show.location}";

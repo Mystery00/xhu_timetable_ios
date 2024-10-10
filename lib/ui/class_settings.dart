@@ -184,9 +184,10 @@ class _ClassSettingsRouteState extends SelectState<ClassSettingsRoute> {
               items: [
                 context.buildSettingsItem(
                   iconImage:
-                      const Svg("assets/icons/svg/ic_custom_background.svg"),
+                      const Svg("assets/icons/svg/ic_custom_course_color.svg"),
                   title: "自定义课程颜色",
-                  onTap: () => {},
+                  onTap: () =>
+                      {Navigator.pushNamed(context, routeCustomCourseColor)},
                 ),
               ],
             ),
@@ -195,7 +196,7 @@ class _ClassSettingsRouteState extends SelectState<ClassSettingsRoute> {
               items: [
                 context.buildSettingsItem(
                   iconImage:
-                      const Svg("assets/icons/svg/ic_custom_background.svg"),
+                      const Svg("assets/icons/svg/ic_school_calendar.svg"),
                   title: "查看校历",
                   onTap: () =>
                       Navigator.pushNamed(context, routeSchoolCalendar),

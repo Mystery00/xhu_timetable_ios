@@ -1,58 +1,63 @@
 import 'dart:ui';
 
-import 'package:xhu_timetable_ios/model/entity/course.dart';
-import 'package:xhu_timetable_ios/model/entity/experiment_course.dart';
-import 'package:xhu_timetable_ios/model/entity/practical_course.dart';
+import 'package:xhu_timetable_ios/db/database.dart';
+import 'package:xhu_timetable_ios/db/entity/course_color.dart';
 import 'package:xhu_timetable_ios/ui/theme/colors.dart';
 
 Future<Map<String, Color>> getCourseColorList() async {
-  return {};
+  var db = await DataBaseManager.database();
+  Map<String, Color> courseColorMap = {};
+  await db.courseColorDao
+      .queryAllCourseColor()
+      .then((List<CourseColorEntity> list) {
+    for (var item in list) {
+      courseColorMap[item.courseName] = HexColor.fromHex(item.color);
+    }
+  });
+  return courseColorMap;
 }
 
 Future<Map<String, Color>> loadAllCourseColor() async {
-  // var db = database();
-  // Map<String, Color> courseColorMap = {};
-  // await db
-  //     .query(
-  //       tableCourse,
-  //       columns: ['courseName'],
-  //       distinct: true,
-  //     )
-  //     .then((value) => value.map((e) => CourseEntity.fromMap(e)).toList())
-  //     .then((List<CourseEntity> list) {
-  //   for (var item in list) {
-  //     courseColorMap[item.courseName] = ColorPool.hash(item.courseName);
-  //   }
-  // });
-  // await db
-  //     .query(
-  //       tablePracticalCourse,
-  //       columns: ['courseName'],
-  //       distinct: true,
-  //     )
-  //     .then((value) =>
-  //         value.map((e) => PracticalCourseEntity.fromMap(e)).toList())
-  //     .then((List<PracticalCourseEntity> list) {
-  //   for (var item in list) {
-  //     courseColorMap[item.courseName] = ColorPool.hash(item.courseName);
-  //   }
-  // });
-  // await db
-  //     .query(
-  //       tableExperimentCourse,
-  //       columns: ['courseName'],
-  //       distinct: true,
-  //     )
-  //     .then((value) =>
-  //         value.map((e) => ExperimentCourseEntity.fromMap(e)).toList())
-  //     .then((List<ExperimentCourseEntity> list) {
-  //   for (var item in list) {
-  //     courseColorMap[item.courseName] = ColorPool.hash(item.courseName);
-  //   }
-  // });
-  // await getCourseColorList().then((value) {
-  //   courseColorMap.addAll(value);
-  // });
-  // return courseColorMap;
-  return {};
+  var db = await DataBaseManager.database();
+  Map<String, Color> courseColorMap = {};
+  await db.courseDao.queryAllCourseName().then((List<String> list) {
+    for (var item in list) {
+      courseColorMap[item] = ColorPool.hash(item);
+    }
+  });
+  await db.practicalCourseDao.queryAllCourseName().then((List<String> list) {
+    for (var item in list) {
+      courseColorMap[item] = ColorPool.hash(item);
+    }
+  });
+  await db.experimentCourseDao.queryAllCourseName().then((List<String> list) {
+    for (var item in list) {
+      courseColorMap[item] = ColorPool.hash(item);
+    }
+  });
+  await getCourseColorList().then((value) {
+    courseColorMap.addAll(value);
+  });
+  return courseColorMap;
+}
+
+Future<void> saveCourseColor(String courseName, Color color) async {
+  var db = await DataBaseManager.database();
+  var saved = await db.courseColorDao.queryCourseColor(courseName);
+  if (saved == null) {
+    await db.courseColorDao.insertData(
+        CourseColorEntity(courseName: courseName, color: color.toHex()));
+  } else {
+    await db.courseColorDao.deleteData(saved);
+    await db.courseColorDao.insertData(
+        CourseColorEntity(courseName: courseName, color: color.toHex()));
+  }
+}
+
+Future<void> deleteCourseColor(String courseName) async {
+  var db = await DataBaseManager.database();
+  var saved = await db.courseColorDao.queryCourseColor(courseName);
+  if (saved != null) {
+    await db.courseColorDao.deleteData(saved);
+  }
 }

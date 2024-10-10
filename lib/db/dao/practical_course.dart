@@ -14,4 +14,7 @@ abstract class PracticalCourseDao {
       'SELECT * FROM tb_practical_course WHERE year = :year AND term = :term AND studentId = :studentId')
   Future<List<PracticalCourseEntity>> queryPracticalCourse(
       int year, int term, String studentId);
+
+  @Query('SELECT distinct courseName FROM tb_practical_course')
+  Future<List<String>> queryAllCourseName();
 }

@@ -78,13 +78,15 @@ class _$AppDatabase extends AppDatabase {
 
   ExperimentCourseDao? _experimentCourseDaoInstance;
 
+  CourseColorDao? _courseColorDaoInstance;
+
   Future<sqflite.Database> open(
     String path,
     List<Migration> migrations, [
     Callback? callback,
   ]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
-      version: 1,
+      version: 2,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
         await callback?.onConfigure?.call(database);
@@ -105,6 +107,8 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `tb_practical_course` (`id` INTEGER, `courseName` TEXT NOT NULL, `weekStr` TEXT NOT NULL, `weekList` TEXT NOT NULL, `teacher` TEXT NOT NULL, `campus` TEXT NOT NULL, `credit` REAL NOT NULL, `year` INTEGER NOT NULL, `term` INTEGER NOT NULL, `studentId` TEXT NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `tb_experiment_course` (`id` INTEGER, `courseName` TEXT NOT NULL, `experimentProjectName` TEXT NOT NULL, `teacherName` TEXT NOT NULL, `experimentGroupName` TEXT NOT NULL, `weekStr` TEXT NOT NULL, `weekList` TEXT NOT NULL, `dayIndex` INTEGER NOT NULL, `startDayTime` INTEGER NOT NULL, `endDayTime` INTEGER NOT NULL, `startTime` TEXT NOT NULL, `endTime` TEXT NOT NULL, `region` TEXT NOT NULL, `location` TEXT NOT NULL, `year` INTEGER NOT NULL, `term` INTEGER NOT NULL, `studentId` TEXT NOT NULL, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `tb_course_color` (`id` INTEGER, `courseName` TEXT NOT NULL, `color` TEXT NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -127,6 +131,12 @@ class _$AppDatabase extends AppDatabase {
   ExperimentCourseDao get experimentCourseDao {
     return _experimentCourseDaoInstance ??=
         _$ExperimentCourseDao(database, changeListener);
+  }
+
+  @override
+  CourseColorDao get courseColorDao {
+    return _courseColorDaoInstance ??=
+        _$CourseColorDao(database, changeListener);
   }
 }
 
@@ -193,6 +203,12 @@ class _$CourseDao extends CourseDao {
   }
 
   @override
+  Future<List<String>> queryAllCourseName() async {
+    return _queryAdapter.queryList('SELECT distinct courseName FROM tb_course',
+        mapper: (Map<String, Object?> row) => row.values.first as String);
+  }
+
+  @override
   Future<void> insertData(CourseEntity course) async {
     await _courseEntityInsertionAdapter.insert(
         course, OnConflictStrategy.abort);
@@ -250,6 +266,13 @@ class _$PracticalCourseDao extends PracticalCourseDao {
         'SELECT * FROM tb_practical_course WHERE year = ?1 AND term = ?2 AND studentId = ?3',
         mapper: (Map<String, Object?> row) => PracticalCourseEntity(id: row['id'] as int?, courseName: row['courseName'] as String, weekStr: row['weekStr'] as String, weekList: row['weekList'] as String, teacher: row['teacher'] as String, campus: row['campus'] as String, credit: row['credit'] as double, year: row['year'] as int, term: row['term'] as int, studentId: row['studentId'] as String),
         arguments: [year, term, studentId]);
+  }
+
+  @override
+  Future<List<String>> queryAllCourseName() async {
+    return _queryAdapter.queryList(
+        'SELECT distinct courseName FROM tb_practical_course',
+        mapper: (Map<String, Object?> row) => row.values.first as String);
   }
 
   @override
@@ -320,8 +343,80 @@ class _$ExperimentCourseDao extends ExperimentCourseDao {
   }
 
   @override
+  Future<List<String>> queryAllCourseName() async {
+    return _queryAdapter.queryList(
+        'SELECT distinct courseName FROM tb_experiment_course',
+        mapper: (Map<String, Object?> row) => row.values.first as String);
+  }
+
+  @override
   Future<void> insertData(ExperimentCourseEntity experimentCourse) async {
     await _experimentCourseEntityInsertionAdapter.insert(
         experimentCourse, OnConflictStrategy.abort);
+  }
+}
+
+class _$CourseColorDao extends CourseColorDao {
+  _$CourseColorDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _courseColorEntityInsertionAdapter = InsertionAdapter(
+            database,
+            'tb_course_color',
+            (CourseColorEntity item) => <String, Object?>{
+                  'id': item.id,
+                  'courseName': item.courseName,
+                  'color': item.color
+                }),
+        _courseColorEntityDeletionAdapter = DeletionAdapter(
+            database,
+            'tb_course_color',
+            ['id'],
+            (CourseColorEntity item) => <String, Object?>{
+                  'id': item.id,
+                  'courseName': item.courseName,
+                  'color': item.color
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<CourseColorEntity> _courseColorEntityInsertionAdapter;
+
+  final DeletionAdapter<CourseColorEntity> _courseColorEntityDeletionAdapter;
+
+  @override
+  Future<CourseColorEntity?> queryCourseColor(String courseName) async {
+    return _queryAdapter.query(
+        'SELECT * FROM tb_course_color WHERE courseName = ?1 limit 1',
+        mapper: (Map<String, Object?> row) => CourseColorEntity(
+            id: row['id'] as int?,
+            courseName: row['courseName'] as String,
+            color: row['color'] as String),
+        arguments: [courseName]);
+  }
+
+  @override
+  Future<List<CourseColorEntity>> queryAllCourseColor() async {
+    return _queryAdapter.queryList('SELECT * FROM tb_course_color',
+        mapper: (Map<String, Object?> row) => CourseColorEntity(
+            id: row['id'] as int?,
+            courseName: row['courseName'] as String,
+            color: row['color'] as String));
+  }
+
+  @override
+  Future<void> insertData(CourseColorEntity courseColor) async {
+    await _courseColorEntityInsertionAdapter.insert(
+        courseColor, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> deleteData(CourseColorEntity courseColor) async {
+    await _courseColorEntityDeletionAdapter.delete(courseColor);
   }
 }

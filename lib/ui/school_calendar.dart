@@ -79,8 +79,20 @@ class _SchoolCalendarRouteState extends SelectState<SchoolCalendarRoute> {
         ],
       ),
       body: areaImageUrl.isNotEmpty
-          ? PhotoView(imageProvider: NetworkImage(areaImageUrl))
+          ? PhotoView(
+              imageProvider: NetworkImage(areaImageUrl),
+            )
           : const Center(child: CircularProgressIndicator()),
+      floatingActionButton: FloatingActionButton.extended(
+        icon: const Icon(Icons.refresh_outlined),
+        label: const Text("切换校区"),
+        onPressed: () {
+          var index = calendarList
+              .indexWhere((element) => element.area == selectedArea);
+          var nextIndex = (index + 1) % calendarList.length;
+          _changeArea(calendarList[nextIndex].area);
+        },
+      ),
     );
   }
 }

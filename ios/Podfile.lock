@@ -8,7 +8,7 @@ PODS:
   - fk_user_agent (2.0.0):
     - Flutter
   - Flutter (1.0.0)
-  - flutter_native_splash (0.0.1):
+  - flutter_native_splash (2.4.3):
     - Flutter
   - fluttertoast (0.0.2):
     - Flutter
@@ -19,7 +19,7 @@ PODS:
     - Flutter
   - MMKV (1.3.9):
     - MMKVCore (~> 1.3.9)
-  - mmkv_ios (1.0.3):
+  - mmkv_ios (1.0.8):
     - Flutter
     - MMKV (< 2.0, >= 1.3.9)
   - MMKVCore (1.3.9)
@@ -93,16 +93,16 @@ SPEC CHECKSUMS:
   device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
   fk_user_agent: 1f47ec39291e8372b1d692b50084b0d54103c545
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_native_splash: edf599c81f74d093a4daf8e17bd7a018854bc778
+  flutter_native_splash: e8a1e01082d97a8099d973f919f57904c925008a
   fluttertoast: e9a18c7be5413da53898f660530c56f35edfba9c
   image_gallery_saver: cb43cc43141711190510e92c460eb1655cd343cb
   image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
   MMKV: 817ba1eea17421547e01e087285606eb270a8dcb
-  mmkv_ios: 51a53dffa3e2bb8b743762514c754666abab2a6c
+  mmkv_ios: 75b9f18f1baf8991985e095192a2b4e35f1e06ea
   MMKVCore: af055b00e27d88cd92fad301c5fecd1ff9b26dd9
-  package_info_plus: 58f0028419748fad15bf008b270aaa8e54380b1c
+  package_info_plus: c0502532a26c7662a62a356cebe2692ec5fe4ec4
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
-  sqflite_darwin: a553b1fd6fe66f53bbb0fe5b4f5bab93f08d7a13
+  sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
   Toast: 1f5ea13423a1e6674c4abdac5be53587ae481c4e
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
 

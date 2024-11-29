@@ -21,7 +21,6 @@ class AccountSettingsRoute extends StatefulWidget {
 class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
   EventBus eventBus = getEventBus();
 
-  var editMode = false;
   var _multiAccountMode = false;
   var _customAccountTitle = DEFAULT_CUSTOM_ACCOUNT_TITLE;
   List<LoggedUserItem> list = [];
@@ -64,16 +63,6 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("账号设置"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.delete_sweep_outlined),
-            onPressed: () {
-              setState(() {
-                editMode = !editMode;
-              });
-            },
-          ),
-        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () async {
@@ -248,29 +237,24 @@ class _AccountSettingsRouteState extends State<AccountSettingsRoute> {
                                         ],
                                       ),
                                     ),
-                                    AnimatedOpacity(
-                                      opacity: editMode ? 1.0 : 0.0,
-                                      duration:
-                                          const Duration(milliseconds: 200),
-                                      child: SizedBox(
-                                        child: TextButton(
-                                          style: ButtonStyle(
-                                            foregroundColor:
-                                                WidgetStateProperty.resolveWith(
-                                                    (states) => Colors.white),
-                                            backgroundColor:
-                                                WidgetStateProperty.resolveWith(
-                                                    (states) => Colors.red),
-                                          ),
-                                          onPressed: () {
-                                            _logout(u.studentId);
-                                          },
-                                          child: const Text(
-                                            "退出登录",
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                    SizedBox(
+                                      child: TextButton(
+                                        style: ButtonStyle(
+                                          foregroundColor:
+                                              WidgetStateProperty.resolveWith(
+                                                  (states) => Colors.white),
+                                          backgroundColor:
+                                              WidgetStateProperty.resolveWith(
+                                                  (states) => Colors.red),
+                                        ),
+                                        onPressed: () {
+                                          _logout(u.studentId);
+                                        },
+                                        child: const Text(
+                                          "退出登录",
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ),

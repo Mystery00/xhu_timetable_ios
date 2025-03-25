@@ -126,7 +126,10 @@ class _MenuListState extends State<_MenuList> {
         var list = _list[index - 1];
         return SettingsGroup(
           margin: const EdgeInsets.all(8),
-          dividerColor: Theme.of(context).colorScheme.outline.withOpacity(0.24),
+          dividerColor: Theme.of(context)
+              .colorScheme
+              .outline
+              .withAlpha((255.0 * 0.24).round()),
           items: list
               .map(
                 (menu) => SettingsItem(

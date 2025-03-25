@@ -125,7 +125,10 @@ class _WeekHomePageState extends State<WeekHomePage> {
                     topLeft: Radius.circular(16),
                     topRight: Radius.circular(16))),
             0),
-        backgroundColor: Theme.of(context).colorScheme.surface.withOpacity(0.8),
+        backgroundColor: Theme.of(context)
+            .colorScheme
+            .surface
+            .withAlpha((255.0 * 0.8).round()),
         duration: const Duration(milliseconds: 150),
         builder: (context) {
           return Container(
@@ -240,7 +243,7 @@ class _WeekHomePageState extends State<WeekHomePage> {
                 width: double.infinity,
                 margin: const EdgeInsets.all(1),
                 color: title.isNotEmpty
-                    ? backgroundColor.withOpacity(0.7)
+                    ? backgroundColor.withAlpha((255.0 * 0.7).round())
                     : Colors.transparent,
                 child: Text(
                   title,

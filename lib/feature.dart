@@ -1,39 +1,54 @@
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:xhu_timetable_ios/feature_probe/featureprobe.dart';
-import 'package:xhu_timetable_ios/feature_probe/user.dart';
+import 'package:featurehub_client_sdk/featurehub.dart';
+import 'package:featurehub_client_api/api.dart';
+import 'package:logger/logger.dart';
 import 'package:xhu_timetable_ios/store/app.dart';
 
-FeatureProbe? _fp;
-Future<FeatureProbe> _getFeatureProbe() async {
-  if (_fp != null) {
-    return _fp!;
+ClientFeatureRepository? _fh;
+Future<ClientFeatureRepository> _getFeatureHub() async {
+  if (_fh != null) {
+    return _fh!;
   }
   var deviceInfo = DeviceInfoPlugin();
   var iosInfo = await deviceInfo.iosInfo;
-  var user = FPUser();
-  user.stableRolloutKey(iosInfo.identifierForVendor!);
-  user.set("deviceId", "ios-${iosInfo.identifierForVendor ?? "unknown"}");
-  user.set("systemVersion", "iOS ${iosInfo.systemVersion}");
-  user.set("factory", iosInfo.model);
-  user.set("model", iosInfo.utsname.machine);
-  user.set("rom", iosInfo.isPhysicalDevice ? "Physical" : "Simulator");
-  user.set("packageName", getPackageName());
-  _fp = FeatureProbe(
-      "https://feature.api.mystery0.vip",
-      "client-27a2a0787d92993d66680ac75f2fb050859c97d1",
-      user,
-      60 * 1000,
-      10 * 1000);
-  await _fp!.start();
-  return _fp!;
+  var repository = ClientFeatureRepository();
+  repository.readynessStream.listen((readyness) {
+    Logger().i("ready: $readyness");
+  });
+  var fhConfig = FeatureHubConfig(
+      'https://fh.api.mystery0.vip',
+      [
+        '65041db9-520c-4962-a512-34fd055abeae/FuNl49rsVbbysKoLtxUxZS3JbPz46e8Kfs2vB9fv'
+      ],
+      repository);
+  repository.clientContext
+      .userKey("${iosInfo.identifierForVendor}")
+      .attr('deviceId', "ios-${iosInfo.identifierForVendor ?? "unknown"}")
+      .attr('systemVersion', "iOS ${iosInfo.systemVersion}")
+      .attr("factory", iosInfo.model)
+      .attr("model", iosInfo.utsname.machine)
+      .attr("rom", iosInfo.isPhysicalDevice ? "Physical" : "Simulator")
+      .attr("packageName", getPackageName())
+      .attr('versionName', getVersion())
+      .attr('versionCode', getBuildNumber())
+      .device(StrategyAttributeDeviceName.mobile)
+      .platform(StrategyAttributePlatformName.ios)
+      .version("${getVersion()}-${getBuildNumber()}");
+  await fhConfig.request();
+  _fh = repository;
+  return repository;
 }
 
 Future<bool> isFeatureJRSC() async {
-  var fp = await _getFeatureProbe();
-  return fp.boolValue("switch_jinrishici", false);
+  var fh = await _getFeatureHub();
+  var f = fh.feature("switch_jinrishici");
+  if (!f.exists || f.booleanValue == null) return false;
+  return f.booleanValue!;
 }
 
 Future<String> getFeatureLoginLabel() async {
-  var fp = await _getFeatureProbe();
-  return fp.stringValue("data_login_label", "");
+  var fh = await _getFeatureHub();
+  var f = fh.feature("data_login_label");
+  if (!f.exists || f.stringValue == null) return "";
+  return f.stringValue!;
 }

@@ -1,7 +1,7 @@
 name: xhu_timetable_ios
 description: "查课查成绩，就用西瓜课表"
 publish_to: "none"
-version: 1.0.3+129
+version: 1.0.3+130
 
 environment:
   sdk: ">=3.3.2 <4.0.0"
@@ -53,6 +53,16 @@ dependencies:
   flutter_colorpicker: ^1.1.0
   lpinyin: ^2.0.2
   flutter_native_splash: ^2.4.1
+  featurehub_client_sdk:
+    # path: ../featurehub-flutter-sdk/featurehub-client-sdk/
+    git:
+      url: https://github.com/Mystery00/featurehub-flutter-sdk.git
+      path: featurehub-client-sdk
+  featurehub_client_api:
+    # path: ../featurehub-flutter-sdk/featurehub-client-api/
+    git:
+      url: https://github.com/Mystery00/featurehub-flutter-sdk.git
+      path: featurehub-client-api
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

@@ -201,6 +201,13 @@ class _ClassSettingsRouteState extends SelectState<ClassSettingsRoute> {
                   onTap: () =>
                       Navigator.pushNamed(context, routeSchoolCalendar),
                 ),
+                context.buildSettingsItem(
+                  iconImage:
+                      const Svg("assets/icons/svg/ic_school_calendar.svg"),
+                  title: "自定义事项",
+                  onTap: () =>
+                      Navigator.pushNamed(context, routeCustomThing),
+                ),
               ],
             ),
           ],

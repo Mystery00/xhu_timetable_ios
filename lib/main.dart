@@ -10,6 +10,7 @@ import 'package:xhu_timetable_ios/ui/account_settings.dart';
 import 'package:xhu_timetable_ios/ui/background.dart';
 import 'package:xhu_timetable_ios/ui/class_settings.dart';
 import 'package:xhu_timetable_ios/ui/custom_course_color.dart';
+import 'package:xhu_timetable_ios/ui/custom_thing.dart';
 import 'package:xhu_timetable_ios/ui/login.dart';
 import 'package:xhu_timetable_ios/ui/query_exam.dart';
 import 'package:xhu_timetable_ios/ui/query_exp_score.dart';
@@ -73,6 +74,7 @@ class MyApp extends StatelessWidget {
           routeBackground: (context) => const BackgroundRoute(),
           routeSchoolCalendar: (context) => const SchoolCalendarRoute(),
           routeCustomCourseColor: (context) => const CustomCourseColorRoute(),
+          routeCustomThing: (context) => const CustomThingRoute(),
         },
         builder: FToastBuilder(),
       ),

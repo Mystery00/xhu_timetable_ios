@@ -67,10 +67,10 @@ packages:
     dependency: "direct main"
     description:
       name: background_downloader
-      sha256: "3a796f29f0834b3e5698e7ac2a39e04939734395420349ff22e1ac2c73a0f73d"
+      sha256: d3016a9eb584f6cb16384c8b4a008943c39119730d60046044349b5dbbda4ccb
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "9.2.1"
+    version: "9.2.2"
   basic_utils:
     dependency: "direct main"
     description:
@@ -316,7 +316,7 @@ packages:
     description:
       path: featurehub-client-api
       ref: HEAD
-      resolved-ref: c6f424d7b825041eaf77512a4c79f5f8ebd0c74c
+      resolved-ref: d48b27e4757cb6156ba85d376f04e00c7538761f
       url: "https://github.com/Mystery00/featurehub-flutter-sdk.git"
     source: git
     version: "1.4.0"
@@ -325,7 +325,7 @@ packages:
     description:
       path: featurehub-client-sdk
       ref: HEAD
-      resolved-ref: c6f424d7b825041eaf77512a4c79f5f8ebd0c74c
+      resolved-ref: d48b27e4757cb6156ba85d376f04e00c7538761f
       url: "https://github.com/Mystery00/featurehub-flutter-sdk.git"
     source: git
     version: "1.4.0-fix"
@@ -334,7 +334,7 @@ packages:
     description:
       path: featurehub-sse-client
       ref: HEAD
-      resolved-ref: c6f424d7b825041eaf77512a4c79f5f8ebd0c74c
+      resolved-ref: d48b27e4757cb6156ba85d376f04e00c7538761f
       url: "https://github.com/Mystery00/featurehub-flutter-sdk.git"
     source: git
     version: "1.3.3"

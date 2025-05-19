@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:xhu_timetable_ios/repository/xhu.dart';
+import 'package:xhu_timetable_ios/ui/theme/colors.dart';
 
 class CustomThingResponse {
   final int thingId;
@@ -8,7 +11,7 @@ class CustomThingResponse {
   final DateTime startTime;
   final DateTime endTime;
   final String remark;
-  final String color;
+  final Color color;
   final String metadata;
   final DateTime createTime;
 
@@ -34,7 +37,7 @@ class CustomThingResponse {
       startTime: DateTimeExt.instant(json['startTime']),
       endTime: DateTimeExt.instant(json['endTime']),
       remark: json['remark'],
-      color: json['color'],
+      color: HexColor.fromHex(json['color']),
       metadata: json['metadata'],
       createTime: DateTimeExt.instant(json['createTime']),
     );

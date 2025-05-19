@@ -98,6 +98,8 @@ extension DateTimeExt on DateTime {
 
   DateTime atStartOfDay() => DateTime(year, month, day);
 
+  DateTime atHourStart() => DateTime(year, month, day, hour);
+
   DateTime atDate(DateTime date) {
     return DateTime(date.year, date.month, date.day, hour, minute, second);
   }
@@ -129,8 +131,14 @@ extension DateTimeExt on DateTime {
   String formatDate() =>
       "$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}";
 
+  String formatChinaDate() =>
+      "$year年${month.toString().padLeft(2, '0')}月${day.toString().padLeft(2, '0')}日";
+
   String formatChinaDateTime() =>
       "$year年${month.toString().padLeft(2, '0')}月${day.toString().padLeft(2, '0')}日 ${hour.toString().padLeft(2, '0')}时${minute.toString().padLeft(2, '0')}分${second.toString().padLeft(2, '0')}秒";
+
+  String formatThingDateTime() =>
+      "$year年${month.toString().padLeft(2, '0')}月${day.toString().padLeft(2, '0')}日 ${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}";
 
   bool isToday() {
     var now = DateTime.now();

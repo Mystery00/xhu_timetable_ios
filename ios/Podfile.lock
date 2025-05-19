@@ -16,12 +16,12 @@ PODS:
     - Flutter
   - image_picker_ios (0.0.1):
     - Flutter
-  - MMKV (2.1.0):
-    - MMKVCore (~> 2.1.0)
-  - mmkv_ios (2.1.0):
+  - MMKV (2.2.2):
+    - MMKVCore (~> 2.2.2)
+  - mmkv_ios (2.2.2):
     - Flutter
-    - MMKV (< 2.2, >= 2.1.0)
-  - MMKVCore (2.1.1)
+    - MMKV (< 2.3, >= 2.2.2)
+  - MMKVCore (2.2.2)
   - package_info_plus (0.4.5):
     - Flutter
   - path_provider_foundation (0.0.1):
@@ -94,9 +94,9 @@ SPEC CHECKSUMS:
   fluttertoast: 2c67e14dce98bbdb200df9e1acf610d7a6264ea1
   image_gallery_saver: 14711d79da40581063e8842a11acf1969d781ed7
   image_picker_ios: 7fe1ff8e34c1790d6fff70a32484959f563a928a
-  MMKV: ce484c1ac40bf76d5f09a0195d2ec5b3d3840d55
-  mmkv_ios: d0e1c7aae5feba9ca6d097cced432f0adf991a5f
-  MMKVCore: 1eb661c6c498ab88e3df9ce5d8ff94d05fcc0567
+  MMKV: b4802ebd5a7c68fc0c4a5ccb4926fbdfb62d68e0
+  mmkv_ios: b1c2c12115c0ff971534015f61aea8de18d8d126
+  MMKVCore: a255341a3746955f50da2ad9121b18cb2b346e61
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0

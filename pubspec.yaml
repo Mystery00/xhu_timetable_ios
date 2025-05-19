@@ -1,7 +1,7 @@
 name: xhu_timetable_ios
 description: "查课查成绩，就用西瓜课表"
 publish_to: "none"
-version: 1.0.4+133
+version: 1.0.4+134
 
 environment:
   sdk: ">=3.3.2 <4.0.0"
@@ -27,7 +27,7 @@ dependencies:
   dio: ^5.7.0
   fk_user_agent: ^2.1.0
   path_provider: ^2.1.4
-  mmkv: ^2.1.1
+  mmkv: ^2.2.2
   crypto: ^3.0.3
   fluttertoast: ^8.2.8
   pointycastle: ^4.0.0

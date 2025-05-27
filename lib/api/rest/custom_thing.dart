@@ -17,3 +17,37 @@ Future<PageResult<CustomThingResponse>> apiCustomThingList(
   return PageResult.fromJson(
       response.data, (e) => CustomThingResponse.fromJson(e));
 }
+
+Future<bool> apiCreateCustomThing(
+  String sessionToken,
+  CustomThingRequest request,
+) async {
+  var dio = getServerClient();
+  dio.options.headers["sessionToken"] = sessionToken;
+  var response =
+      await dio.post("/api/rest/external/thing/custom", data: request.toJson());
+  return response.data;
+}
+
+Future<bool> apiUpdateCustomThing(
+  String sessionToken,
+  int thingId,
+  CustomThingRequest request,
+) async {
+  var dio = getServerClient();
+  dio.options.headers["sessionToken"] = sessionToken;
+  var response =
+      await dio.put("/api/rest/external/thing/custom?id=$thingId", data: request.toJson());
+  return response.data;
+}
+
+Future<bool> apiDeleteCustomThing(
+  String sessionToken,
+  int thingId,
+) async {
+  var dio = getServerClient();
+  dio.options.headers["sessionToken"] = sessionToken;
+  var response =
+      await dio.delete("/api/rest/external/thing/custom?id=$thingId");
+  return response.data;
+}

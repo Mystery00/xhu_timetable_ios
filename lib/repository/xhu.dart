@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:xhu_timetable_ios/store/config_store.dart';
 
 class XhuRepo {
@@ -100,8 +101,14 @@ extension DateTimeExt on DateTime {
 
   DateTime atHourStart() => DateTime(year, month, day, hour);
 
+  TimeOfDay toTimeOfDay() => TimeOfDay.fromDateTime(this);
+
   DateTime atDate(DateTime date) {
     return DateTime(date.year, date.month, date.day, hour, minute, second);
+  }
+
+  DateTime atTime(TimeOfDay time){
+    return DateTime(year, month, day, time.hour, time.minute, second);
   }
 
   String getDayOfWeek() {
@@ -144,4 +151,9 @@ extension DateTimeExt on DateTime {
     var now = DateTime.now();
     return year == now.year && month == now.month && day == now.day;
   }
+}
+
+extension TimeOfDayExt on TimeOfDay {
+  String formatTime() =>
+      "${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}";
 }

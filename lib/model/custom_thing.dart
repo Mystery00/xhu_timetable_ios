@@ -44,3 +44,36 @@ class CustomThingResponse {
   }
 }
 
+class CustomThingRequest {
+  final String title;
+  final String location;
+  final bool allDay;
+  final int startTime;
+  final int endTime;
+  final String remark;
+  final String color;
+  final String metadata;
+
+  CustomThingRequest(
+      {required this.title,
+      required this.location,
+      required this.allDay,
+      required this.startTime,
+      required this.endTime,
+      required this.remark,
+      required this.color,
+      required this.metadata});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'location': location,
+      'allDay': allDay,
+      'startTime': startTime,
+      'endTime': endTime,
+      'remark': remark,
+      'color': color,
+      'metadata': metadata,
+    };
+  }
+}

@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'dart:convert';
 import 'package:logger/logger.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:xhu_timetable_ios/api/rest/custom_thing.dart';
+import 'package:xhu_timetable_ios/api/server.dart';
 import 'package:xhu_timetable_ios/model/custom_thing.dart';
 import 'package:xhu_timetable_ios/model/page.dart';
 import 'package:xhu_timetable_ios/model/transfer/select_view.dart';
 import 'package:xhu_timetable_ios/model/user.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
 import 'package:xhu_timetable_ios/store/user_store.dart';
+import 'package:xhu_timetable_ios/toast.dart';
+import 'package:xhu_timetable_ios/ui/theme/colors.dart';
 
 class CustomThingRoute extends StatefulWidget {
   const CustomThingRoute({super.key});
@@ -30,8 +34,11 @@ class _CustomThingRouteState extends SelectState<CustomThingRoute> {
   final TextEditingController sheetRemarkController = TextEditingController();
   var sheetAllDay = false;
   var sheetSaveAsCountDown = false;
-  var sheetStartTime = DateTime.now();
-  var sheetEndTime = DateTime.now();
+  var sheetStartDate = DateTime.now().atStartOfDay();
+  var sheetStartTime = TimeOfDay.fromDateTime(DateTime.now().atHourStart());
+  var sheetEndDate = DateTime.now().atStartOfDay();
+  var sheetEndTime = TimeOfDay.fromDateTime(DateTime.now().atHourStart());
+  var sheetColor = ColorPool.random();
 
   @override
   void initState() {
@@ -82,6 +89,20 @@ class _CustomThingRouteState extends SelectState<CustomThingRoute> {
 
     return await user.withAutoLoginOnce(
         (sessionToken) => apiCustomThingList(sessionToken, index, size));
+  }
+
+  Future<bool> _saveCustomThing(
+      int? thingId, CustomThingRequest request) async {
+    User user = await getSelectedUser(userSelectList);
+    return await user.withAutoLoginOnce((sessionToken) => thingId == null
+        ? apiCreateCustomThing(sessionToken, request)
+        : apiUpdateCustomThing(sessionToken, thingId, request));
+  }
+
+  Future<bool> _deleteCustomThing(int thingId) async {
+    User user = await getSelectedUser(userSelectList);
+    return await user.withAutoLoginOnce(
+        (sessionToken) => apiDeleteCustomThing(sessionToken, thingId));
   }
 
   @override
@@ -148,12 +169,14 @@ class _CustomThingRouteState extends SelectState<CustomThingRoute> {
       sheetTitleController.text = item?.title ?? '';
       sheetLocationController.text = item?.location ?? '';
       sheetRemarkController.text = item?.response.remark ?? '';
+      sheetColor = item?.color ?? ColorPool.random();
     });
     var allDay = item?.response.allDay ?? false;
     var saveAsCountDown = false;
     if (item != null) {
       var metadataJson = json.decode(item.response.metadata);
-      saveAsCountDown = metadataJson['saveAsCountDown'] ?? false;
+      var value = metadataJson['key_save_as_count_down'] ?? "false";
+      saveAsCountDown = bool.parse(value);
     }
     var startTime = item?.response.startTime ?? DateTime.now();
     var endTime =
@@ -163,8 +186,10 @@ class _CustomThingRouteState extends SelectState<CustomThingRoute> {
     setState(() {
       sheetAllDay = allDay;
       sheetSaveAsCountDown = saveAsCountDown;
-      sheetStartTime = startTime;
-      sheetEndTime = endTime;
+      sheetStartDate = startTime.atStartOfDay();
+      sheetStartTime = startTime.toTimeOfDay();
+      sheetEndDate = endTime.atStartOfDay();
+      sheetEndTime = endTime.toTimeOfDay();
     });
     showMaterialModalBottomSheet(
         context: context,
@@ -180,6 +205,7 @@ class _CustomThingRouteState extends SelectState<CustomThingRoute> {
             0),
         duration: const Duration(milliseconds: 200),
         builder: (context) {
+          var navigator = Navigator.of(context);
           return Padding(
             padding:
                 const EdgeInsets.only(top: 8, bottom: 32, left: 32, right: 32),
@@ -189,11 +215,62 @@ class _CustomThingRouteState extends SelectState<CustomThingRoute> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    if (item != null)
+                      TextButton(
+                          onPressed: () {
+                            _deleteCustomThing(item.thingId).then((res) {
+                              if (res) {
+                                showToast("删除成功");
+                                navigator.pop();
+                              }
+                            }).catchError((e) {
+                              showToast(handleException(e));
+                            }).whenComplete(() {
+                              _onRefresh();
+                            });
+                          },
+                          child: const Text("删除",
+                              style: TextStyle(color: Colors.red))),
                     TextButton(
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          if (sheetSaveAsCountDown) {
+                            //存储为倒计时，那么持续时间为一天
+                            sheetEndDate =
+                                sheetStartDate.add(const Duration(days: 1));
+                            sheetEndTime = sheetStartTime;
+                          }
+                          var startTime = sheetStartDate.atTime(sheetStartTime);
+                          var endTime = sheetEndDate.atTime(sheetEndTime);
+                          if (endTime.isBefore(startTime)) {
+                            showToast('开始时间不能晚于结束时间');
+                            return;
+                          }
+                          var request = CustomThingRequest(
+                            title: sheetTitleController.text,
+                            location: sheetLocationController.text,
+                            allDay: sheetAllDay,
+                            startTime: startTime.millisecondsSinceEpoch,
+                            endTime: endTime.millisecondsSinceEpoch,
+                            remark: sheetRemarkController.text,
+                            color: colorToHex(sheetColor,
+                                includeHashSign: true, enableAlpha: false),
+                            metadata: json.encode({
+                              "key_save_as_count_down":
+                                  sheetSaveAsCountDown.toString(),
+                            }),
+                          );
+                          _saveCustomThing(item?.thingId, request).then((res) {
+                            if (res) {
+                              showToast("保存成功");
+                              navigator.pop();
+                            }
+                          }).catchError((e) {
+                            showToast(handleException(e));
+                          }).whenComplete(() {
+                            _onRefresh();
+                          });
                         },
-                        child: const Text("保存"))
+                        child: const Text("保存")),
                   ],
                 ),
                 Column(
@@ -252,9 +329,35 @@ class _CustomThingRouteState extends SelectState<CustomThingRoute> {
                                 : sheetAllDay
                                     ? "开始日期"
                                     : "开始时间")),
-                        Text(sheetStartTime.formatDate()),
+                        InkWell(
+                          child: Text(sheetStartDate.formatDate()),
+                          onTap: () {
+                            showDatePickerDialog(sheetStartDate)
+                                .then((pickDate) {
+                              if (pickDate != null) {
+                                setState(() {
+                                  sheetStartDate = pickDate;
+                                });
+                                (context as Element).markNeedsBuild();
+                              }
+                            });
+                          },
+                        ),
                         if (!sheetAllDay)
-                          Text(sheetStartTime.formatTimeNoSecond()),
+                          InkWell(
+                            child: Text(sheetStartTime.formatTime()),
+                            onTap: () {
+                              showTimePickerDialog(sheetStartTime)
+                                  .then((pickTime) {
+                                if (pickTime != null) {
+                                  setState(() {
+                                    sheetStartTime = pickTime;
+                                  });
+                                  (context as Element).markNeedsBuild();
+                                }
+                              });
+                            },
+                          ),
                       ],
                     ),
                     if (!sheetSaveAsCountDown) const SizedBox(height: 8),
@@ -263,11 +366,63 @@ class _CustomThingRouteState extends SelectState<CustomThingRoute> {
                         spacing: 16,
                         children: [
                           Expanded(child: Text(sheetAllDay ? "结束日期" : "结束时间")),
-                          Text(sheetEndTime.formatDate()),
+                          InkWell(
+                            child: Text(sheetEndDate.formatDate()),
+                            onTap: () {
+                              showDatePickerDialog(sheetEndDate)
+                                  .then((pickDate) {
+                                if (pickDate != null) {
+                                  setState(() {
+                                    sheetEndDate = pickDate;
+                                  });
+                                  (context as Element).markNeedsBuild();
+                                }
+                              });
+                            },
+                          ),
                           if (!sheetAllDay)
-                            Text(sheetEndTime.formatTimeNoSecond()),
+                            InkWell(
+                              child: Text(sheetEndTime.formatTime()),
+                              onTap: () {
+                                showTimePickerDialog(sheetEndTime)
+                                    .then((pickTime) {
+                                  if (pickTime != null) {
+                                    setState(() {
+                                      sheetEndTime = pickTime;
+                                    });
+                                    (context as Element).markNeedsBuild();
+                                  }
+                                });
+                              },
+                            ),
                         ],
                       ),
+                    InkWell(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text('设置颜色'),
+                          ),
+                          Container(
+                            width: 24,
+                            height: 24,
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: sheetColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      onTap: () {
+                        showSelectColorPicker(sheetColor).then((pickColor) {
+                          setState(() {
+                            sheetColor = pickColor;
+                          });
+                          (context as Element).markNeedsBuild();
+                        });
+                      },
+                    ),
                     TextField(
                       decoration: const InputDecoration(
                         labelText: "备注",
@@ -346,6 +501,60 @@ class _CustomThingRouteState extends SelectState<CustomThingRoute> {
           ),
         ),
       );
+
+  Future<DateTime?> showDatePickerDialog(DateTime initialDate) async {
+    return await showDatePicker(
+      helpText: "请选择日期",
+      context: context,
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+      initialDate: initialDate,
+      currentDate: DateTime.now(),
+      firstDate: initialDate.subtract(const Duration(days: 730)),
+      lastDate: initialDate.add(const Duration(days: 730)),
+    );
+  }
+
+  Future<TimeOfDay?> showTimePickerDialog(TimeOfDay initialDate) async {
+    return await showTimePicker(
+      helpText: "请选择时间",
+      context: context,
+      initialEntryMode: TimePickerEntryMode.input,
+      initialTime: initialDate,
+    );
+  }
+
+  Future<Color> showSelectColorPicker(Color pickerColor) async {
+    return await showDialog(
+      context: context,
+      builder: (context) {
+        var selectedColor = pickerColor;
+        return AlertDialog(
+          title: const Text("选择颜色"),
+          content: SingleChildScrollView(
+              child: BlockPicker(
+            pickerColor: selectedColor,
+            onColorChanged: (color) {
+              selectedColor = color;
+            },
+          )),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(pickerColor);
+              },
+              child: const Text("取消"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(selectedColor);
+              },
+              child: const Text("确定"),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 CustomThing _mapCustomThingResponse(CustomThingResponse response) {
@@ -359,6 +568,7 @@ CustomThing _mapCustomThingResponse(CustomThingResponse response) {
       : response.endTime.formatThingDateTime();
   var showDateTime = saveAsCountDown ? startText : "$startText - $endText";
   return CustomThing(
+    thingId: response.thingId,
     title: response.title,
     location: response.location,
     showDateTime: showDateTime,
@@ -368,6 +578,7 @@ CustomThing _mapCustomThingResponse(CustomThingResponse response) {
 }
 
 class CustomThing {
+  final int thingId;
   final String title;
   final String location;
   final String showDateTime;
@@ -375,6 +586,7 @@ class CustomThing {
   final CustomThingResponse response;
 
   CustomThing({
+    required this.thingId,
     required this.title,
     required this.location,
     required this.showDateTime,

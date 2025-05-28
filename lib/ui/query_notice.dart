@@ -11,6 +11,7 @@ import 'package:xhu_timetable_ios/model/user.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
 import 'package:xhu_timetable_ios/store/user_store.dart';
 import 'package:xhu_timetable_ios/toast.dart';
+import 'package:xhu_timetable_ios/ui/base.dart';
 import 'package:xhu_timetable_ios/url.dart';
 
 class QueryNoticeRoute extends StatefulWidget {
@@ -78,8 +79,9 @@ class _QueryNoticeRouteState extends SelectState<QueryNoticeRoute> {
         enablePullUp: true,
         onRefresh: _onRefresh,
         onLoading: _onLoading,
-        child: ListView.builder(
-          itemCount: noticeList.length,
+        child: buildPageOrEmptyData(
+          context,
+          size: noticeList.length,
           itemBuilder: (context, index) => _buildItem(noticeList[index]),
         ),
       ),

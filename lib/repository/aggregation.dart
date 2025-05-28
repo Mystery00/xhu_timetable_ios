@@ -1,6 +1,7 @@
 import 'package:xhu_timetable_ios/api/rest/aggregation.dart';
 import 'package:xhu_timetable_ios/model/transfer/aggregation_view.dart';
 import 'package:xhu_timetable_ios/model/transfer/today_course_view.dart';
+import 'package:xhu_timetable_ios/model/transfer/today_thing_view.dart';
 import 'package:xhu_timetable_ios/model/transfer/week_course_view.dart';
 import 'package:xhu_timetable_ios/repository/aggregation_local.dart';
 import 'package:xhu_timetable_ios/repository/base_data_repo.dart';
@@ -22,6 +23,7 @@ class AggregationRepo extends BaseDataRepo {
     var customAccountTitle = await getCustomAccountTitle();
 
     List<TodayCourseView> todayViewList = [];
+    List<TodayThingView> todayThingList = [];
     List<WeekCourseView> weekViewList = [];
 
     var (loadFromCloud, loadWarning) =
@@ -39,8 +41,8 @@ class AggregationRepo extends BaseDataRepo {
                 ));
         for (var course in response.courseList) {
           todayViewList.add(TodayCourseView.valueOfCourse(course, user));
-          weekViewList
-              .add(WeekCourseView.valueOfCourse(course, customAccountTitle.formatWeek(user.userInfo)));
+          weekViewList.add(WeekCourseView.valueOfCourse(
+              course, customAccountTitle.formatWeek(user.userInfo)));
         }
         for (var experimentCourse in response.experimentCourseList) {
           todayViewList.add(
@@ -48,8 +50,11 @@ class AggregationRepo extends BaseDataRepo {
           weekViewList.add(WeekCourseView.valueOfExperimentCourse(
               experimentCourse, customAccountTitle.formatWeek(user.userInfo)));
         }
+        for (var customThing in response.customThingList) {
+          todayThingList.add(TodayThingView.valueOf(customThing, user));
+        }
         AggregationLocalRepo.saveAggregationMainPageResponse(
-            nowYear, nowTerm, user, response);
+            nowYear, nowTerm, user, response, showCustomThing);
       }
       setLastSyncCourse(DateTime.now());
     } else {
@@ -58,8 +63,8 @@ class AggregationRepo extends BaseDataRepo {
             nowYear, nowTerm, user);
         for (var course in response.courseList) {
           todayViewList.add(TodayCourseView.valueOfCourse(course, user));
-          weekViewList
-              .add(WeekCourseView.valueOfCourse(course, customAccountTitle.formatWeek(user.userInfo)));
+          weekViewList.add(WeekCourseView.valueOfCourse(
+              course, customAccountTitle.formatWeek(user.userInfo)));
         }
         for (var experimentCourse in response.experimentCourseList) {
           todayViewList.add(
@@ -67,10 +72,14 @@ class AggregationRepo extends BaseDataRepo {
           weekViewList.add(WeekCourseView.valueOfExperimentCourse(
               experimentCourse, customAccountTitle.formatWeek(user.userInfo)));
         }
+        for (var customThing in response.customThingList) {
+          todayThingList.add(TodayThingView.valueOf(customThing, user));
+        }
       }
     }
     return AggregationView(
       todayViewList: todayViewList,
+      todayThingViewList: todayThingList,
       weekViewList: weekViewList,
       loadWarning: loadWarning,
     );

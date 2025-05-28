@@ -80,13 +80,15 @@ class _$AppDatabase extends AppDatabase {
 
   CourseColorDao? _courseColorDaoInstance;
 
+  CustomThingDao? _customThingDaoInstance;
+
   Future<sqflite.Database> open(
     String path,
     List<Migration> migrations, [
     Callback? callback,
   ]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
-      version: 2,
+      version: 3,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
         await callback?.onConfigure?.call(database);
@@ -109,6 +111,8 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `tb_experiment_course` (`id` INTEGER, `courseName` TEXT NOT NULL, `experimentProjectName` TEXT NOT NULL, `teacherName` TEXT NOT NULL, `experimentGroupName` TEXT NOT NULL, `weekStr` TEXT NOT NULL, `weekList` TEXT NOT NULL, `dayIndex` INTEGER NOT NULL, `startDayTime` INTEGER NOT NULL, `endDayTime` INTEGER NOT NULL, `startTime` TEXT NOT NULL, `endTime` TEXT NOT NULL, `region` TEXT NOT NULL, `location` TEXT NOT NULL, `year` INTEGER NOT NULL, `term` INTEGER NOT NULL, `studentId` TEXT NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `tb_course_color` (`id` INTEGER, `courseName` TEXT NOT NULL, `color` TEXT NOT NULL, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `tb_custom_thing` (`id` INTEGER, `thingId` INTEGER NOT NULL, `title` TEXT NOT NULL, `location` TEXT NOT NULL, `allDay` INTEGER NOT NULL, `startTime` INTEGER NOT NULL, `endTime` INTEGER NOT NULL, `remark` TEXT NOT NULL, `color` TEXT NOT NULL, `metadata` TEXT NOT NULL, `createTime` INTEGER NOT NULL, `studentId` TEXT NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -137,6 +141,12 @@ class _$AppDatabase extends AppDatabase {
   CourseColorDao get courseColorDao {
     return _courseColorDaoInstance ??=
         _$CourseColorDao(database, changeListener);
+  }
+
+  @override
+  CustomThingDao get customThingDao {
+    return _customThingDaoInstance ??=
+        _$CustomThingDao(database, changeListener);
   }
 }
 
@@ -418,5 +428,88 @@ class _$CourseColorDao extends CourseColorDao {
   @override
   Future<void> deleteData(CourseColorEntity courseColor) async {
     await _courseColorEntityDeletionAdapter.delete(courseColor);
+  }
+}
+
+class _$CustomThingDao extends CustomThingDao {
+  _$CustomThingDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _customThingEntityInsertionAdapter = InsertionAdapter(
+            database,
+            'tb_custom_thing',
+            (CustomThingEntity item) => <String, Object?>{
+                  'id': item.id,
+                  'thingId': item.thingId,
+                  'title': item.title,
+                  'location': item.location,
+                  'allDay': item.allDay ? 1 : 0,
+                  'startTime': item.startTime,
+                  'endTime': item.endTime,
+                  'remark': item.remark,
+                  'color': item.color,
+                  'metadata': item.metadata,
+                  'createTime': item.createTime,
+                  'studentId': item.studentId
+                }),
+        _customThingEntityDeletionAdapter = DeletionAdapter(
+            database,
+            'tb_custom_thing',
+            ['id'],
+            (CustomThingEntity item) => <String, Object?>{
+                  'id': item.id,
+                  'thingId': item.thingId,
+                  'title': item.title,
+                  'location': item.location,
+                  'allDay': item.allDay ? 1 : 0,
+                  'startTime': item.startTime,
+                  'endTime': item.endTime,
+                  'remark': item.remark,
+                  'color': item.color,
+                  'metadata': item.metadata,
+                  'createTime': item.createTime,
+                  'studentId': item.studentId
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<CustomThingEntity> _customThingEntityInsertionAdapter;
+
+  final DeletionAdapter<CustomThingEntity> _customThingEntityDeletionAdapter;
+
+  @override
+  Future<List<CustomThingEntity>> queryByUsername(String username) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM tb_custom_thing WHERE studentId = ?1',
+        mapper: (Map<String, Object?> row) => CustomThingEntity(
+            id: row['id'] as int?,
+            thingId: row['thingId'] as int,
+            title: row['title'] as String,
+            location: row['location'] as String,
+            allDay: (row['allDay'] as int) != 0,
+            startTime: row['startTime'] as int,
+            endTime: row['endTime'] as int,
+            remark: row['remark'] as String,
+            color: row['color'] as String,
+            metadata: row['metadata'] as String,
+            createTime: row['createTime'] as int,
+            studentId: row['studentId'] as String),
+        arguments: [username]);
+  }
+
+  @override
+  Future<void> insertData(CustomThingEntity entity) async {
+    await _customThingEntityInsertionAdapter.insert(
+        entity, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> deleteData(CustomThingEntity entity) async {
+    await _customThingEntityDeletionAdapter.delete(entity);
   }
 }

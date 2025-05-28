@@ -252,8 +252,7 @@ class _CustomThingRouteState extends SelectState<CustomThingRoute> {
                             startTime: startTime.millisecondsSinceEpoch,
                             endTime: endTime.millisecondsSinceEpoch,
                             remark: sheetRemarkController.text,
-                            color: colorToHex(sheetColor,
-                                includeHashSign: true, enableAlpha: false),
+                            color: sheetColor.toHex(),
                             metadata: json.encode({
                               "key_save_as_count_down":
                                   sheetSaveAsCountDown.toString(),

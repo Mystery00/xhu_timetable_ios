@@ -7,12 +7,21 @@ import 'package:xhu_timetable_ios/repository/xhu.dart';
 class MainModel with ChangeNotifier {
   bool isRefreshing = false;
   List<TodayCourseSheet> todayCourseSheetList = [];
+  List<TodayThingSheet> todayThingSheetList = [];
   List<List<WeekCourseSheet>> weekCourseSheetList = List.generate(7, (_) => []);
   DateTime weekDateStart = DateTime.now().atStartOfDay();
   UserInfo? userInfo;
 
   static MainModel of(BuildContext context, {bool listen = true}) {
     return Provider.of<MainModel>(context, listen: listen);
+  }
+
+  bool isTodayNoData() {
+    return todayCourseSheetList.isEmpty && todayThingSheetList.isEmpty;
+  }
+
+  bool isWeekNoData() {
+    return weekCourseSheetList.every((list) => list.isEmpty);
   }
 
   void setRefreshing(bool isRefreshing) {
@@ -22,6 +31,11 @@ class MainModel with ChangeNotifier {
 
   void setTodayCourseSheetList(List<TodayCourseSheet> todayCourseSheetList) {
     this.todayCourseSheetList = todayCourseSheetList;
+    notifyListeners();
+  }
+
+  void setTodayThingSheetList(List<TodayThingSheet> todayThingSheetList) {
+    this.todayThingSheetList = todayThingSheetList;
     notifyListeners();
   }
 

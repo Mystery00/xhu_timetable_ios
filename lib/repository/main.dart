@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:xhu_timetable_ios/model/transfer/aggregation_view.dart';
 import 'package:xhu_timetable_ios/model/transfer/today_course_view.dart';
+import 'package:xhu_timetable_ios/model/transfer/today_thing_view.dart';
 import 'package:xhu_timetable_ios/model/transfer/week_course_view.dart';
 import 'package:xhu_timetable_ios/repository/aggregation.dart';
 import 'package:xhu_timetable_ios/repository/course_color.dart';
@@ -11,12 +12,13 @@ import 'package:xhu_timetable_ios/store/config_store.dart';
 import 'package:xhu_timetable_ios/ui/theme/colors.dart';
 
 AggregationRepo _aggregationRepo = AggregationRepo();
+
 Future<(AggregationView, String)> getMainPageData(
   bool forceLoadFromCloud,
   bool forceLoadFromLocal,
 ) async {
   var showCustomCourse = false;
-  var showCustomThing = false;
+  var showCustomThing = await getShowCustomThing();
   var view = await _aggregationRepo.fetchAggregationMainPage(forceLoadFromCloud,
       forceLoadFromLocal, showCustomCourse, showCustomThing);
   if (view.loadWarning?.isNotEmpty ?? false) {
@@ -131,6 +133,53 @@ Future<List<TodayCourseSheet>> getTodayCourseSheetList(
     todayCourseSheetList.add(sheet);
   }
   return todayCourseSheetList;
+}
+
+Future<List<TodayThingSheet>> getTodayThingSheetList(
+    List<TodayThingView> thingList) async {
+  var multiAccountMode = await getMultiAccountMode();
+  var customAccountTitle = await getCustomAccountTitle();
+  var showInstant = DateTime.now();
+  //过滤出今日或者明日的事项
+  var showList =
+      thingList.where((element) => element.showOnDay(showInstant)).toList();
+  if (showList.isEmpty) {
+    return [];
+  }
+  showList.sort((a, b) => a.getSort().compareTo(b.getSort()));
+  var resultList = <TodayThingSheet>[];
+  for (var element in showList) {
+    var timeTextBuilder = StringBuffer();
+    if (element.allDay) {
+      timeTextBuilder.write(element.startTime.formatChinaDate());
+    } else {
+      timeTextBuilder.write(element.startTime.formatChinaDateTime());
+    }
+    if (!element.saveAsCountDown) {
+      timeTextBuilder.write(" - ");
+      if (element.allDay) {
+        timeTextBuilder.write(element.endTime.formatChinaDate());
+      } else {
+        timeTextBuilder.write(element.endTime.formatChinaDateTime());
+      }
+    }
+    var showInstantStartDay = showInstant.atStartOfDay();
+    var remainDays = element.startTime.difference(showInstantStartDay).inDays;
+    resultList.add(TodayThingSheet(
+      title: element.title,
+      location: element.location,
+      allDay: element.allDay,
+      timeText: timeTextBuilder.toString(),
+      remark: element.remark,
+      color: element.color,
+      saveAsCountDown: element.saveAsCountDown,
+      remainDays: remainDays,
+      accountTitle: multiAccountMode
+          ? customAccountTitle.formatToday(element.user.userInfo)
+          : "",
+    ));
+  }
+  return resultList;
 }
 
 Future<List<List<WeekCourseSheet>>> getWeekCourseSheetList(
@@ -310,4 +359,27 @@ class TodayCourseSheet {
       courseStatus = "开课中";
     }
   }
+}
+
+class TodayThingSheet {
+  final String title;
+  final String location;
+  final bool allDay;
+  final String timeText;
+  final String remark;
+  final Color color;
+  final bool saveAsCountDown;
+  final int remainDays;
+  final String accountTitle;
+
+  TodayThingSheet(
+      {required this.title,
+      required this.location,
+      required this.allDay,
+      required this.timeText,
+      required this.remark,
+      required this.color,
+      required this.saveAsCountDown,
+      required this.remainDays,
+      required this.accountTitle});
 }

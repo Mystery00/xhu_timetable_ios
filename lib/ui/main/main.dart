@@ -59,7 +59,9 @@ class _MainRouteState extends State<MainRoute> {
             _refreshCloudDataToState(mainModel!);
           }
         });
-      } else if (event.isChangeCurrentYearAndTerm() || event.isChangeCampus()) {
+      } else if (event.isChangeCurrentYearAndTerm() ||
+          event.isChangeShowCustomThing() ||
+          event.isChangeCampus()) {
         _refreshCloudDataToState(mainModel!);
       } else if (event.isChangeTermStartDate() ||
           event.isShowNotThisWeek() ||
@@ -161,6 +163,9 @@ class _MainRouteState extends State<MainRoute> {
       var todayCourseList =
           await getTodayCourseSheetList(currentWeek, data.todayViewList);
       mainModel.setTodayCourseSheetList(todayCourseList);
+      var todayThingList =
+          await getTodayThingSheetList(data.todayThingViewList);
+      mainModel.setTodayThingSheetList(todayThingList);
       var weekCourseList = await getWeekCourseSheetList(
           currentWeek, currentWeek, data.weekViewList);
       mainModel.setWeekCourseSheetList(weekCourseList);
@@ -179,6 +184,9 @@ class _MainRouteState extends State<MainRoute> {
         var todayCourseList =
             await getTodayCourseSheetList(currentWeek, cloudData.todayViewList);
         mainModel.setTodayCourseSheetList(todayCourseList);
+        var todayThingList =
+        await getTodayThingSheetList(data.todayThingViewList);
+        mainModel.setTodayThingSheetList(todayThingList);
         var weekCourseList = await getWeekCourseSheetList(
             currentWeek, currentWeek, cloudData.weekViewList);
         mainModel.setWeekCourseSheetList(weekCourseList);
@@ -210,11 +218,14 @@ class _MainRouteState extends State<MainRoute> {
       }
       var todayCourseList =
           await getTodayCourseSheetList(currentWeek, cloudData.todayViewList);
+      var todayThingList =
+      await getTodayThingSheetList(cloudData.todayThingViewList);
       var weekCourseList = await getWeekCourseSheetList(
           currentWeek, currentWeek, cloudData.weekViewList);
       var weekList =
           await _calculateWeekView(cloudData.weekViewList, currentWeek);
       mainModel.setTodayCourseSheetList(todayCourseList);
+      mainModel.setTodayThingSheetList(todayThingList);
       mainModel.setWeekCourseSheetList(weekCourseList);
       setState(() {
         weekViewList = weekList;

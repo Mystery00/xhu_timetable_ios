@@ -186,6 +186,10 @@ Future<void> setBackgroundImage(Customisable<File?> image) async {
   }
 }
 
+Future<bool> getShowCustomThing() => _getBool("showCustomThing", defaultValue: true);
+
+Future<void> setShowCustomThing(bool value) => _setBool("showCustomThing", value);
+
 String _mapKey(String key) => "$key-custom";
 
 class Customisable<T> {

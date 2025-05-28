@@ -87,3 +87,10 @@ extension HexColor on Color {
       '${g.toInt().toRadixString(16).padLeft(2, '0')}'
       '${b.toInt().toRadixString(16).padLeft(2, '0')}';
 }
+
+extension ARGBColor on Color {
+  Color copyWithOpacity(double opacity) {
+    assert(opacity >= 0.0 && opacity <= 1.0);
+    return withAlpha((255.0 * opacity).round());
+  }
+}

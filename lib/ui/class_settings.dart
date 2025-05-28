@@ -16,6 +16,7 @@ import 'package:xhu_timetable_ios/ui/theme/settings.dart';
 
 class ClassSettingsRoute extends StatefulWidget {
   const ClassSettingsRoute({super.key});
+
   @override
   State<ClassSettingsRoute> createState() => _ClassSettingsRouteState();
 }
@@ -34,6 +35,7 @@ class _ClassSettingsRouteState extends SelectState<ClassSettingsRoute> {
       Customisable(data: initNowTerm, custom: false);
   Customisable<DateTime> _customTermStartDate =
       Customisable(data: DateTime.now(), custom: false);
+  var _showCustomThing = true;
 
   @override
   void initState() {
@@ -80,6 +82,11 @@ class _ClassSettingsRouteState extends SelectState<ClassSettingsRoute> {
     getCustomTermStartDate().then((value) {
       setState(() {
         _customTermStartDate = value;
+      });
+    });
+    getShowCustomThing().then((value) {
+      setState(() {
+        _showCustomThing = value;
       });
     });
   }
@@ -202,11 +209,26 @@ class _ClassSettingsRouteState extends SelectState<ClassSettingsRoute> {
                       Navigator.pushNamed(context, routeSchoolCalendar),
                 ),
                 context.buildSettingsItem(
+                  iconImage: null,
+                  title: "显示今日事项",
+                  subtitle:
+                      _showCustomThing ? "在今日课程页面中显示自定义事项列表" : "不显示自定义事项列表",
+                  trailing: Switch(
+                      value: _showCustomThing,
+                      onChanged: (value) {
+                        setShowCustomThing(value).then((_) {
+                          setState(() {
+                            _showCustomThing = value;
+                          });
+                          eventBus.fire(UIChangeEvent.changeShowCustomThing());
+                        });
+                      }),
+                ),
+                context.buildSettingsItem(
                   iconImage:
-                      const Svg("assets/icons/svg/ic_school_calendar.svg"),
+                      const Svg("assets/icons/svg/ic_custom_thing.svg"),
                   title: "自定义事项",
-                  onTap: () =>
-                      Navigator.pushNamed(context, routeCustomThing),
+                  onTap: () => Navigator.pushNamed(context, routeCustomThing),
                 ),
               ],
             ),

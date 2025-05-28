@@ -1,10 +1,13 @@
 import 'package:xhu_timetable_ios/db/database.dart';
 import 'package:xhu_timetable_ios/db/entity/course.dart';
+import 'package:xhu_timetable_ios/db/entity/custom_thing.dart';
 import 'package:xhu_timetable_ios/db/entity/experiment_course.dart';
 import 'package:xhu_timetable_ios/db/entity/practical_course.dart';
 import 'package:xhu_timetable_ios/model/aggregation.dart';
 import 'package:xhu_timetable_ios/model/course.dart';
+import 'package:xhu_timetable_ios/model/custom_thing.dart';
 import 'package:xhu_timetable_ios/model/user.dart';
+import 'package:xhu_timetable_ios/ui/theme/colors.dart';
 
 class AggregationLocalRepo {
   static Future<void> saveAggregationMainPageResponse(
@@ -12,6 +15,7 @@ class AggregationLocalRepo {
     int term,
     User user,
     AggregationMainResponse response,
+    bool containCustomThing,
   ) async {
     var db = await DataBaseManager.database();
     //删除旧数据
@@ -76,6 +80,21 @@ class AggregationLocalRepo {
           studentId: user.studentId);
       await db.experimentCourseDao.insertData(experimentCourseEntity);
     }
+    for (var customThing in response.customThingList) {
+      CustomThingEntity customThingEntity = CustomThingEntity(
+          thingId: customThing.thingId,
+          title: customThing.title,
+          location: customThing.location,
+          allDay: customThing.allDay,
+          startTime: customThing.startTime.millisecondsSinceEpoch,
+          endTime: customThing.endTime.millisecondsSinceEpoch,
+          remark: customThing.remark,
+          color: customThing.color.toHex(),
+          metadata: customThing.metadata,
+          createTime: customThing.createTime.millisecondsSinceEpoch,
+          studentId: user.studentId);
+      await db.customThingDao.insertData(customThingEntity);
+    }
   }
 
   static Future<void> queryAndMap<T, R>(
@@ -96,6 +115,7 @@ class AggregationLocalRepo {
     List<Course> courseList = [];
     List<PracticalCourse> practicalCourseList = [];
     List<ExperimentCourse> experimentCourseList = [];
+    List<CustomThingResponse> customThingList = [];
 
     await queryAndMap<CourseEntity, Course>(
       courseList,
@@ -164,10 +184,27 @@ class AggregationLocalRepo {
         );
       },
     );
+    await queryAndMap<CustomThingEntity, CustomThingResponse>(customThingList,
+        () => db.customThingDao.queryByUsername(user.studentId), (item) {
+      CustomThingEntity entity = item as CustomThingEntity;
+      return CustomThingResponse(
+        thingId: entity.thingId,
+        title: entity.title,
+        location: entity.location,
+        allDay: entity.allDay,
+        startTime: DateTime.fromMillisecondsSinceEpoch(entity.startTime),
+        endTime: DateTime.fromMillisecondsSinceEpoch(entity.endTime),
+        remark: entity.remark,
+        color: HexColor.fromHex(entity.color),
+        metadata: entity.metadata,
+        createTime: DateTime.fromMillisecondsSinceEpoch(entity.createTime),
+      );
+    });
     return AggregationMainResponse(
       courseList: courseList,
       practicalCourseList: practicalCourseList,
       experimentCourseList: experimentCourseList,
+      customThingList: customThingList,
     );
   }
 }

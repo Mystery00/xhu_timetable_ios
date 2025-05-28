@@ -8,6 +8,7 @@ import 'package:xhu_timetable_ios/event/bus.dart';
 import 'package:xhu_timetable_ios/event/ui.dart';
 import 'package:xhu_timetable_ios/model/transfer/select_view.dart';
 import 'package:xhu_timetable_ios/repository/course_color.dart';
+import 'package:xhu_timetable_ios/ui/base.dart';
 
 class CustomCourseColorRoute extends StatefulWidget {
   const CustomCourseColorRoute({super.key});
@@ -56,8 +57,9 @@ class _CustomCourseColorRouteState extends SelectState<CustomCourseColorRoute> {
         controller: _refreshController,
         enablePullDown: true,
         onRefresh: _onRefresh,
-        child: ListView.builder(
-          itemCount: colorList.length,
+        child: buildPageOrEmptyData(
+          context,
+          size: colorList.length,
           itemBuilder: (context, index) => _buildItem(colorList[index]),
         ),
       ),

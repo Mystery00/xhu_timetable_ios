@@ -4,6 +4,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:xhu_timetable_ios/repository/main.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
+import 'package:xhu_timetable_ios/ui/base.dart';
 import 'package:xhu_timetable_ios/ui/main/model.dart';
 
 class WeekHomePage extends StatefulWidget {
@@ -25,7 +26,16 @@ class _WeekHomePageState extends State<WeekHomePage> {
   @override
   Widget build(BuildContext context) {
     return Consumer(
-      builder: (context, MainModel mainModel, child) => Column(
+      builder: (context, MainModel mainModel, child) => buildContent(mainModel),
+    );
+  }
+
+  Widget buildContent(MainModel mainModel) {
+    if (mainModel.isTodayNoData()) {
+      return buildLayout(context, 'assets/lottie/no_data.json', 240,
+          text: '暂无数据');
+    } else {
+      return Column(
         children: [
           Container(
             color: _dateBackgroundColor,
@@ -50,50 +60,50 @@ class _WeekHomePageState extends State<WeekHomePage> {
           ),
           Expanded(
               child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            controller: _controller,
-            child: Column(
-              children: [
-                Row(
+                scrollDirection: Axis.vertical,
+                controller: _controller,
+                child: Column(
                   children: [
-                    Expanded(
-                      flex: 3,
-                      child: Container(
-                        color: _dateBackgroundColor,
-                        child: Column(
-                          children: [
-                            for (var i = 0; i < 11; i++)
-                              _buildTimeItem(i + 1, itemHeight),
-                          ],
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: Container(
+                            color: _dateBackgroundColor,
+                            child: Column(
+                              children: [
+                                for (var i = 0; i < 11; i++)
+                                  _buildTimeItem(i + 1, itemHeight),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    for (var i = 0; i < 7; i++)
-                      Expanded(
-                        flex: 10,
-                        child: Column(
-                          children: [
-                            for (var sheet
+                        for (var i = 0; i < 7; i++)
+                          Expanded(
+                            flex: 10,
+                            child: Column(
+                              children: [
+                                for (var sheet
                                 in safeGet(mainModel.weekCourseSheetList, i))
-                              _buildWeekItem(
-                                  sheet.color,
-                                  sheet.step,
-                                  sheet.showTitle,
-                                  sheet.textColor,
-                                  sheet.course.length > 1, () {
-                                _handleCourseItemTap(sheet);
-                              }),
-                          ],
-                        ),
-                      ),
+                                  _buildWeekItem(
+                                      sheet.color,
+                                      sheet.step,
+                                      sheet.showTitle,
+                                      sheet.textColor,
+                                      sheet.course.length > 1, () {
+                                    _handleCourseItemTap(sheet);
+                                  }),
+                              ],
+                            ),
+                          ),
+                      ],
+                    )
                   ],
-                )
-              ],
-            ),
-          )),
+                ),
+              )),
         ],
-      ),
-    );
+      );
+    }
   }
 
   List<WeekCourseSheet> safeGet(List<List<WeekCourseSheet>> list, int index) {

@@ -7,6 +7,7 @@ import 'package:xhu_timetable_ios/model/poems.dart';
 import 'package:xhu_timetable_ios/repository/main.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
 import 'package:xhu_timetable_ios/store/poems_store.dart';
+import 'package:xhu_timetable_ios/ui/base.dart';
 import 'package:xhu_timetable_ios/ui/main/model.dart';
 import 'package:xhu_timetable_ios/ui/theme/colors.dart';
 import 'package:xhu_timetable_ios/ui/theme/icons.dart';
@@ -44,7 +45,16 @@ class _TodayHomePageState extends State<TodayHomePage> {
   @override
   Widget build(BuildContext context) {
     return Consumer(
-      builder: (context, MainModel mainModel, child) => Stack(
+      builder: (context, MainModel mainModel, child) => buildContent(mainModel),
+    );
+  }
+
+  Widget buildContent(MainModel mainModel) {
+    if (mainModel.isTodayNoData()) {
+      return buildLayout(context, 'assets/lottie/no_data.json', 240,
+          text: '暂无数据');
+    } else {
+      return Stack(
         children: [
           Align(
             alignment: AlignmentDirectional.centerStart,
@@ -57,22 +67,29 @@ class _TodayHomePageState extends State<TodayHomePage> {
           ),
           SizedBox(
             width: double.infinity,
-            child: ListView.builder(
-              itemCount: mainModel.todayCourseSheetList.length + 1,
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return _PoemsItem(
-                    poems: poems,
-                  );
-                }
-                return _buildTodayCourseContent(
-                    context, mainModel.todayCourseSheetList[index - 1]);
-              },
+            child: ListView(
+              children: buildList(mainModel, poems),
             ),
           )
         ],
-      ),
-    );
+      );
+    }
+  }
+
+  List<Widget> buildList(MainModel mainModel, Poems? poems) {
+    List<Widget> list = [];
+    if (poems != null) {
+      list.add(_PoemsItem(
+        poems: poems,
+      ));
+    }
+    for (var sheet in mainModel.todayThingSheetList) {
+      list.add(_buildTodayThingContent(context, sheet));
+    }
+    for (var sheet in mainModel.todayCourseSheetList) {
+      list.add(_buildTodayCourseContent(context, sheet));
+    }
+    return list;
   }
 }
 
@@ -198,6 +215,205 @@ void _showPoemsDetail(BuildContext context, Poems poems) {
           ),
         );
       });
+}
+
+Widget _buildTodayThingContent(BuildContext context, TodayThingSheet thing) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Row(
+      children: [
+        Container(
+          width: 9,
+          height: 9,
+          margin: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: thing.color,
+            shape: BoxShape.circle,
+          ),
+        ),
+        Expanded(
+          child: Card(
+            margin: const EdgeInsets.only(right: 8),
+            child: Stack(
+              children: [
+                if (thing.accountTitle.isNotEmpty)
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(12),
+                          bottomLeft: Radius.circular(4),
+                        ),
+                      ),
+                      child: Text(
+                        thing.accountTitle,
+                        style: TextStyle(
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: thing.accountTitle.isNotEmpty ? 18 : 8,
+                    bottom: 8,
+                    right: 8,
+                  ),
+                  child: IntrinsicHeight(
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(6),
+                          child: Icon(
+                            IconsProfile.watermelon,
+                            color: thing.color,
+                            size: 16,
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 1),
+                                child: Text(
+                                  thing.title,
+                                  style: TextStyle(
+                                      fontSize: 12, color: thing.color),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 1),
+                                child: Text(
+                                  thing.timeText,
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: thing.color.copyWithOpacity(0.8)),
+                                ),
+                              ),
+                              if (thing.location.isNotEmpty)
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 1),
+                                  child: Text(
+                                    thing.location,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color:
+                                            thing.color.copyWithOpacity(0.8)),
+                                  ),
+                                ),
+                              if (thing.remark.isNotEmpty)
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 1),
+                                  child: Text(
+                                    thing.remark,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color:
+                                            thing.color.copyWithOpacity(0.6)),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        if (thing.saveAsCountDown)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 4),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: buildRemainDaysLayout(
+                                  thing.remainDays, thing.color),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+List<Widget> buildRemainDaysLayout(int remainDays, Color thingColor) {
+  List<Widget> result = [];
+  if (remainDays <= 0) {
+    result.add(Text(
+      '就在\n今天',
+      style: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: thingColor,
+      ),
+    ));
+    return result;
+  }
+  result.add(Text(
+    '还剩',
+    style: TextStyle(
+      fontSize: 12,
+    ),
+  ));
+  if (remainDays > 365) {
+    var year = remainDays / 365.0;
+    String showText;
+    if (year % 1 == 0) {
+      showText = year.toInt().toString();
+    } else {
+      showText = year.toStringAsFixed(1);
+    }
+    result.add(Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Text(
+        showText,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: thingColor,
+        ),
+      ),
+    ));
+    result.add(Text(
+      '年',
+      style: TextStyle(
+        fontSize: 12,
+      ),
+    ));
+  } else {
+    result.add(Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Text(
+        remainDays.toString(),
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: thingColor,
+        ),
+      ),
+    ));
+    result.add(Text(
+      '天',
+      style: TextStyle(
+        fontSize: 12,
+      ),
+    ));
+  }
+  return result;
 }
 
 Widget _buildTodayCourseContent(BuildContext context, TodayCourseSheet course) {

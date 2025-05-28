@@ -4,6 +4,10 @@ import 'package:xhu_timetable_ios/db/entity/custom_thing.dart';
 
 @dao
 abstract class CustomThingDao {
+  @Query(
+      'DELETE FROM tb_custom_thing WHERE studentId = :studentId')
+  Future<void> deleteOld(String studentId);
+
   @insert
   Future<void> insertData(CustomThingEntity entity);
 

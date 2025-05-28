@@ -1,3 +1,5 @@
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:logger/logger.dart';
 import 'package:xhu_timetable_ios/db/database.dart';
 import 'package:xhu_timetable_ios/db/entity/course.dart';
 import 'package:xhu_timetable_ios/db/entity/custom_thing.dart';
@@ -22,6 +24,7 @@ class AggregationLocalRepo {
     await db.courseDao.deleteOld(year, term, user.studentId);
     await db.practicalCourseDao.deleteOld(year, term, user.studentId);
     await db.experimentCourseDao.deleteOld(year, term, user.studentId);
+    await db.customThingDao.deleteOld(user.studentId);
 
     //插入新数据
     for (var course in response.courseList) {
@@ -80,20 +83,22 @@ class AggregationLocalRepo {
           studentId: user.studentId);
       await db.experimentCourseDao.insertData(experimentCourseEntity);
     }
-    for (var customThing in response.customThingList) {
-      CustomThingEntity customThingEntity = CustomThingEntity(
-          thingId: customThing.thingId,
-          title: customThing.title,
-          location: customThing.location,
-          allDay: customThing.allDay,
-          startTime: customThing.startTime.millisecondsSinceEpoch,
-          endTime: customThing.endTime.millisecondsSinceEpoch,
-          remark: customThing.remark,
-          color: customThing.color.toHex(),
-          metadata: customThing.metadata,
-          createTime: customThing.createTime.millisecondsSinceEpoch,
-          studentId: user.studentId);
-      await db.customThingDao.insertData(customThingEntity);
+    if (containCustomThing) {
+      for (var customThing in response.customThingList) {
+        CustomThingEntity customThingEntity = CustomThingEntity(
+            thingId: customThing.thingId,
+            title: customThing.title,
+            location: customThing.location,
+            allDay: customThing.allDay,
+            startTime: customThing.startTime.millisecondsSinceEpoch,
+            endTime: customThing.endTime.millisecondsSinceEpoch,
+            remark: customThing.remark,
+            color: customThing.color.toHex(),
+            metadata: customThing.metadata,
+            createTime: customThing.createTime.millisecondsSinceEpoch,
+            studentId: user.studentId);
+        await db.customThingDao.insertData(customThingEntity);
+      }
     }
   }
 
@@ -187,6 +192,7 @@ class AggregationLocalRepo {
     await queryAndMap<CustomThingEntity, CustomThingResponse>(customThingList,
         () => db.customThingDao.queryByUsername(user.studentId), (item) {
       CustomThingEntity entity = item as CustomThingEntity;
+      Logger().d(entity.color);
       return CustomThingResponse(
         thingId: entity.thingId,
         title: entity.title,

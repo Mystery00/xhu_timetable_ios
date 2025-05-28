@@ -483,6 +483,13 @@ class _$CustomThingDao extends CustomThingDao {
   final DeletionAdapter<CustomThingEntity> _customThingEntityDeletionAdapter;
 
   @override
+  Future<void> deleteOld(String studentId) async {
+    await _queryAdapter.queryNoReturn(
+        'DELETE FROM tb_custom_thing WHERE studentId = ?1',
+        arguments: [studentId]);
+  }
+
+  @override
   Future<List<CustomThingEntity>> queryByUsername(String username) async {
     return _queryAdapter.queryList(
         'SELECT * FROM tb_custom_thing WHERE studentId = ?1',

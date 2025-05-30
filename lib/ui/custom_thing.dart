@@ -13,6 +13,7 @@ import 'package:xhu_timetable_ios/model/user.dart';
 import 'package:xhu_timetable_ios/repository/xhu.dart';
 import 'package:xhu_timetable_ios/store/user_store.dart';
 import 'package:xhu_timetable_ios/toast.dart';
+import 'package:xhu_timetable_ios/ui/base.dart';
 import 'package:xhu_timetable_ios/ui/theme/colors.dart';
 
 class CustomThingRoute extends StatefulWidget {
@@ -140,16 +141,7 @@ class _CustomThingRouteState extends SelectState<CustomThingRoute> {
               enablePullUp: true,
               onRefresh: _onRefresh,
               onLoading: _onLoading,
-              child: ListView.builder(
-                itemCount: customThingList.length,
-                itemBuilder: (context, index) => InkWell(
-                  onTap: () {
-                    _showCreateCustomThingSheet(
-                        context, customThingList[index]);
-                  },
-                  child: _buildItem(customThingList[index]),
-                ),
-              ),
+              child: buildListContentOrEmpty(),
             ),
           ),
         ],
@@ -160,6 +152,23 @@ class _CustomThingRouteState extends SelectState<CustomThingRoute> {
         onPressed: () {
           _showCreateCustomThingSheet(context, null);
         },
+      ),
+    );
+  }
+
+  Widget buildListContentOrEmpty() {
+    if (customThingList.isEmpty) {
+      return buildLayout(context, 'assets/lottie/no_data.json', 240,
+          text: '暂无数据');
+    }
+    return ListView.builder(
+      itemCount: customThingList.length,
+      itemBuilder: (context, index) => InkWell(
+        onTap: () {
+          _showCreateCustomThingSheet(
+              context, customThingList[index]);
+        },
+        child: _buildItem(customThingList[index]),
       ),
     );
   }

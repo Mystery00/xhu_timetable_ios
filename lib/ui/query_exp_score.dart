@@ -7,6 +7,7 @@ import 'package:xhu_timetable_ios/model/score.dart';
 import 'package:xhu_timetable_ios/model/transfer/select_view.dart';
 import 'package:xhu_timetable_ios/model/user.dart';
 import 'package:xhu_timetable_ios/store/user_store.dart';
+import 'package:xhu_timetable_ios/ui/base.dart';
 
 class QueryExpScoreRoute extends StatefulWidget {
   const QueryExpScoreRoute({super.key});
@@ -111,38 +112,46 @@ class _QueryExpScoreRouteState extends SelectState<QueryExpScoreRoute> {
               enablePullDown: true,
               enablePullUp: true,
               onRefresh: _onRefresh,
-              child: ExpandableListView(
-                  builder: SliverExpandableChildDelegate<
-                      ExperimentScoreItemResponse, ExpScoreSection>(
-                sectionList:
-                    expScoreList.map((e) => ExpScoreSection(data: e)).toList(),
-                headerBuilder: (context, sectionIndex, index) {
-                  var data = expScoreList[sectionIndex];
-                  return Container(
-                    height: 48,
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(12),
-                    color:
-                        Theme.of(context).colorScheme.surfaceContainerHighest,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(data.courseName),
-                        Text("${data.totalScore}分"),
-                      ],
-                    ),
-                  );
-                },
-                itemBuilder: (context, sectionIndex, itemIndex, index) {
-                  var item = expScoreList[sectionIndex].itemList[itemIndex];
-                  return _buildItem(item);
-                },
-              )),
+              child: buildListContentOrEmpty(),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget buildListContentOrEmpty() {
+    if (expScoreList.isEmpty) {
+      return buildLayout(context, 'assets/lottie/no_data.json', 240,
+          text: '暂无数据');
+    }
+    return ExpandableListView(
+        builder: SliverExpandableChildDelegate<
+            ExperimentScoreItemResponse, ExpScoreSection>(
+          sectionList:
+          expScoreList.map((e) => ExpScoreSection(data: e)).toList(),
+          headerBuilder: (context, sectionIndex, index) {
+            var data = expScoreList[sectionIndex];
+            return Container(
+              height: 48,
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              color:
+              Theme.of(context).colorScheme.surfaceContainerHighest,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(data.courseName),
+                  Text("${data.totalScore}分"),
+                ],
+              ),
+            );
+          },
+          itemBuilder: (context, sectionIndex, itemIndex, index) {
+            var item = expScoreList[sectionIndex].itemList[itemIndex];
+            return _buildItem(item);
+          },
+        ));
   }
 
   Widget _buildItem(ExperimentScoreItemResponse expScore) => Card(

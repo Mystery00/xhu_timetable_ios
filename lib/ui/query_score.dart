@@ -8,6 +8,7 @@ import 'package:xhu_timetable_ios/model/score.dart';
 import 'package:xhu_timetable_ios/model/transfer/select_view.dart';
 import 'package:xhu_timetable_ios/model/user.dart';
 import 'package:xhu_timetable_ios/store/user_store.dart';
+import 'package:xhu_timetable_ios/ui/base.dart';
 
 class QueryScoreRoute extends StatefulWidget {
   const QueryScoreRoute({super.key});
@@ -149,75 +150,76 @@ class _QueryScoreRouteState extends SelectState<QueryScoreRoute> {
               enablePullUp: true,
               onRefresh: _onRefresh,
               onLoading: _onLoading,
-              child: ExpandableListView(
-                  builder: SliverExpandableChildDelegate<String, ScoreSection>(
-                sectionList: [
-                  ScoreSection(items: List.empty()),
-                  ScoreSection(items: [""]),
-                  ScoreSection(
-                      items: scoreList.map((e) => e.courseName).toList()),
-                ],
-                headerBuilder: (context, sectionIndex, index) {
-                  switch (sectionIndex) {
-                    case 0:
-                      return Container(
-                        height: 48,
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        color: Theme.of(context)
-                            .colorScheme
-                            .surfaceContainerHighest,
-                        child: InkWell(
-                          onTap: () => setState(() {
-                            showMore = !showMore;
-                          }),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("显示更多信息"),
-                              Switch(
-                                  value: showMore,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      showMore = value;
-                                    });
-                                  }),
-                            ],
-                          ),
-                        ),
-                      );
-                    case 1:
-                      return Container(
-                        height: 48,
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        color: Theme.of(context)
-                            .colorScheme
-                            .surfaceContainerHighest,
-                        child: const Text("学期总览"),
-                      );
-                    default:
-                      return Container(
-                        height: 48,
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        color: Theme.of(context)
-                            .colorScheme
-                            .surfaceContainerHighest,
-                        child: const Text("课程成绩列表"),
-                      );
-                  }
-                },
-                itemBuilder: (context, sectionIndex, itemIndex, index) {
-                  if (sectionIndex == 1) return _buildTermInfo(gpa);
-                  return _buildItem(scoreList[itemIndex], showMore);
-                },
-              )),
+              child: buildListContentOrEmpty(),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget buildListContentOrEmpty() {
+    if (scoreList.isEmpty) {
+      return buildLayout(context, 'assets/lottie/no_data.json', 240,
+          text: '暂无数据');
+    }
+    return ExpandableListView(
+        builder: SliverExpandableChildDelegate<String, ScoreSection>(
+      sectionList: [
+        ScoreSection(items: List.empty()),
+        ScoreSection(items: [""]),
+        ScoreSection(items: scoreList.map((e) => e.courseName).toList()),
+      ],
+      headerBuilder: (context, sectionIndex, index) {
+        switch (sectionIndex) {
+          case 0:
+            return Container(
+              height: 48,
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              child: InkWell(
+                onTap: () => setState(() {
+                  showMore = !showMore;
+                }),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("显示更多信息"),
+                    Switch(
+                        value: showMore,
+                        onChanged: (value) {
+                          setState(() {
+                            showMore = value;
+                          });
+                        }),
+                  ],
+                ),
+              ),
+            );
+          case 1:
+            return Container(
+              height: 48,
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              child: const Text("学期总览"),
+            );
+          default:
+            return Container(
+              height: 48,
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              child: const Text("课程成绩列表"),
+            );
+        }
+      },
+      itemBuilder: (context, sectionIndex, itemIndex, index) {
+        if (sectionIndex == 1) return _buildTermInfo(gpa);
+        return _buildItem(scoreList[itemIndex], showMore);
+      },
+    ));
   }
 
   Widget _buildTermInfo(ScoreGpaResponse? gpa) {
